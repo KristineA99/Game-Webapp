@@ -5,7 +5,7 @@ namespace Subapp1.DAL;
 public interface IQuestionRepository
 {
     // READ - get all questions for the Admin page
-    Task<IEnumerable<Question>> GetAllAsync();
+    Task<IEnumerable<Question>?> GetAllAsync();
 
     // READ - get one specific question
     Task<Question?> GetByIdAsync(int id);
