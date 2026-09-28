@@ -1,6 +1,9 @@
 @model IEnumerable<Subapp1.Models.Question>
 
-@* liste over alle spørsmål *@
+@* 
+    Lists all questions in a table.
+    From here the admin can add, view, edit and delete questions.
+*@
 
 @{
     ViewData["Title"] = "Manage questions";
@@ -11,11 +14,13 @@
     <a asp-action="Create" class="btn btn-primary">Add question</a>
 </div>
 
+@* Shows a confirmation message after creating, updating or deleting (set with TempData in the controller) *@
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-success">@TempData["Message"]</div>
 }
 
+@* Shows a friendly message if there are no questions yet, otherwise the table *@
 @if (!Model.Any())
 {
     <p>No questions yet. Add the first one to get the game started.</p>
