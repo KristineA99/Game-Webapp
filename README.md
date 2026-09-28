@@ -1,5 +1,11 @@
 # Game-Webapp
 
+## Requirements
+
+- .NET SDK 10.0
+- Node.js 24.19.0
+- SQLite
+
 Figma:
 https://www.figma.com/design/JDzUs1guJwevl9QCegNvV6/Untitled?node-id=0-1&m=dev&t=EMIZ8sgbIOS1P64M-1
 
