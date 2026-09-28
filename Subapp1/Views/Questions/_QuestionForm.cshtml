@@ -1,14 +1,29 @@
 @model Subapp1.Models.Question
 
-@* Shared form fields used by both Create and Update *@
+@* 
+This is not a full page, but a reusable piece of a page. 
 
+Both Create.cshtml and Update.cshtml include it with:
+    <partial name="_QuestionForm" model="Model" />
+This way the form fields are written only once instead of twice.
+*@
+
+@* Shows general errors that do not belong to a single field,
+   e.g. "The question could not be saved" from the controller *@
 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
+@* The question *@
+@* A textarea is used so longer questions fit *@
 <div class="mb-3">
     <label asp-for="Text" class="form-label"></label>
     <textarea asp-for="Text" class="form-control" rows="3"></textarea>
     <span asp-validation-for="Text" class="text-danger"></span>
 </div>
+
+@* The four answers *@
+@* "row" and "col-md-6" place them in two columns on larger screens,
+   and stack them on top of each other on small screens (e.g. phones) *@
+
 
 <div class="row">
     <div class="col-md-6 mb-3">
@@ -33,6 +48,10 @@
     </div>
 </div>
 
+@* The one correct answer *@
+@* he values 1-4 match CorrectOption in Question.cs (1 = A, 2 = B, 3 = C, 4 = D).
+   The first option has the value 0, which is outside [Range(1, 4)],
+   so submitting without choosing an answer gives a validation error *@
 <div class="mb-3">
     <label asp-for="CorrectOption" class="form-label"></label>
     <select asp-for="CorrectOption" class="form-select">
