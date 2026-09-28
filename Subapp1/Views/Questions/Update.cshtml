@@ -1,0 +1,21 @@
+@model Subapp1.Models.Question
+
+@{
+    ViewData["Title"] = "Edit question";
+}
+
+<h1>Edit question</h1>
+
+<form asp-action="Update" method="post">
+    @* The id must be sent back so the right question is updated *@
+    <input type="hidden" asp-for="QuestionId" />
+
+    <partial name="_QuestionForm" model="Model" />
+
+    <button type="submit" class="btn btn-primary">Save changes</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
