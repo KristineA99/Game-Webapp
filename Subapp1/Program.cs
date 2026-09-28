@@ -1,7 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using Subapp1.DAL;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Register the database context and use SQLite, with the connection string from appsettings.json
+builder.Services.AddDbContext<GameDbContext>(options =>
+{
+    options.UseSqlite(builder.Configuration["ConnectionStrings:GameDbContextConnection"]);
+});
+
+// When a class asks for IQuestionRepository, give it a QuestionRepository (one new instance per HTTP request)
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 
 var app = builder.Build();
 
