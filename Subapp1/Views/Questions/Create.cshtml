@@ -1,17 +1,37 @@
 @model Subapp1.Models.Question
 
+@*
+    The page for adding a new question.
+    It is shown by QuestionController.Create() (HttpGet), and when the form
+    is submitted it is sent to QuestionController.Create(Question question) (HttpPost).
+    If validation fails, the controller shows this page again with error messages.
+*@
+
+@* ViewData["Title"] sets the page title shown in the browser tab (used in _Layout.cshtml) *@
+
 @{
     ViewData["Title"] = "Add question";
 }
 
 <h1>Add question</h1>
 
+@*
+    asp-action="Create" sends the form to the Create action in QuestionController.
+    method="post" means the data is sent in the request body (HttpPost).
+*@
 <form asp-action="Create" method="post">
+    
+    @* Inserts the shared form fields from _QuestionForm.cshtml *@
     <partial name="_QuestionForm" model="Model" />
 
+    @* Button that submits the form *@
     <button type="submit" class="btn btn-primary">Save question</button>
+    
+    @* Goes back to the question list without saving *@
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
+
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
