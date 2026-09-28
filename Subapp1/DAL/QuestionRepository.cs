@@ -27,8 +27,8 @@ public class QuestionRepository : IQuestionRepository
 
     // READ - all questions
     // Used by the admin page that lists all questions.
-    // ()"async" and "await" let the app keep working while it waits for the database.)
-    public async Task<IEnumerable<Question>> GetAllAsync()
+    // "async" and "await" let the app keep working while it waits for the database.)
+    public async Task<IEnumerable<Question>?> GetAllAsync()
     {
         try
         {
