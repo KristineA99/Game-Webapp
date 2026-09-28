@@ -1,0 +1,22 @@
+# OS junk
+.DS_Store
+
+# node_modules
+/node_modules/
+
+# Logs
+**/appsettings.Development.json
+**/Logs/
+
+# IDE settings
+**/.idea/  
+**/.vscode/
+**/.vs/
+ 
+# Environment files
+.env
+
+#.NET build outputs
+**/obj/
+**/bin/
+
