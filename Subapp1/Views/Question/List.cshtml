@@ -5,10 +5,12 @@
     From here the admin can add, view, edit and delete questions.
 *@
 
+@* Sets the page title shown in the browser tab *@
 @{
     ViewData["Title"] = "Manage questions";
 }
 
+@* Page header with the title on the left and the "Add question" button on the right (Bootstrap flexbox classes) *@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Manage questions</h1>
     <a asp-action="Create" class="btn btn-primary">Add question</a>
@@ -27,8 +29,11 @@
 }
 else
 {
+    @* table-responsive makes the table scroll sideways on small screens instead of breaking the layout *@
     <div class="table-responsive">
         <table class="table table-striped align-middle">
+            
+            @* Column headings. The last column is empty because it holds the buttons *@
             <thead>
                 <tr>
                     <th>Question</th>
@@ -36,12 +41,22 @@ else
                     <th></th>
                 </tr>
             </thead>
+
+            @* One table row for each question in the list *@
             <tbody>
                 @foreach (var question in Model)
                 {
                     <tr>
                         <td>@question.Text</td>
+
+                        @* Shows the text of the correct option, using the helper property CorrectOptionText in Question.cs *@
                         <td>@question.CorrectOptionText</td>
+                        
+                        @*
+                            Buttons for this question.
+                            asp-route-id adds the question's id to the link, e.g. /Question/Update/3,
+                            so the controller knows which question to show, edit or delete.
+                        *@
                         <td class="text-end text-nowrap">
                             <a asp-action="Details" asp-route-id="@question.QuestionId" class="btn btn-sm btn-outline-secondary">Details</a>
                             <a asp-action="Update" asp-route-id="@question.QuestionId" class="btn btn-sm btn-outline-primary">Edit</a>
