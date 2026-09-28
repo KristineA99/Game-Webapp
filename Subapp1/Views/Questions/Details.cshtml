@@ -1,0 +1,27 @@
+@model Subapp1.Models.Question
+
+@{
+    ViewData["Title"] = "Question details";
+}
+
+<h1>Question details</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Question</dt>
+    <dd class="col-sm-9">@Model.Text</dd>
+
+    <dt class="col-sm-3">A</dt>
+    <dd class="col-sm-9">@Model.OptionA</dd>
+    <dt class="col-sm-3">B</dt>
+    <dd class="col-sm-9">@Model.OptionB</dd>
+    <dt class="col-sm-3">C</dt>
+    <dd class="col-sm-9">@Model.OptionC</dd>
+    <dt class="col-sm-3">D</dt>
+    <dd class="col-sm-9">@Model.OptionD</dd>
+
+    <dt class="col-sm-3">Correct answer</dt>
+    <dd class="col-sm-9">@Model.CorrectOptionText</dd>
+</dl>
+
+<a asp-action="Update" asp-route-id="@Model.QuestionId" class="btn btn-primary">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to list</a>
