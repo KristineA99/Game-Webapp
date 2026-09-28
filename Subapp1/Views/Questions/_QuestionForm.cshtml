@@ -1,0 +1,46 @@
+@model Subapp1.Models.Question
+
+@* Shared form fields used by both Create and Update *@
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="mb-3">
+    <label asp-for="Text" class="form-label"></label>
+    <textarea asp-for="Text" class="form-control" rows="3"></textarea>
+    <span asp-validation-for="Text" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="OptionA" class="form-label"></label>
+        <input asp-for="OptionA" class="form-control" />
+        <span asp-validation-for="OptionA" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="OptionB" class="form-label"></label>
+        <input asp-for="OptionB" class="form-control" />
+        <span asp-validation-for="OptionB" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="OptionC" class="form-label"></label>
+        <input asp-for="OptionC" class="form-control" />
+        <span asp-validation-for="OptionC" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="OptionD" class="form-label"></label>
+        <input asp-for="OptionD" class="form-control" />
+        <span asp-validation-for="OptionD" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="CorrectOption" class="form-label"></label>
+    <select asp-for="CorrectOption" class="form-select">
+        <option value="0">Choose the correct option</option>
+        <option value="1">A</option>
+        <option value="2">B</option>
+        <option value="3">C</option>
+        <option value="4">D</option>
+    </select>
+    <span asp-validation-for="CorrectOption" class="text-danger"></span>
+</div>
