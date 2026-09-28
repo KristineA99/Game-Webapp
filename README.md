@@ -3,20 +3,6 @@
 Figma:
 https://www.figma.com/design/JDzUs1guJwevl9QCegNvV6/Untitled?node-id=0-1&m=dev&t=EMIZ8sgbIOS1P64M-1
 
-# OBLIG 1
-
-## Hva prosjektet må inneholde
-- CRUD på minst én entitet: Question er det naturlige valget. Lag sider for å opprette, vise, redigere og slette spørsmål (en slags "lærer/admin-side"). Da er kravet dekket uten at selve spillet må ha CRUD.
-
-- Skjemaer og validering på serversiden: Skjemaet for å lage spørsmål (f.eks. [Required], [StringLength] og at riktig svar må være ett av alternativene), pluss skjemaet der spilleren skriver inn navnet sitt. Se Demo-ShopInputValidation.
-
-- Feilhåndtering og logging: try/catch i repository/controller, ILogger som logger feil, og en egen feilside. Se Demo-ShopErrorHandlingLogging.
-
-- Dynamisk innhold: Tilfeldige spørsmål fra databasen, fangede monstre og leaderboardet som oppdateres ut fra poeng.
-
-- Design og navigasjon: En felles _Layout.cshtml med meny (Spill, Leaderboard, Mine monstre, Administrer spørsmål) og 2000-tallsstil med CSS.
-
-For å holde det enkelt kan vi droppe ekte innlogging i denne omgangen og la spilleren bare skrive inn et navn. Innlogging med Identity (Demo-ShopSecurity) er ikke et krav her og kan legges til i eksamensprosjektet.
 
 
 
