@@ -1,0 +1,18 @@
+@model Subapp1.Models.Question
+
+@{
+    ViewData["Title"] = "Add question";
+}
+
+<h1>Add question</h1>
+
+<form asp-action="Create" method="post">
+    <partial name="_QuestionForm" model="Model" />
+
+    <button type="submit" class="btn btn-primary">Save question</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
