@@ -1,22 +1,41 @@
 @model Subapp1.Models.Question
 
+@* 
+    Confirmation page shown before a question is deleted.
+    It is shown by QuestionController.Delete(int id) (HttpGet).
+    Nothing is deleted until the user clicks "Delete question".
+*@
+
+@* Sets the page title shown in the browser tab *@
 @{
     ViewData["Title"] = "Delete question";
 }
 
 <h1>Delete question</h1>
 
+@* Warns the user that the deletion cannot be undone *@
 <div class="alert alert-warning">
     This question will be removed from the game permanently.
 </div>
 
+@* Shows which question is about to be deleted, so the user can check it is the right one *@
 <dl class="row">
     <dt class="col-sm-3">Question</dt>
     <dd class="col-sm-9">@Model.Text</dd>
 </dl>
 
+@*
+    Sends the form to QuestionController.DeleteConfirmed(int id) (HttpPost),
+    which deletes the question and returns to the list.
+    The form tag helper also adds a hidden anti-forgery token automatically.
+*@
 <form asp-action="DeleteConfirmed" method="post">
+    @* Hidden field that sends the id of the question to delete *@
     <input type="hidden" name="id" value="@Model.QuestionId" />
+
+    @* Confirms and deletes the question *@
     <button type="submit" class="btn btn-danger">Delete question</button>
+    
+    @* Goes back to the question list without deleting *@
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
