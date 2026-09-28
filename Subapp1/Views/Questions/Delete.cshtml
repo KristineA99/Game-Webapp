@@ -1,0 +1,22 @@
+@model Subapp1.Models.Question
+
+@{
+    ViewData["Title"] = "Delete question";
+}
+
+<h1>Delete question</h1>
+
+<div class="alert alert-warning">
+    This question will be removed from the game permanently.
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Question</dt>
+    <dd class="col-sm-9">@Model.Text</dd>
+</dl>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.QuestionId" />
+    <button type="submit" class="btn btn-danger">Delete question</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
