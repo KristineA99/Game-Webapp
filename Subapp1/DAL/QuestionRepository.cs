@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+/*using Microsoft.EntityFrameworkCore;
 using Subapp1.Models;
 
 namespace Subapp1.DAL;
@@ -140,3 +140,4 @@ public class QuestionRepository : IQuestionRepository
         }
     }
 }
+*/
