@@ -23,11 +23,12 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
         return View();
     }
 
-    //Handles the player's attack (what happens when attack button is clicked).
-    //For now, it simply returns the Play view again.
+    // Use the repository stored in _questionsRepository, call its GetAllAsync() method,
+    // wait for the database operation to finish and store the result in questions
     [HttpPost]
-    public IActionResult Attack()
+    public async Task<IActionResult> Attack()
     {
+        var questions = await _questionRepository.GetAllAsync();    
         return View("Play");
     }
 }
