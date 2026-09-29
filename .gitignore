@@ -10,8 +10,9 @@
 
 # IDE settings
 **/.idea/  
-**/.vscode/
-**/.vs/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
  
 # Environment files
 .env
