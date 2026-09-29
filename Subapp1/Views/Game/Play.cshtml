@@ -10,7 +10,10 @@
     </div>
 </div>
 
-<button>Attack</button>
+    @*Creates the button for attack and corresponds with Gamecontroller to call the Attack() action*@
+    <form asp-controller="Game" asp-action="Attack" method="post">
+    <button type="submit">Attack</button>
+    </form>
 
 <div class="score">
     Score: 0
