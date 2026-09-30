@@ -34,13 +34,19 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
         // Randomizes the question collection and selects the first question
         var question = questions.OrderBy(q => Guid.NewGuid()).FirstOrDefault();
 
+        // A new game starts with a score of 0.
+        ViewBag.Score = 0;
+
         //Display Play.cshtml and pass the selected question to the view
         return View("Play", question);
     }
 
     // Handles the answer selected by player
     [HttpPost]
-    public async Task<IActionResult> Answer(int questionId, int selectedOption)
+    public async Task<IActionResult> Answer(
+        int questionId, 
+        int selectedOption,
+        int score)
     {
         // Retrieves the question that the player answered.
         var question = await _questionRepository.GetByIdAsync(questionId);
@@ -48,21 +54,31 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
         // Checks whether the selected option matches the correct option stored for this question in the database
         bool isCorrect = selectedOption == question.CorrectOption;
 
+        //Increase the score only when the answer is correct.
+        if (isCorrect)
+        {
+            score++;
+        }
+
         // Makes the result available to Play.cshtml.
         ViewBag.IsCorrect = isCorrect;
+        ViewBag.Score = score;
 
         return View("Play", question);
     }
 
     // Handles the player continuing after answering a question
     [HttpPost]
-    public async Task<IActionResult> Continue()
+    public async Task<IActionResult> Continue(int score)
     {
         // Retrieves all questions from the database
         var questions = await _questionRepository.GetAllAsync();
 
         // Randomizes the question collection and selects the first question
         var question = questions.OrderBy(q => Guid.NewGuid()).FirstOrDefault();
+
+        //Keep the current score when loading the next question.
+        ViewBag.Score = score;
 
         return View("Play", question);
     }

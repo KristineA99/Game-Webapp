@@ -24,6 +24,7 @@
                 <form asp-controller="Game" asp-action="Answer" method="post">
 
                     <input type="hidden" name="questionId" value="@Model.QuestionId" />
+                    <input type="hidden" name="score" value="@ViewBag.Score" />
 
                     <button type="submit" name="selectedOption" value="1">
                         @Model.OptionA
@@ -57,6 +58,8 @@
         
                 @* Continue should only appear after answering*@
                 <form asp-controller="Game" asp-action="Continue" method="post">
+                    <input type="hidden" name="score" value="@ViewBag.Score" />
+
                     <button type="submit">Continue</button>
                 </form>  
             } 
@@ -72,7 +75,7 @@
     }
 
 <div class="score">
-    Score: 0
+    Score: @(ViewBag.Score ?? 0)
 </div>
 
 </div>
