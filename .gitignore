@@ -21,3 +21,6 @@
 **/obj/
 **/bin/
 
+# Local database file
+*.db
+
