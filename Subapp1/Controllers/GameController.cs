@@ -31,9 +31,8 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
         //Retrieve all questions from the database
         var questions = await _questionRepository.GetAllAsync();    
 
-        //For now, use the first question in the list
-        //Later this can be changed to select a random question
-        var question = questions.FirstOrDefault();
+        // Randomizes the question collection and selects the first question
+        var question = questions.OrderBy(q => Guid.NewGuid()).FirstOrDefault();
 
         //Display Play.cshtml and pass the selected question to the view
         return View("Play", question);
@@ -59,8 +58,11 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Continue()
     {
+        // Retrieves all questions from the database
         var questions = await _questionRepository.GetAllAsync();
-        var question = questions.FirstOrDefault();
+
+        // Randomizes the question collection and selects the first question
+        var question = questions.OrderBy(q => Guid.NewGuid()).FirstOrDefault();
 
         return View("Play", question);
     }
