@@ -28,11 +28,8 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Attack()
     {
-        //Retrieve all questions from the database
-        var questions = await _questionRepository.GetAllAsync();    
-
-        // Randomizes the question collection and selects the first question
-        var question = questions.OrderBy(q => Guid.NewGuid()).FirstOrDefault();
+        //Retrieve a random question from the database
+        var question = await _questionRepository.GetRandomAsync();    
 
         // A new game starts with a score of 0.
         ViewBag.Score = 0;
@@ -50,6 +47,11 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     {
         // Retrieves the question that the player answered.
         var question = await _questionRepository.GetByIdAsync(questionId);
+
+        if (question == null)
+        {
+            return NotFound();
+        }
 
         // Checks whether the selected option matches the correct option stored for this question in the database
         bool isCorrect = selectedOption == question.CorrectOption;
@@ -71,11 +73,8 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Continue(int score)
     {
-        // Retrieves all questions from the database
-        var questions = await _questionRepository.GetAllAsync();
-
-        // Randomizes the question collection and selects the first question
-        var question = questions.OrderBy(q => Guid.NewGuid()).FirstOrDefault();
+        // Retrieves a random question from the database
+        var question = await _questionRepository.GetRandomAsync();
 
         //Keep the current score when loading the next question.
         ViewBag.Score = score;
