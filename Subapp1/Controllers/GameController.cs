@@ -28,7 +28,40 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Attack()
     {
+        //Retrieve all questions from the database
         var questions = await _questionRepository.GetAllAsync();    
-        return View("Play");
+
+        //For now, use the first question in the list
+        //Later this can be changed to select a random question
+        var question = questions.FirstOrDefault();
+
+        //Display Play.cshtml and pass the selected question to the view
+        return View("Play", question);
+    }
+
+    // Handles the answer selected by player
+    [HttpPost]
+    public async Task<IActionResult> Answer(int questionId, int selectedOption)
+    {
+        // Retrieves the question that the player answered.
+        var question = await _questionRepository.GetByIdAsync(questionId);
+
+        // Checks whether the selected option matches the correct option stored for this question in the database
+        bool isCorrect = selectedOption == question.CorrectOption;
+
+        // Makes the result available to Play.cshtml.
+        ViewBag.IsCorrect = isCorrect;
+
+        return View("Play", question);
+    }
+
+    // Handles the player continuing after answering a question
+    [HttpPost]
+    public async Task<IActionResult> Continue()
+    {
+        var questions = await _questionRepository.GetAllAsync();
+        var question = questions.FirstOrDefault();
+
+        return View("Play", question);
     }
 }

@@ -1,3 +1,5 @@
+@model Subapp1.Models.Question
+
 @{
     ViewData["Title"] = "Play"; 
 }
@@ -10,10 +12,64 @@
     </div>
 </div>
 
+    @* If a question has been passed to this view, display it *@
+    @if (Model != null)
+    {
+        <div class="question">
+            <h2>@Model.Text</h2>
+            
+            @* No answer has been submitted yet: show the answer options*@
+            @if (ViewBag.IsCorrect == null)
+            {
+                <form asp-controller="Game" asp-action="Answer" method="post">
+
+                    <input type="hidden" name="questionId" value="@Model.QuestionId" />
+
+                    <button type="submit" name="selectedOption" value="1">
+                        @Model.OptionA
+                    </button>
+
+                    <button type="submit" name="selectedOption" value="2">
+                        @Model.OptionB
+                    </button>
+
+                    <button type="submit" name="selectedOption" value="3">
+                        @Model.OptionC
+                    </button>
+
+                    <button type="submit" name="selectedOption" value="4">
+                        @Model.OptionD
+                    </button>
+
+                </form>
+            }
+            else
+            {
+                @* An answer has been submitted: show the result*@
+                if (ViewBag.IsCorrect)
+                {
+                <p>Correct!</p>
+                }
+                else
+                {
+                <p>Incorrect!</p>
+                }
+        
+                @* Continue should only appear after answering*@
+                <form asp-controller="Game" asp-action="Continue" method="post">
+                    <button type="submit">Continue</button>
+                </form>  
+            } 
+        </div>
+    }
+
+    @if (Model == null) @*ensures the attack button is not visible after the question has been displayed*@
+    {
     @*Creates the button for attack and corresponds with Gamecontroller to call the Attack() action*@
     <form asp-controller="Game" asp-action="Attack" method="post">
     <button type="submit">Attack</button>
     </form>
+    }
 
 <div class="score">
     Score: 0
