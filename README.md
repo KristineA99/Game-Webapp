@@ -9,6 +9,22 @@
 Figma:
 https://www.figma.com/design/JDzUs1guJwevl9QCegNvV6/Untitled?node-id=0-1&m=dev&t=EMIZ8sgbIOS1P64M-1
 
+## Local database setup
+The project uses SQLite with Entity Framework Core migrations.
+The local `game.db`file is not tracked by Git and must be created on each developer's machine. 
+
+Install the Entity Framework Core CLI tools if not already installed:
+```powershell
+dotnet tool install --global dotnet-ef --version 10.0.12
+```
+From the Subapp1 directory, create/update the local database by running: 
+```powershell
+dotnet ef database update
+```
+
+This applies the migrations in the `Migrations`folder and creates the local `game.db`database with the required tables.
+
+
 
 # OBLIG 1
 
