@@ -7,37 +7,42 @@
     <p class="lead">Munch your way to an A!</p>
 </div>
 
-<div class="float-start d-flex align-items-center flex-column gap-3">
-   
+<div class="row align-items-center mt-4">
+    <div class="col-md-3 d-flex align-items-start flex-column gap-3">
         <button type="button" class="btn btn-primary btn-lg">Create User</button>
-    
-        <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/Game'">Play Game</button>
-    
-</div>
+        <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/Game/Play'">Play Game</button>
+    </div>
 
-<div class="float-end">
-    <h2>Leaderboard</h2>
-<table class="table table-warning">
-    <tr>
-        <th> Username</th>
-        <th> Score</th>
-    </tr>
-    <tr>
-        <td> TopUser</td>
-        <td> 100</td>
-    </tr>
-    <tr>
-        <td> ClassClown</td>
-        <td> 90</td>
-    </tr>
-    <tr>
-        <td> Bob03</td>
-        <td> 80</td>
-    </tr>
-    <tr>
-        <td> BigBrain</td>
-        <td> 70</td>
-    </tr>
+    <div class="col-md-6 d-flex justify-content-center">
+        <!--temporary image from https://unsplash.com/photos/green-and-brown-plush-toy-rlf7br_QJas -->
+        <img src="~/images/temporaryHomepageMonster.jpg" class="img-fluid" alt="Monster Image" style="max-width: 400px;">
 
-</table>
+    </div>
+
+    <div class="col-md-3">
+        <h2>Leaderboard</h2>
+        <table class="table table-warning">
+            <tr>
+                <th> Username</th>
+                <th> Score</th>
+            </tr>
+            <tr>
+                <td> TopUser</td>
+                <td> 100</td>
+            </tr>
+            <tr>
+                <td> ClassClown</td>
+                <td> 90</td>
+            </tr>
+            <tr>
+                <td> Bob03</td>
+                <td> 80</td>
+            </tr>
+            <tr>
+                <td> BigBrain</td>
+                <td> 70</td>
+            </tr>
+
+        </table>
+    </div>
 </div>
