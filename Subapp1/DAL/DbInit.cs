@@ -4,13 +4,10 @@ using Subapp1.Models;
 namespace Subapp1.DAL;
 public static class DbInit
 {
-    // Called from Program.cs during startup to prepare the database and its initial data.
+    // Adds initial question data if the database contains no questions.
     public static void Initialize(GameDbContext context)
     {
-        // Create the database from the current model if it does not already exist.
-        context.Database.EnsureCreated();
-
-        // Seed sample questions only once, so startup does not duplicate existing data.
+        // Seed sample questions only if the Questions table is empty.
         if (!context.Questions.Any())
         {
             // CorrectOption uses numbers where: 1 = A, 2 = B, 3 = C, and 4 = D.

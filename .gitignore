@@ -23,4 +23,6 @@
 
 # Local database file
 *.db
+*.db-shm
+*.db-wal
 
