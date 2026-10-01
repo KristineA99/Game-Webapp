@@ -37,19 +37,6 @@ public class QuestionController : Controller
         return View(questions);
     }
 
-    // READ - show all information about one question
-    public async Task<IActionResult> Details(int id)
-    {
-        var question = await _questionRepository.GetByIdAsync(id);
-        if (question == null)
-        {
-            _logger.LogError("[QuestionController] Question not found for QuestionId {id}", id);
-            return NotFound("Question not found");
-        }
-        // Send the information to Views/Question/Index.cshtml
-        return View(question);
-    }
-
     // CREATE - Show empty form
     [HttpGet] // Runs when the user opens the page.
     public IActionResult Create()
