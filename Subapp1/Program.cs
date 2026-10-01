@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Subapp1.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,18 @@ builder.Services.AddDbContext<GameDbContext>(options =>
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 
 var app = builder.Build();
+
+// Create a service scope so the database context can be used during startup.
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<GameDbContext>();
+
+    // Apply any pending EF Core migrations to the database.
+    context.Database.Migrate();
+
+    // Add initial data if the database contains no questions.
+    DbInit.Initialize(context);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
