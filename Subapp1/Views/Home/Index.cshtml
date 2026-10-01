@@ -8,39 +8,43 @@
 </div>
 
 <div class="row align-items-center mt-4">
-    <div class="col-md-3 d-flex align-items-start flex-column gap-3">
+    
+    <div class="col-md-3 d-flex align-items-center align-self-stretch justify-content-center flex-column gap-3">
+        @*buttons to create user(currently not leading anywhere) and play game*@
         <button type="button" class="btn btn-primary btn-lg">Create User</button>
         <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/Game/Play'">Play Game</button>
     </div>
 
     <div class="col-md-6 d-flex justify-content-center">
-        <!--temporary image from https://unsplash.com/photos/green-and-brown-plush-toy-rlf7br_QJas -->
-        <img src="~/images/temporaryHomepageMonster.jpg" class="img-fluid" alt="Monster Image" style="max-width: 400px;">
+        @*temporary image from https://unsplash.com/photos/green-and-brown-plush-toy-rlf7br_QJas *@
+        <img src="~/images/temporaryHomepageMonster.jpg" class="img-fluid rounded-3" alt="Monster Image" style="max-width: 400px;">
 
     </div>
 
     <div class="col-md-3">
+        @*temporary Leaderboard with mock data*@
         <h2>Leaderboard</h2>
-        <table class="table table-warning">
+        <table class="table table-primary table-borderless leaderboard-table">
+            
             <tr>
-                <th> Username</th>
-                <th> Score</th>
+                <td class="rounded-circle text-center"> 1 </td>
+                <td class= "rounded-start-3"> TopUser</td>
+                <td class="rounded-end-3"> 100</td>
             </tr>
             <tr>
-                <td> TopUser</td>
-                <td> 100</td>
+                <td class="rounded-circle text-center"> 2 </td>
+                <td class="rounded-start-3"> ClassClown</td>
+                <td class="rounded-end-3"> 90</td>
             </tr>
             <tr>
-                <td> ClassClown</td>
-                <td> 90</td>
+                <td class="rounded-circle text-center"> 3 </td>
+                <td class="rounded-start-3"> Bob03</td>
+                <td class="rounded-end-3"> 80</td>
             </tr>
             <tr>
-                <td> Bob03</td>
-                <td> 80</td>
-            </tr>
-            <tr>
-                <td> BigBrain</td>
-                <td> 70</td>
+                <td class="rounded-circle text-center"> 4 </td>
+                <td class="rounded-start-3"> BigBrain</td>
+                <td class="rounded-end-3"> 70</td>
             </tr>
 
         </table>
