@@ -1,8 +1,19 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+using Serilog;
 using Subapp1.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure server-side logging with Serilog.
+// Logs are written to both the console and a log file.
+var loggerConfiguration = new LoggerConfiguration()
+        .MinimumLevel.Information()
+        .WriteTo.Console()
+        .WriteTo.File($"Logs/app_{DateTime.Now:yyyyMMdd_HHmmss}.log");
+
+var logger = loggerConfiguration.CreateLogger();
+builder.Logging.AddSerilog(logger);
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

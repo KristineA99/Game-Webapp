@@ -11,18 +11,22 @@ https://www.figma.com/design/JDzUs1guJwevl9QCegNvV6/Untitled?node-id=0-1&m=dev&t
 
 ## Local database setup
 The project uses SQLite with Entity Framework Core migrations.
-The local `game.db`file is not tracked by Git and must be created on each developer's machine. 
+The local `game.db`file is not tracked by Git. When the application is started,
+the database is created automatically if necessary, pending migrations are applied, 
+and initial question data is added if the question database is empty.
 
-Install the Entity Framework Core CLI tools if not already installed:
-```powershell
-dotnet tool install --global dotnet-ef --version 10.0.12
-```
-From the Subapp1 directory, create/update the local database by running: 
-```powershell
-dotnet ef database update
-```
+No manual database setup is required to run the application.
 
-This applies the migrations in the `Migrations`folder and creates the local `game.db`database with the required tables.
+
+## Logging and error handling
+The application uses Serilog for server-side logging. Log messages are written to the `Logs/` directory.
+
+Database operations in the repository use error handling and structured logging:
+- Information is logged for successful create, update, and delete operations.
+- Warnings are logged when requested data cannot be found.
+- Errors and exceptions are logged when database operations fail.
+
+Generated log files are not tracked by Git.
 
 
 
