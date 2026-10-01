@@ -24,8 +24,12 @@ body {
 
 
 .leaderboard-table {
-  border-radius: 8px;
   overflow: hidden;
+}
+
+.btn.home-action-button {
+  font-size: 1rem;
+  padding: 0.7rem 1rem;
 }
 
 
