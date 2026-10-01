@@ -9,6 +9,11 @@
 @* Sets the page title shown in the browser tab *@
 @{
     ViewData["Title"] = "Delete question";
+    @* Loads the black and white style for the question pages *@
+}
+
+@section Styles {
+        <link rel="stylesheet" href="~/css/questions.css" asp-append-version="true" />
 }
 
 <h1>Delete question</h1>
