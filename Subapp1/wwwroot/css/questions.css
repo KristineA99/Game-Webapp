@@ -59,18 +59,15 @@ h1 {
     padding: 0.6rem 0.9rem;
     transition: transform 0.05s, box-shadow 0.05s;
 }
- 
-/* Hover: black button with white text, lifted slightly */
+
+/* Hover: 
+  black border and lifted slightly. */
 .btn:hover {
-    color: #fff;
-    background-color: #000;
     border-color: #000;
     transform: translate(-1px, -1px);
-    box-shadow: 4px 4px 0 #b3f2b4;
 }
  
-/* Pressed: the button moves into its shadow.
-   Same selectors as Bootstrap, so Bootstrap's blue colour does not show. */
+/* Pressed: the button moves into its shadow. */
 .btn:first-child:active, :not(.btn-check) + .btn:active {
     color: #000;
     background-color: #fff;
@@ -79,22 +76,24 @@ h1 {
     box-shadow: none;
 }
  
-/* Keyboard focus: dotted outline instead of Bootstrap's blue glow */
+/* Keyboard focus - Some users cannot use a mouse, 
+for example due to motor impairments or because they use a screen reader.*/
 .btn:focus-visible {
     color: #000;
     background-color: #fff;
     border-color: #000;
     box-shadow: 3px 3px 0 #000;
-    outline: 2px solid #000;
+    outline: 2px dotted #000;
     outline-offset: 3px;
 }
  
 /* Smaller buttons in the table */
 .btn-sm {
-    font-size: 0.6rem;
+    font-size: 0.5rem;
     padding: 0.4rem 0.6rem;
-}
+    }
  
+
 /* "Add question" and "Save" buttons */
 .btn-primary {
     color: #000;
@@ -104,13 +103,47 @@ h1 {
 /* "Add question" and "Save" buttons on hover: green */
 .btn-primary:hover {
     color: #000;
-    background-color: #92e46c;
+    background-color: #fff823;
+    box-shadow: 4px 4px 0 #b3f2b4;
 }
+
+/* Details */
+.btn-outline-secondary{
+    color: #000;
+    background-color: #fff;
+}
+
+/* Details hover */
+.btn-outline-secondary:hover {
+    border-color:#2dd736;
+    background-color: #2dd736;
+    box-shadow: 4px 4px 0 #b3f2b4;
+}
+
+/* Edit hover */
+.btn-outline-primary:hover {
+    border-color:#1349ed;
+    background-color: #1349ed;
+    box-shadow: 4px 4px 0 #b3f2b4;
+}
+
  
-/* Delete: dashed border so it stands out without using red */
+/* Delete: 
+  - Delete question (confirmation page)
+  - Delete (in the table)
+  dashed border so it stands out without using red */
 .btn-danger, .btn-outline-danger {
-    border-style: dashed;
+    color:#fff;
+    background-color: #696969;
 }
+
+/* Delete hover */
+.btn-danger:hover, .btn-outline-danger:hover {
+    border-color:#ff2626;
+    background-color: #ff2626;
+    box-shadow: 4px 4px 0 #b3f2b4;
+}
+
  
 /* Table with a thick black border */
 .table {
