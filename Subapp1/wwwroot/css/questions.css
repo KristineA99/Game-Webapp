@@ -1,0 +1,232 @@
+
+ /* Pixel font from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+ 
+/* Page */
+main {
+    color: #000;
+    font-family: Verdana, Tahoma, Geneva, sans-serif;
+    margin-top: 1rem;
+}
+ 
+/* Heading and "Add question" button on one line, wrapping on small screens */
+main > .d-flex {
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+ 
+/* No extra space under the heading when it sits next to the button */
+main > .d-flex h1 {
+    margin-bottom: 0;
+}
+ 
+/* Headings */
+h1 {
+    color: #000;
+    font-family: "Press Start 2P", "Courier New", monospace;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+ 
+/* Small animated GIF at the end of the heading, aligned with the text */
+.heading-gif {
+    height: 2.5rem;
+    width: auto;
+    vertical-align: middle;
+    margin-left: 0.2rem;
+    image-rendering: pixelated;
+}
+ 
+/* Box with questions */
+.qa-box {
+    background-color: #fff;
+    border: 4px solid #000;
+    box-shadow: 6px 6px 0 #000;
+    padding: 1.5rem;
+}
+ 
+/* Buttons: square corners, thick outline and a hard shadow */
+.btn {
+    color: #000;
+    background-color: #fff;
+    border: 3px solid #000;
+    border-radius: 0;
+    
+    font-family: "Press Start 2P", "Courier New", monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    padding: 0.6rem 0.9rem;
+    transition: transform 0.05s, box-shadow 0.05s;
+}
+
+/* Hover: 
+  black border and lifted slightly. */
+.btn:hover {
+    border-color: #000;
+    transform: translate(-1px, -1px);
+}
+ 
+/* Pressed: the button moves into its shadow. */
+.btn:first-child:active, :not(.btn-check) + .btn:active {
+    color: #000;
+    background-color: #fff;
+    border-color: #000;
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+ 
+/* Keyboard focus - Some users cannot use a mouse, 
+for example due to motor impairments or because they use a screen reader.*/
+.btn:focus-visible {
+    color: #000;
+    background-color: #fff;
+    border-color: #000;
+    box-shadow: 3px 3px 0 #000;
+    outline: 2px dotted #000;
+    outline-offset: 3px;
+}
+ 
+/* Smaller buttons in the table */
+.btn-sm {
+    font-size: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    }
+ 
+
+/* "Add question" and "Save" buttons */
+.btn-primary {
+    color: #000;
+    background-color: #fff;
+}
+ 
+/* "Add question" and "Save" buttons on hover: green */
+.btn-primary:hover {
+    color: #000;
+    background-color: #fff823;
+    box-shadow: 4px 4px 0 #b3f2b4;
+}
+
+/* Details */
+.btn-outline-secondary{
+    color: #000;
+    background-color: #fff;
+}
+
+/* Details hover */
+.btn-outline-secondary:hover {
+    border-color:#2dd736;
+    background-color: #2dd736;
+    box-shadow: 4px 4px 0 #b3f2b4;
+}
+
+/* Edit hover */
+.btn-outline-primary:hover {
+    border-color:#1349ed;
+    background-color: #1349ed;
+    box-shadow: 4px 4px 0 #b3f2b4;
+}
+
+ 
+/* Delete: 
+  - Delete question (confirmation page)
+  - Delete (in the table)
+  dashed border so it stands out without using red */
+.btn-danger, .btn-outline-danger {
+    color:#fff;
+    background-color: #696969;
+}
+
+/* Delete hover */
+.btn-danger:hover, .btn-outline-danger:hover {
+    border-color:#ff2626;
+    background-color: #ff2626;
+    box-shadow: 4px 4px 0 #b3f2b4;
+}
+
+ 
+/* Table with a thick black border */
+.table {
+    border: 3px solid #000;
+}
+ 
+/* Header row: black with white pixel text */
+.table thead th {
+    color: #fff;
+    background-color: #000;
+    font-family: "Press Start 2P", "Courier New", monospace;
+    font-size: 0.65rem;
+    padding: 0.9rem 0.75rem;
+}
+ 
+/* White rows with a black line between each question.
+   box-shadow: none removes Bootstrap's grey stripes. */
+.table tbody td {
+    color: #000;
+    background-color: #fff;
+    box-shadow: none;
+    border-bottom: 2px solid #000;
+}
+ 
+/* Form labels */
+.form-label {
+    color: #000;
+    font-weight: bold;
+}
+ 
+/* Text fields and dropdown */
+.form-control, .form-select {
+    color: #000;
+    background-color: #fff;
+    border: 3px solid #000;
+    border-radius: 0;
+    font-family: Verdana, Tahoma, Geneva, sans-serif;
+}
+ 
+/* Focused field: black shadow instead of Bootstrap's blue glow */
+.form-control:focus, .form-select:focus {
+    border-color: #000;
+    box-shadow: 4px 4px 0 #000;
+}
+ 
+/* Fields that failed validation get a dashed border */
+.input-validation-error {
+    border-style: dashed;
+}
+ 
+/* Validation messages in bold black instead of red.
+   !important is needed because Bootstrap's .text-danger uses it. */
+.text-danger {
+    color: #000 !important;
+    font-weight: bold;
+}
+ 
+/* Messages */
+.alert {
+    color: #000;
+    background-color: #fff;
+    border: 3px solid #000;
+    border-radius: 0;
+    box-shadow: 3px 3px 0 #000;
+    font-weight: bold;
+}
+ 
+/* "Question created." etc.: black box with white text */
+.alert-success {
+    color: #fff;
+    background-color: #000;
+}
+ 
+/* Warning on the Delete page: dashed border */
+.alert-warning {
+    border-style: dashed;
+}
+ 
+/* Turns off the button movement for users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+    .btn, .btn:hover, .btn:active {
+        transition: none;
+        transform: none;
+    }
+}
+ 
