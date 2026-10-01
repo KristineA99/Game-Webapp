@@ -107,19 +107,6 @@ for example due to motor impairments or because they use a screen reader.*/
     box-shadow: 4px 4px 0 #b3f2b4;
 }
 
-/* Details */
-.btn-outline-secondary{
-    color: #000;
-    background-color: #fff;
-}
-
-/* Details hover */
-.btn-outline-secondary:hover {
-    border-color:#2dd736;
-    background-color: #2dd736;
-    box-shadow: 4px 4px 0 #b3f2b4;
-}
-
 /* Edit hover */
 .btn-outline-primary:hover {
     border-color:#1349ed;
