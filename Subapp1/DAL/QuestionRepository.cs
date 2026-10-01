@@ -4,8 +4,8 @@ using Subapp1.Models;
 namespace Subapp1.DAL;
 
 // Handles all database access for questions.
-// Every method catches exceptions and logs them, so a database error
-// never crashes the app. The controller decides what the user sees.
+// Every method catches and logs database access exceptions.
+// The controller decides how failed operations are presented to the user.
 
 // Based on the repository and error handling patterns from the course demos
 // Demo-ShopDatabase-6-Repository and Demo-ShopErrorHandlingLogging.
@@ -27,7 +27,7 @@ public class QuestionRepository : IQuestionRepository
 
     // READ - all questions
     // Used by the admin page that lists all questions.
-    // "async" and "await" let the app keep working while it waits for the database.)
+    // "async" and "await" let the app keep working while it waits for the database.
     public async Task<IEnumerable<Question>?> GetAllAsync()
     {
         try
@@ -39,7 +39,9 @@ public class QuestionRepository : IQuestionRepository
         catch (Exception e)
         {
             // The tag [QuestionRepository] shows where in the code the error came from
-            _logger.LogError("[QuestionRepository] GetAllAsync() failed, error message: {e}", e.Message);
+            _logger.LogError(
+                e,
+                "[QuestionRepository] GetAllAsync() failed.");
             return null;
         }
     }
@@ -55,7 +57,10 @@ public class QuestionRepository : IQuestionRepository
         // Returns null if no question has that id, or if the database call fails.
         catch (Exception e)
         {
-            _logger.LogError("[QuestionRepository] GetByIdAsync() failed for QuestionId {id}, error message: {e}", id, e.Message);
+            _logger.LogError(
+                e,
+                "[QuestionRepository] GetByIdAsync() failed for QuestionId {id}.",
+                id);
             return null;
         }
     }
@@ -67,14 +72,15 @@ public class QuestionRepository : IQuestionRepository
         try
         {
             return await _context.Questions
-                //sorted by that number, and FirstOrDefaultAsync picks the first one
                 .OrderBy(q => EF.Functions.Random()) // EF.Functions.Random() gives every row a random number, the questions are
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync();              //sorted by that number, and FirstOrDefaultAsync picks the first one
         }
         // Returns null if the table is empty or the database call fails.
         catch (Exception e)
         {
-            _logger.LogError("[QuestionRepository] GetRandomAsync() failed, error message: {e}", e.Message);
+            _logger.LogError(
+                e,
+                "[QuestionRepository] GetRandomAsync() failed,");
             return null;
         }
     }
@@ -86,12 +92,19 @@ public class QuestionRepository : IQuestionRepository
         {
             _context.Questions.Add(question); // Add() only marks the question as "new" in memory.
             await _context.SaveChangesAsync(); // SaveChangesAsync() is what actually writes it to the database.
+
+            _logger.LogInformation(
+                "[QuestionRepository] Question {id} was added successfully.",
+                question.QuestionId);
             return true; // Returns true if it was saved, false if something went wrong.
         }
         catch (Exception e)
         {
             // {@question} logs the whole question object, which helps with debugging
-            _logger.LogError("[QuestionRepository] AddAsync() failed for question {@question}, error message: {e}", question, e.Message); 
+            _logger.LogError(
+                e,
+                "[QuestionRepository] AddAsync() failed for question {@question}",
+                question); 
             return false;
         }
     }
@@ -103,12 +116,19 @@ public class QuestionRepository : IQuestionRepository
         {
             _context.Questions.Update(question);// Update() marks the question as changed.
             await _context.SaveChangesAsync(); // SaveChangesAsync() writes the changes to the database.
+
+            _logger.LogInformation(
+                "[QuestionRepository] Question {id} was updated successfully.",
+                question.QuestionId);
             return true; // Returns true even if nothing was changed.
         }
         // Returns false only if an error occurs.
         catch (Exception e)
         {
-            _logger.LogError("[QuestionRepository] UpdateAsync() failed for question {@question}, error message: {e}", question, e.Message);
+            _logger.LogError(
+                e,
+                "[QuestionRepository] UpdateAsync() failed for question {@question}.",
+                question);
             return false; 
         }
     }
@@ -122,7 +142,7 @@ public class QuestionRepository : IQuestionRepository
 
             if (question == null) // If the question does not exist, we log it and return false.
             {
-                _logger.LogError("[QuestionRepository] Question not found for QuestionId {id}", id);
+                _logger.LogWarning("[QuestionRepository] Question not found for QuestionId {id}", id);
 
                 return false;
             }
@@ -130,12 +150,19 @@ public class QuestionRepository : IQuestionRepository
              // If the question exist, we remove it and save the change.
             _context.Questions.Remove(question);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation(
+                "[QuestionRepository] Question {id} was deleted successfully.",
+                id);
             return true;
         }
         // If the question exist, but an error occures.
         catch (Exception e)
         {
-            _logger.LogError("[QuestionRepository] DeleteAsync() failed for QuestionId {id}, error message: {e}", id, e.Message);
+            _logger.LogError(
+                e,
+                "[QuestionRepository] DeleteAsync() failed for QuestionId {id}",
+                id);
             return false;
         }
     }
