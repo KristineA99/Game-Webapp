@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Subapp1.DAL;
 using Subapp1.Models;
+using System.Text.Json;
 
 namespace Subapp1.Controllers;
 
@@ -31,8 +32,25 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Attack()
     {
-        // Retrieve a random question from the database
-        var question = await _questionRepository.GetRandomAsync();    
+        // Start with an empty list of used questions for a new game (all questions are in the pool).
+        var usedQuestionIds = new List<int>();
+
+        // Retrieve a random question that has not already been used.
+        var question = await _questionRepository.GetRandomAsync(usedQuestionIds);    
+
+        // Store the first question as used.
+        if (question != null)
+        {
+            usedQuestionIds.Add(question.QuestionId);
+
+            Console.WriteLine(
+                $"Used question IDs: {string.Join(", ", usedQuestionIds)}");
+            
+
+            HttpContext.Session.SetString(
+                "UsedQuestionIds",
+                JsonSerializer.Serialize(usedQuestionIds));
+        }
 
         // Start a new game with a score of 0.
         HttpContext.Session.SetInt32("Score", 0);
@@ -91,8 +109,31 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Continue()
     {
+        // Get the used question ID's stored in the player's session.
+        var usedQuestionIdsJson = 
+            HttpContext.Session.GetString("UsedQuestionIds");
+
+        //Convert the JSON string back into a list of question ID's.
+        //If no list exists yet, use an empty list.
+        var usedQuestionIds = usedQuestionIdsJson != null
+        ? JsonSerializer.Deserialize<List<int>>(usedQuestionIdsJson) ?? new List<int>()
+        : new List<int>();
+
         // Retrieves a random question from the database
-        var question = await _questionRepository.GetRandomAsync();
+        var question = await _questionRepository.GetRandomAsync(usedQuestionIds);
+
+        // Add the new question to the used-question list and store it again.
+        if (question != null)
+        {
+            usedQuestionIds.Add(question.QuestionId);
+
+            Console.WriteLine(
+                $"Used question IDs: {string.Join(", ", usedQuestionIds)}");
+            
+            HttpContext.Session.SetString(
+                "UsedQuestionIds",
+                JsonSerializer.Serialize(usedQuestionIds));
+        }
 
         // Get the current score from the player's session.
         int score = HttpContext.Session.GetInt32("Score") ?? 0;

@@ -67,11 +67,12 @@ public class QuestionRepository : IQuestionRepository
 
     // READ - get random question for the game
     // The result is a random question each time.
-    public async Task<Question?> GetRandomAsync()
+    public async Task<Question?> GetRandomAsync(List<int> excludeIds)
     {
         try
         {
             return await _context.Questions
+                .Where(q => !excludeIds.Contains(q.QuestionId))
                 .OrderBy(q => EF.Functions.Random()) // EF.Functions.Random() gives every row a random number, the questions are
                 .FirstOrDefaultAsync();              //sorted by that number, and FirstOrDefaultAsync picks the first one
         }

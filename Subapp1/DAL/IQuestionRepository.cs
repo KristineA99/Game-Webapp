@@ -11,7 +11,7 @@ public interface IQuestionRepository
     Task<Question?> GetByIdAsync(int id);
 
     // READ - get a random question for the game
-    Task<Question?> GetRandomAsync();
+    Task<Question?> GetRandomAsync(List<int> excludeIds);
 
     // CREATE - add a new question.
     Task<bool> AddAsync(Question question);
