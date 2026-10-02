@@ -1,0 +1,145 @@
+.game-container {
+    text-align: center;
+}
+
+/* Play headline */
+.game-container h1 {
+    font-family: "Press Start 2P", monospace;
+    margin-bottom: 1.5rem;
+}
+
+/* Monster */
+.monster {
+    margin-bottom: 2rem;
+}
+
+.monster-image {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+
+}
+
+/* Question area */
+.question {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.question h2 {
+    font-size: 1.7rem;
+    font-weight: normal;
+    margin-bottom: 1.5rem;
+}
+
+/* Answer buttons */
+.answer-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
+    max-width: 550px;
+}
+
+.answer-options button,
+.attack-button,
+.continue-button {
+    font-family: "Press Start 2P", monospace;
+    font-size: 0.75rem;
+
+    background-color: white;
+    border: 3px solid black;
+    border-radius: 0;
+
+    padding: 0.9rem 1.2rem;
+
+    box-shadow: 4px 4px 0 black;
+    cursor: pointer;
+}
+
+/* Pixel-button movement when hovering */
+.answer-options button:hover,
+.attack-form button:hover,
+.question form button:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 black;
+}
+
+/* Button looks pressed when clicked */
+.answer-options button:active,
+.attack-form button:active,
+.question form button:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+}
+
+/* Correct / incorrect result */
+.answer-result {
+    font-family: "Press Start 2P", monospace;
+    font-size: 1.5rem;
+    margin: 1.5rem 0;
+    padding: 0.75rem 1rem;
+}
+
+.answer-result.correct {
+    color:darkgreen;
+}
+
+.answer-result.incorrect {
+    color: darkred;
+}
+
+/* Attack button */
+.attack-form {
+    margin-top: 1rem;
+}
+
+/* Score */
+.score {
+    font-family: "Press Start 2P", monospace;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-top: 2rem;
+
+}
+
+.score-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+.score-value {
+    font-size: 1rem;
+    color: #d91487;
+    font-weight: bold;
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+    .monster {
+        margin-bottom: 0.5rem;
+    }
+    .answer-options {
+        grid-template-columns: 1fr;
+        max-width: 320ox;
+    }
+
+    .question {
+        padding: 0 1rem;
+    }
+    .question h2 {
+        font-size: 1.3rem;
+    }
+
+    .monster-image {
+        max-width: 200px;
+    }
+}

@@ -4,29 +4,30 @@
     ViewData["Title"] = "Play"; 
 }
 
-@* Loads the black and white style for the question pages *@
+@* Loads the styles used by the game page *@
 @section Styles {
-    <link rel="stylesheet" href="~/css/questions.css" asp-append-version="true" />
+  
+    <link rel="stylesheet" href="~/css/game.css" asp-append-version="true" />
 }
 
 <div class="game-container">
     <h1>Battle!</h1>
 
     <div class="monster">
-        <img src="~/images/monster3.gif" alt="" class="" />
+        <img src="~/images/monster3.gif" alt="Monster" class="monster-image" />
     </div>
-</div>
 
     @* If a question has been passed to this view, display it *@
     @if (Model != null)
     {
         <div class="question">
+
             <h2>@Model.Text</h2>
             
             @* No answer has been submitted yet: show the answer options*@
             @if (ViewBag.IsCorrect == null)
             {
-                <form asp-controller="Game" asp-action="Answer" method="post">
+                <form asp-controller="Game" asp-action="Answer" method="post" class="answer-options">
 
                     <input type="hidden" name="questionId" value="@Model.QuestionId" />
                     <input type="hidden" name="score" value="@ViewBag.Score" />
@@ -54,33 +55,37 @@
                 @* An answer has been submitted: show the result*@
                 if (ViewBag.IsCorrect)
                 {
-                <p>Correct!</p>
+                <p class="answer-result correct">Correct!</p>
                 }
                 else
                 {
-                <p>Incorrect!</p>
+                <p class="answer-result incorrect">Wrong!</p>
                 }
         
                 @* Continue should only appear after answering*@
                 <form asp-controller="Game" asp-action="Continue" method="post">
                     <input type="hidden" name="score" value="@ViewBag.Score" />
 
-                    <button type="submit">Continue</button>
+                    <button type="submit" class="continue-button">Continue</button>
                 </form>  
             } 
         </div>
     }
 
-    @if (Model == null) @*ensures the attack button is not visible after the question has been displayed*@
+    @* The attack button is not visible after the question has been displayed *@
+    @if (Model == null) 
     {
-    @*Creates the button for attack and corresponds with Gamecontroller to call the Attack() action*@
-    <form asp-controller="Game" asp-action="Attack" method="post">
-    <button type="submit">Attack</button>
-    </form>
+    @* Creates the button for attack and corresponds with Gamecontroller to call the Attack() action *@
+        <form asp-controller="Game" asp-action="Attack" method="post" class="attack-form">
+
+            <button type="submit" class="attack-button">Attack</button>
+
+        </form>
     }
 
-<div class="score">
-    Score: @(ViewBag.Score ?? 0)
-</div>
+    <div class="score">
+        <span class="score-label">Score:</span> 
+        <span class="score-value">@(ViewBag.Score ?? 0)</span>
+    </div>
 
 </div>
