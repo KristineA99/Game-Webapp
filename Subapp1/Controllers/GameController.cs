@@ -128,11 +128,23 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
         ? JsonSerializer.Deserialize<List<int>>(completedQuestionIdsJson) ?? new List<int>()
         : new List<int>();
 
-        // Retrieves a random question that has not already been answered correctly.
+        // Retrieve a random question that has not already been answered correctly.
         var question = await _questionRepository.GetRandomAsync(completedQuestionIds);
 
         // Get the current score from the player's session.
         int score = HttpContext.Session.GetInt32("Score") ?? 0;
+
+        // If no unanswered questions remain, the player has completed the game.
+        if (question == null)
+        {
+            var victoryViewModel = new GameViewModel
+            {
+                Score = score,
+                HasWon = true
+            };
+
+            return View("Play", victoryViewModel);
+        }
 
         // Keep the current score when loading the next question. 
         var viewModel = new GameViewModel

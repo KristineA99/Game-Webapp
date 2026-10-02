@@ -7,4 +7,7 @@ public class GameViewModel
     public int Score { get; set; }
 
     public bool? IsCorrect { get; set; }
+
+    // True when the player has correctly answered all questions.
+    public bool HasWon { get; set; }
 }

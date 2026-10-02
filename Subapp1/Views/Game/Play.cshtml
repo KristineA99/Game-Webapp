@@ -17,8 +17,16 @@
         <img src="~/images/monster2.gif" alt="Monster" class="monster-image" />
     </div>
 
+    @if (Model.HasWon)
+    {
+        <div class="victory">
+            <h2>Victory!</h2>
+            <p>You answered all the questions correctly, you've munched your way to an A!</p>
+        </div>
+    }
+
     @* If a question has been passed to this view, display it *@
-    @if (Model.Question != null)
+    @if (!Model.HasWon && Model.Question != null)
     {
         <div class="question">
 
@@ -70,7 +78,7 @@
     }
 
     @* The attack button is not visible after the question has been displayed *@
-    @if (Model.Question == null) 
+    @if (!Model.HasWon && Model.Question == null) 
     {
     @* Creates the button for attack and corresponds with Gamecontroller to call the Attack() action *@
         <form asp-controller="Game" asp-action="Attack" method="post" class="attack-form">
