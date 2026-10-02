@@ -94,50 +94,81 @@ for example due to motor impairments or because they use a screen reader.*/
     }
  
 
-/* "Add question" and "Save" buttons */
+/* Add-question-button */
 .btn-primary {
     color: #000;
     background-color: #fff;
 }
  
-/* "Add question" and "Save" buttons on hover: green */
+/* Add-question-button hover */
+.btn-primary:hover {
+    color: #fff;
+    background-color: #000;
+    box-shadow: 4px 4px 0 #696969;
+}
+
+
+/* Save-buttons */
+.btn-primary {
+    color: #000;
+    background-color: #90ff86;
+}
+ 
+/* Save-buttons hover */
 .btn-primary:hover {
     color: #000;
-    background-color: #fff823;
-    box-shadow: 4px 4px 0 #b3f2b4;
+    background-color: #90ff86;
+    box-shadow: 4px 4px 0 #696969;
 }
 
-/* Edit hover */
-.btn-outline-primary:hover {
-    border-color:#1349ed;
+
+/* Edit-button */
+.btn-outline-primary {
+    color:#fff;
     background-color: #1349ed;
-    box-shadow: 4px 4px 0 #b3f2b4;
+}
+
+/* Edit-button hover */
+.btn-outline-primary:hover {
+    color:#fff;
+    background-color: #4157ff;
+    box-shadow: 4px 4px 0 #696969;
 }
 
  
-/* Delete: 
-  - Delete question (confirmation page)
-  - Delete (in the table)
-  dashed border so it stands out without using red */
+/* Delete-button */
 .btn-danger, .btn-outline-danger {
     color:#fff;
-    background-color: #696969;
+    background-color: #ff2626;
 }
 
-/* Delete hover */
+/* Delete-button hover */
 .btn-danger:hover, .btn-outline-danger:hover {
-    border-color:#ff2626;
+    color:#fff;
     background-color: #ff2626;
-    box-shadow: 4px 4px 0 #b3f2b4;
+    box-shadow: 4px 4px 0 #696969;
+}
+
+/* Cancel-button */
+.btn-secondary {
+    color:#000;
+    background-color:#ffd561;
+}
+
+/* Cancel-button hover */
+.btn-secondary:hover {
+    color:#000;
+    background-color:#ffd561;
+    box-shadow: 4px 4px 0 #696969;
 }
 
  
-/* Table with a thick black border */
+/* Form border */
 .table {
     border: 3px solid #000;
 }
  
-/* Header row: black with white pixel text */
+/* Form header: black with white pixel text */
 .table thead th {
     color: #fff;
     background-color: #000;
@@ -146,8 +177,7 @@ for example due to motor impairments or because they use a screen reader.*/
     padding: 0.9rem 0.75rem;
 }
  
-/* White rows with a black line between each question.
-   box-shadow: none removes Bootstrap's grey stripes. */
+/* Form */
 .table tbody td {
     color: #000;
     background-color: #fff;
@@ -161,7 +191,8 @@ for example due to motor impairments or because they use a screen reader.*/
     font-weight: bold;
 }
  
-/* Text fields and dropdown */
+
+/* Forms - text fields and dropdowns */
 .form-control, .form-select {
     color: #000;
     background-color: #fff;
@@ -169,34 +200,35 @@ for example due to motor impairments or because they use a screen reader.*/
     border-radius: 0;
     font-family: Verdana, Tahoma, Geneva, sans-serif;
 }
- 
-/* Focused field: black shadow instead of Bootstrap's blue glow */
+
+/* Forms - fields when writing: black shadow */
 .form-control:focus, .form-select:focus {
     border-color: #000;
     box-shadow: 4px 4px 0 #000;
 }
- 
-/* Fields that failed validation get a dashed border */
+
+/* Forms - fields that failed validation get a light red background */
 .input-validation-error {
-    border-style: dashed;
-    background-color: #ff2626;
+    background-color: #ffd4d4;
 }
- 
-/* Validation messages in bold black instead of red.
+
+/* Fields with a validation error stay red when the user clicks in them */
+.form-control.input-validation-error:focus, .form-select.input-validation-error:focus {
+    background-color: #ffd4d4;
+}
+
+/* Validation messages in red, smaller text.
    !important is needed because Bootstrap's .text-danger uses it. */
 .text-danger {
-    color: #000 !important;
-    font-weight: bold;
-    size: 0.5rem,
+    color: #ff2626 !important;
+    font-size: 1rem;
 }
  
 /* Messages */
 .alert {
     color: #000;
     background-color: #fff;
-    border: 3px dashed #000;
-    border-radius: 0;
-    box-shadow: 3px 3px 0 #000;
+    border-radius: 2px;
     font-weight: bold;
 }
  
@@ -206,10 +238,9 @@ for example due to motor impairments or because they use a screen reader.*/
     background-color: #000;
 }
  
-/* Warning on the Delete page: dashed border */
+/* Delete warning: grows and shrinks slowly to catch attention */
 .alert-warning {
-    border-style: dashed;
-    background-color: #ff2626;
+    background-color:#ff0f13;
 }
  
 /* Turns off the button movement for users who prefer less motion */

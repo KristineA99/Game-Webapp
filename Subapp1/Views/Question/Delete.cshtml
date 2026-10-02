@@ -16,18 +16,32 @@
         <link rel="stylesheet" href="~/css/questions.css" asp-append-version="true" />
 }
 
-<h1>Delete question</h1>
+<h1>Do you want to delete this question?</h1>
+
+@* Shows which question is about to be deleted, so the user can check it is the right one *@
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        @* Column headings.*@
+        <thead>
+                <tr>
+                    <th>Question</th>
+                </tr>
+        </thead>
+
+        @* One table row for each question in the list *@
+        <tbody>
+                <tr>
+                    <td>@Model.Text</td>
+                </tr>
+        </tbody>
+    </table>
+</div>
+
 
 @* Warns the user that the deletion cannot be undone *@
 <div class="alert alert-warning">
     This question will be removed from the game permanently.
 </div>
-
-@* Shows which question is about to be deleted, so the user can check it is the right one *@
-<dl class="row">
-    <dt class="col-sm-3">Question</dt>
-    <dd class="col-sm-9">@Model.Text</dd>
-</dl>
 
 @*
     Sends the form to QuestionController.DeleteConfirmed(int id) (HttpPost),
