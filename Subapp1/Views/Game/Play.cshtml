@@ -1,4 +1,4 @@
-@model Subapp1.Models.Question
+@model Subapp1.Models.GameViewModel
 
 @{
     ViewData["Title"] = "Play"; 
@@ -18,34 +18,34 @@
     </div>
 
     @* If a question has been passed to this view, display it *@
-    @if (Model != null)
+    @if (Model.Question != null)
     {
         <div class="question">
 
-            <h2>@Model.Text</h2>
+            <h2>@Model.Question.Text</h2>
             
             @* No answer has been submitted yet: show the answer options*@
-            @if (ViewBag.IsCorrect == null)
+            @if (Model.IsCorrect == null)
             {
                 <form asp-controller="Game" asp-action="Answer" method="post" class="answer-options">
 
-                    <input type="hidden" name="questionId" value="@Model.QuestionId" />
-                    <input type="hidden" name="score" value="@ViewBag.Score" />
+                    <input type="hidden" name="questionId" value="@Model.Question.QuestionId" />
+                    <input type="hidden" name="score" value="@Model.Score" />
 
                     <button type="submit" name="selectedOption" value="1">
-                        @Model.OptionA
+                        @Model.Question.OptionA
                     </button>
 
                     <button type="submit" name="selectedOption" value="2">
-                        @Model.OptionB
+                        @Model.Question.OptionB
                     </button>
 
                     <button type="submit" name="selectedOption" value="3">
-                        @Model.OptionC
+                        @Model.Question.OptionC
                     </button>
 
                     <button type="submit" name="selectedOption" value="4">
-                        @Model.OptionD
+                        @Model.Question.OptionD
                     </button>
 
                 </form>
@@ -53,7 +53,7 @@
             else
             {
                 @* An answer has been submitted: show the result*@
-                if (ViewBag.IsCorrect)
+                if (Model.IsCorrect == true)
                 {
                 <p class="answer-result correct">Correct!</p>
                 }
@@ -64,7 +64,7 @@
         
                 @* Continue should only appear after answering*@
                 <form asp-controller="Game" asp-action="Continue" method="post">
-                    <input type="hidden" name="score" value="@ViewBag.Score" />
+                    <input type="hidden" name="score" value="@Model.Score" />
 
                     <button type="submit" class="continue-button">Continue</button>
                 </form>  
@@ -73,7 +73,7 @@
     }
 
     @* The attack button is not visible after the question has been displayed *@
-    @if (Model == null) 
+    @if (Model.Question == null) 
     {
     @* Creates the button for attack and corresponds with Gamecontroller to call the Attack() action *@
         <form asp-controller="Game" asp-action="Attack" method="post" class="attack-form">
@@ -86,7 +86,7 @@
     <div class="score">
         <span class="score-icon"><img src="~/images/medal.png" alt="" class="score-image"></span>
         <span class="score-label">Score:</span> 
-        <span class="score-value">@(ViewBag.Score ?? 0)</span>
-    </div>
+        <span class="score-value">@Model.Score</span>
+   </div>
 
 </div>
