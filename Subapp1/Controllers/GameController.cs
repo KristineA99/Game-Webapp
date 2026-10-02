@@ -31,8 +31,11 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Attack()
     {
-        //Retrieve a random question from the database
+        // Retrieve a random question from the database
         var question = await _questionRepository.GetRandomAsync();    
+
+        // Start a new game with a score of 0.
+        HttpContext.Session.SetInt32("Score", 0);
 
         // Pass the question and starting score to Play.cshtml through the ViewModel.
         var viewModel = new GameViewModel
@@ -48,8 +51,7 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Answer(
         int questionId, 
-        int selectedOption,
-        int score)
+        int selectedOption)
     {
         // Retrieves the question that the player answered.
         var question = await _questionRepository.GetByIdAsync(questionId);
@@ -59,6 +61,9 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
             return NotFound();
         }
 
+        // Get the current score stored in teh player's session.
+        int score = HttpContext.Session.GetInt32("Score") ?? 0;
+
         // Checks whether the selected option matches the correct option stored for this question in the database
         bool isCorrect = selectedOption == question.CorrectOption;
 
@@ -67,6 +72,9 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
         {
             score++;
         }
+
+        // Store the updated score in the session.
+        HttpContext.Session.SetInt32("Score", score);
 
         // Pass the answered question, updated score and answer result back to Play.cshtml through the ViewModel.
         var viewModel = new GameViewModel
@@ -81,10 +89,13 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
 
     // Loads another random question after the player clicks continue.
     [HttpPost]
-    public async Task<IActionResult> Continue(int score)
+    public async Task<IActionResult> Continue()
     {
         // Retrieves a random question from the database
         var question = await _questionRepository.GetRandomAsync();
+
+        // Get the current score from the player's session.
+        int score = HttpContext.Session.GetInt32("Score") ?? 0;
 
         // Keep the current score when loading the next question. 
         var viewModel = new GameViewModel

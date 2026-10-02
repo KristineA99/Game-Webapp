@@ -18,6 +18,9 @@ builder.Logging.AddSerilog(logger);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Add session support for storing temporary game state between requests.
+builder.Services.AddSession();
+
 // Register the database context and use SQLite, with the connection string from appsettings.json
 builder.Services.AddDbContext<GameDbContext>(options =>
 {
@@ -51,6 +54,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

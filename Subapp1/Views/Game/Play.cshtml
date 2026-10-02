@@ -30,7 +30,6 @@
                 <form asp-controller="Game" asp-action="Answer" method="post" class="answer-options">
 
                     <input type="hidden" name="questionId" value="@Model.Question.QuestionId" />
-                    <input type="hidden" name="score" value="@Model.Score" />
 
                     <button type="submit" name="selectedOption" value="1">
                         @Model.Question.OptionA
@@ -64,8 +63,6 @@
         
                 @* Continue should only appear after answering*@
                 <form asp-controller="Game" asp-action="Continue" method="post">
-                    <input type="hidden" name="score" value="@Model.Score" />
-
                     <button type="submit" class="continue-button">Continue</button>
                 </form>  
             } 
