@@ -38,7 +38,7 @@ using (var scope = app.Services.CreateScope())
     context.Database.Migrate();
 
     // Add initial data if the database contains no questions.
-    DbInit.Initialize(context);
+    DbInit.Initialize(context, app.Environment);
 }
 
 // Configure the HTTP request pipeline.
