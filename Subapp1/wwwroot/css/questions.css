@@ -179,6 +179,7 @@ for example due to motor impairments or because they use a screen reader.*/
 /* Fields that failed validation get a dashed border */
 .input-validation-error {
     border-style: dashed;
+    background-color: #ff2626;
 }
  
 /* Validation messages in bold black instead of red.
@@ -186,13 +187,14 @@ for example due to motor impairments or because they use a screen reader.*/
 .text-danger {
     color: #000 !important;
     font-weight: bold;
+    size: 0.5rem,
 }
  
 /* Messages */
 .alert {
     color: #000;
     background-color: #fff;
-    border: 3px solid #000;
+    border: 3px dashed #000;
     border-radius: 0;
     box-shadow: 3px 3px 0 #000;
     font-weight: bold;
@@ -207,6 +209,7 @@ for example due to motor impairments or because they use a screen reader.*/
 /* Warning on the Delete page: dashed border */
 .alert-warning {
     border-style: dashed;
+    background-color: #ff2626;
 }
  
 /* Turns off the button movement for users who prefer less motion */
