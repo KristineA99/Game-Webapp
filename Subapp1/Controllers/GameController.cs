@@ -32,25 +32,17 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Attack()
     {
-        // Start with an empty list of used questions for a new game (all questions are in the pool).
-        var usedQuestionIds = new List<int>();
+        // Start with no completed questions for a new game.
+        var completedQuestionIds = new List<int>();
 
-        // Retrieve a random question that has not already been used.
-        var question = await _questionRepository.GetRandomAsync(usedQuestionIds);    
+        // Retrieve a random question from the full question pool.
+        var question = await _questionRepository.GetRandomAsync(completedQuestionIds);    
 
-        // Store the first question as used.
-        if (question != null)
-        {
-            usedQuestionIds.Add(question.QuestionId);
-
-            Console.WriteLine(
-                $"Used question IDs: {string.Join(", ", usedQuestionIds)}");
-            
-
-            HttpContext.Session.SetString(
-                "UsedQuestionIds",
-                JsonSerializer.Serialize(usedQuestionIds));
-        }
+        // Store the empty completed-question list in the session.           
+        HttpContext.Session.SetString(
+            "CompletedQuestionIds",
+            JsonSerializer.Serialize(completedQuestionIds));
+        
 
         // Start a new game with a score of 0.
         HttpContext.Session.SetInt32("Score", 0);
@@ -82,14 +74,32 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
         // Get the current score stored in teh player's session.
         int score = HttpContext.Session.GetInt32("Score") ?? 0;
 
-        // Checks whether the selected option matches the correct option stored for this question in the database
+        // Check whether the selected option matches the correct option stored for this question in the database
         bool isCorrect = selectedOption == question.CorrectOption;
 
-        //Increase the score only when the answer is correct.
+        // Get the completed question ID's stored in the player's session.
+        var completedQuestionIdsJson =
+            HttpContext.Session.GetString("CompletedQuestionIds");
+
+        var completedQuestionIds = completedQuestionIdsJson != null 
+            ? JsonSerializer.Deserialize<List<int>>(completedQuestionIdsJson) ?? new List<int>()
+            : new List<int>();
+
+        // Increase the score and mark the question as completed
+        // only when the answer is correct.
         if (isCorrect)
         {
             score++;
+
+            completedQuestionIds.Add(question.QuestionId);
+
+            HttpContext.Session.SetString(
+                "CompletedQuestionIds",
+                JsonSerializer.Serialize(completedQuestionIds));
         }
+
+        //Temporary code for debugging
+        Console.WriteLine($"Completed question IDs: {string.Join(", ", completedQuestionIds)}");
 
         // Store the updated score in the session.
         HttpContext.Session.SetInt32("Score", score);
@@ -109,31 +119,17 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Continue()
     {
-        // Get the used question ID's stored in the player's session.
-        var usedQuestionIdsJson = 
-            HttpContext.Session.GetString("UsedQuestionIds");
+        // Get the completed question ID's stored in the player's session.
+        var completedQuestionIdsJson = 
+            HttpContext.Session.GetString("CompletedQuestionIds");
 
         //Convert the JSON string back into a list of question ID's.
-        //If no list exists yet, use an empty list.
-        var usedQuestionIds = usedQuestionIdsJson != null
-        ? JsonSerializer.Deserialize<List<int>>(usedQuestionIdsJson) ?? new List<int>()
+        var completedQuestionIds = completedQuestionIdsJson != null
+        ? JsonSerializer.Deserialize<List<int>>(completedQuestionIdsJson) ?? new List<int>()
         : new List<int>();
 
-        // Retrieves a random question from the database
-        var question = await _questionRepository.GetRandomAsync(usedQuestionIds);
-
-        // Add the new question to the used-question list and store it again.
-        if (question != null)
-        {
-            usedQuestionIds.Add(question.QuestionId);
-
-            Console.WriteLine(
-                $"Used question IDs: {string.Join(", ", usedQuestionIds)}");
-            
-            HttpContext.Session.SetString(
-                "UsedQuestionIds",
-                JsonSerializer.Serialize(usedQuestionIds));
-        }
+        // Retrieves a random question that has not already been answered correctly.
+        var question = await _questionRepository.GetRandomAsync(completedQuestionIds);
 
         // Get the current score from the player's session.
         int score = HttpContext.Session.GetInt32("Score") ?? 0;
