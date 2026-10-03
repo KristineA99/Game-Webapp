@@ -133,6 +133,40 @@
     font-weight: bold;
 }
 
+/* Victory message */
+.victory {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 6rem;
+    font-family: "Press Start 2P", monospace;
+}
+
+.victory-trophy {
+    width: 300px;
+    height: auto;
+    image-rendering: pixelated;
+    margin-bottom: 0.25rem;
+
+}
+
+.victory h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.victory p {
+    max-width: 600px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.victory + .score {
+    margin-top: 0.3rem;
+}
+
 /* Mobile layout */
 @media (max-width: 600px) {
     .monster {

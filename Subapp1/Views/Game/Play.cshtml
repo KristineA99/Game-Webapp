@@ -11,16 +11,23 @@
 }
 
 <div class="game-container">
+    @if (!Model.HasWon)
+    {
     <h1>Battle!</h1>
+    }
 
+    @if (!Model.HasWon)
+    {
     <div class="monster">
         <img src="~/images/monster2.gif" alt="Monster" class="monster-image" />
     </div>
+    }
 
     @if (Model.HasWon)
     {
         <div class="victory">
-            <h2>Victory!</h2>
+            <img src="~/images/trophy.png" alt="" class="victory-trophy" /> @* png image from pngtree.com *@
+            <h1>Victory!</h1>
             <p>You answered all the questions correctly, you've munched your way to an A!</p>
         </div>
     }

@@ -20,7 +20,7 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
 
     //Displays the initial game page.
     public IActionResult Play()   // returns the view under Game/play when requested
-    {
+   {
         // The GameViewModel contains the data that Play.cshtml needs.
         // At the start of the game, Question is null and Score defaults to 0.
         var viewModel = new GameViewModel();
