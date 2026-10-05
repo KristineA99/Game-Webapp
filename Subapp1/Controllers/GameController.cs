@@ -1,24 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using Subapp1.DAL;
-using Subapp1.Models;
 using System.Text.Json;
+using Subapp1.ViewModels;
 
 namespace Subapp1.Controllers;
 
-public class GameController : Controller  // Gamecontroller inherits from ASP.NET's controller class
+public class GameController : Controller 
 {
-    // Stores the question repository for use in this controller.
-    // private = only this class can access the field
-    // readonly = the field cannot be reassigned after the constructor has initialized it.
-    private readonly IQuestionRepository _questionRepository;  
-    // ASP.NET provides an implementation of IQuestionRepository through dependency injection when it creates Gamecontroller
+    // Repository used to retrieve questions from the database.
+    private readonly IQuestionRepository _questionRepository;
     public GameController(IQuestionRepository questionRepository)
     {
         _questionRepository = questionRepository;
     }
 
 
-    //Displays the initial game page.
+    // Displays the initial game page.
     public IActionResult Play()   // returns the view under Game/play when requested
    {
         // The GameViewModel contains the data that Play.cshtml needs.
@@ -71,13 +68,13 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
             return NotFound();
         }
 
-        // Get the current score stored in teh player's session.
+        // Get the current score stored in the player's session.
         int score = HttpContext.Session.GetInt32("Score") ?? 0;
 
         // Check whether the selected option matches the correct option stored for this question in the database
         bool isCorrect = selectedOption == question.CorrectOption;
 
-        // Get the completed question ID's stored in the player's session.
+        // Get the completed question IDs stored in the player's session.
         var completedQuestionIdsJson =
             HttpContext.Session.GetString("CompletedQuestionIds");
 
@@ -98,9 +95,6 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
                 JsonSerializer.Serialize(completedQuestionIds));
         }
 
-        //Temporary code for debugging
-        Console.WriteLine($"Completed question IDs: {string.Join(", ", completedQuestionIds)}");
-
         // Store the updated score in the session.
         HttpContext.Session.SetInt32("Score", score);
 
@@ -119,11 +113,11 @@ public class GameController : Controller  // Gamecontroller inherits from ASP.NE
     [HttpPost]
     public async Task<IActionResult> Continue()
     {
-        // Get the completed question ID's stored in the player's session.
+        // Get the completed question IDs stored in the player's session.
         var completedQuestionIdsJson = 
             HttpContext.Session.GetString("CompletedQuestionIds");
 
-        //Convert the JSON string back into a list of question ID's.
+        // Convert the JSON string back into a list of completed question IDs.
         var completedQuestionIds = completedQuestionIdsJson != null
         ? JsonSerializer.Deserialize<List<int>>(completedQuestionIdsJson) ?? new List<int>()
         : new List<int>();
