@@ -1,8 +1,4 @@
-
- /* Pixel font from Google Fonts */
-@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
- 
-/* Page */
+ /* Page */
 main {
     color: #000;
     font-family: Verdana, Tahoma, Geneva, sans-serif;
