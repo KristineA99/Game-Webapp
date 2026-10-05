@@ -14,9 +14,25 @@ public class GameController : Controller
         _questionRepository = questionRepository;
     }
 
+    // Retrieves the completed question Ids stored in the player's session and converts them from JSON into a list of integers.
+    private List<int> GetCompletedQuestionIds()
+    {
+        var json = HttpContext.Session.GetString("CompletedQuestionIds");
+        return json != null
+            ? JsonSerializer.Deserialize<List<int>>(json) ?? new List<int>()
+            : new List<int>();
+    }
+
+    // Saves the list of completed question IDs to the player's session.
+    private void SaveCompletedQuestionIds(List<int> ids)
+    {
+        HttpContext.Session.SetString(
+            "CompletedQuestionIds",
+            JsonSerializer.Serialize(ids));
+    }
 
     // Displays the initial game page.
-    public IActionResult Play()   // returns the view under Game/play when requested
+    public IActionResult Play()   
    {
         // The GameViewModel contains the data that Play.cshtml needs.
         // At the start of the game, Question is null and Score defaults to 0.
@@ -36,9 +52,7 @@ public class GameController : Controller
         var question = await _questionRepository.GetRandomAsync(completedQuestionIds);    
 
         // Store the empty completed-question list in the session.           
-        HttpContext.Session.SetString(
-            "CompletedQuestionIds",
-            JsonSerializer.Serialize(completedQuestionIds));
+        SaveCompletedQuestionIds(completedQuestionIds);
         
 
         // Start a new game with a score of 0.
@@ -75,12 +89,7 @@ public class GameController : Controller
         bool isCorrect = selectedOption == question.CorrectOption;
 
         // Get the completed question IDs stored in the player's session.
-        var completedQuestionIdsJson =
-            HttpContext.Session.GetString("CompletedQuestionIds");
-
-        var completedQuestionIds = completedQuestionIdsJson != null 
-            ? JsonSerializer.Deserialize<List<int>>(completedQuestionIdsJson) ?? new List<int>()
-            : new List<int>();
+        var completedQuestionIds = GetCompletedQuestionIds();
 
         // Increase the score and mark the question as completed
         // only when the answer is correct.
@@ -90,9 +99,7 @@ public class GameController : Controller
 
             completedQuestionIds.Add(question.QuestionId);
 
-            HttpContext.Session.SetString(
-                "CompletedQuestionIds",
-                JsonSerializer.Serialize(completedQuestionIds));
+            SaveCompletedQuestionIds(completedQuestionIds);
         }
 
         // Store the updated score in the session.
@@ -114,13 +121,7 @@ public class GameController : Controller
     public async Task<IActionResult> Continue()
     {
         // Get the completed question IDs stored in the player's session.
-        var completedQuestionIdsJson = 
-            HttpContext.Session.GetString("CompletedQuestionIds");
-
-        // Convert the JSON string back into a list of completed question IDs.
-        var completedQuestionIds = completedQuestionIdsJson != null
-        ? JsonSerializer.Deserialize<List<int>>(completedQuestionIdsJson) ?? new List<int>()
-        : new List<int>();
+        var completedQuestionIds = GetCompletedQuestionIds();
 
         // Retrieve a random question that has not already been answered correctly.
         var question = await _questionRepository.GetRandomAsync(completedQuestionIds);
