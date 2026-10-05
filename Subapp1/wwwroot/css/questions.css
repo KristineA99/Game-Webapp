@@ -94,19 +94,6 @@ for example due to motor impairments or because they use a screen reader.*/
     }
  
 
-/* Add-question-button */
-.btn-primary {
-    color: #000;
-    background-color: #fff;
-}
- 
-/* Add-question-button hover */
-.btn-primary:hover {
-    color: #fff;
-    background-color: #000;
-    box-shadow: 4px 4px 0 #696969;
-}
-
 
 /* Save-buttons */
 .btn-primary {
