@@ -23,15 +23,10 @@ body {
 }
 
 
-.leaderboard-table {
-  overflow: hidden;
-}
-
 .btn.home-action-button {
   font-size: 1rem;
   padding: 0.7rem 1rem;
 }
-
 
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
