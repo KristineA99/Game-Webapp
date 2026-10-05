@@ -11,18 +11,6 @@
 }
 
 <div class="game-container">
-    @if (!Model.HasWon)
-    {
-    <h1>Battle!</h1>
-    }
-
-    @if (!Model.HasWon)
-    {
-    <div class="monster">
-        <img src="~/images/monster2.gif" alt="Monster" class="monster-image" />
-    </div>
-    }
-
     @if (Model.HasWon)
     {
         <div class="victory">
@@ -30,10 +18,18 @@
             <h1>Victory!</h1>
             <p>You answered all the questions correctly, you've munched your way to an A!</p>
         </div>
+    
     }
+    else
+    {
+        <h1>Battle!</h1>
+
+    <div class="monster">
+        <img src="~/images/monster2.gif" alt="Monster" class="monster-image" />
+    </div>
 
     @* If a question has been passed to this view, display it *@
-    @if (!Model.HasWon && Model.Question != null)
+    @if (Model.Question != null)
     {
         <div class="question">
 
@@ -83,16 +79,13 @@
             } 
         </div>
     }
-
-    @* The attack button is not visible after the question has been displayed *@
-    @if (!Model.HasWon && Model.Question == null) 
-    {
-    @* Creates the button for attack and corresponds with Gamecontroller to call the Attack() action *@
-        <form asp-controller="Game" asp-action="Attack" method="post" class="attack-form">
-
-            <button type="submit" class="attack-button">Attack</button>
-
+    else
+        {
+            @* No question is active yet: allow the player to start the game.*@
+            <form asp-controller="Game" asp-action="Attack" method="post" class="attack-form">
+                <button type="submit" class="attack-button">Attack</button>
         </form>
+        }
     }
 
     <div class="score">
