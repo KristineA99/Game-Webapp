@@ -1,0 +1,29 @@
+@model Subapp1.Models.Category
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<h1>Delete Category</h1>
+
+<p>Are you sure you want to delete this category?</p>
+
+<div class="mb-3">
+    <strong>Category:</strong> @Model.Name
+</div>
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<form asp-controller="Category"
+      asp-action="Delete"
+      asp-route-id="@Model.CategoryId"
+      method="post">
+
+    <button type="submit" class="btn btn-danger">
+        Delete Category
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Cancel
+    </a>
+</form>

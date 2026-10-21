@@ -1,0 +1,36 @@
+@model IEnumerable<Subapp1.Models.Category>
+
+@{
+    ViewData["Title"] = "Manage Categories";
+}
+
+<h1>Manage Categories</h1>
+
+<p>View and manage question categories.</p>
+
+<p>
+    <a asp-controller="Category" asp-action="Create" class="btn btn-primary">Add New Category</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Category ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.CategoryId</td>
+                <td>@category.Name</td>
+                <td>
+                    <a asp-controller="Category" asp-action="Edit" asp-route-id="@category.CategoryId" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.CategoryId" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    </table>

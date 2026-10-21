@@ -27,8 +27,9 @@ builder.Services.AddDbContext<GameDbContext>(options =>
     options.UseSqlite(builder.Configuration["ConnectionStrings:GameDbContextConnection"]);
 });
 
-// When a class asks for IQuestionRepository, give it a QuestionRepository (one new instance per HTTP request)
+// Register repositories for dependency injection
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 
