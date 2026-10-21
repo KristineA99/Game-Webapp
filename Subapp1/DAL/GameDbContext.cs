@@ -28,6 +28,9 @@ public class GameDbContext : DbContext
     // Represents the join table between Quizzes and Questions.
     public DbSet<QuizQuestion> QuizQuestions { get; set; }
 
+    // Represents completed game results stored in the database.
+    public DbSet<GameResult> GameResults { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

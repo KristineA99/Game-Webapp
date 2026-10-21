@@ -18,4 +18,7 @@ public class Quiz
 
     // Questions included in this quiz (through the join entity).
     public ICollection<QuizQuestion> QuizQuestions { get; set; } = new List<QuizQuestion>();
+
+    // One quiz can have many completed game results.
+    public ICollection<GameResult> GameResults { get; set; } = new List<GameResult>();
 }
