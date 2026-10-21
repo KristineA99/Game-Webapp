@@ -9,6 +9,10 @@ public class Question
     // Primary key: a unique id for each question.
     // and lets the database generate the number automatically.
     public int QuestionId { get; set; } 
+    // Foreign key: identifies the category this question belongs to.
+    public int CategoryId { get; set; }
+    // Navigation property: the category associated with this question.
+    public Category Category { get; set; } = null!;
 
     // Question
     [Required(ErrorMessage = "The question text is required.")]

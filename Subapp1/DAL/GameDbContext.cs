@@ -20,4 +20,6 @@ public class GameDbContext : DbContext
     //Question is our model (Models/Question.cs), while Questions is the property
     //we use to access Question records through GameDbContext.
     public DbSet<Question> Questions { get; set; }
+    // Represents the Categories table in the database.
+    public DbSet<Category> Categories { get; set; }
 }
