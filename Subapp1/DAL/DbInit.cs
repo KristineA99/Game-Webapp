@@ -45,5 +45,27 @@ public static class DbInit
                 context.SaveChanges();
             }
         }
+
+        // Create the initial quiz if it doesn't already exist.
+        if (!context.Quizzes.Any())
+        {
+            var quiz = new Quiz
+            {
+                Title = "Computer Security Practice Quiz",
+                Description = "Practice questions covering computer security concepts."
+            };
+
+            // Associate the quiz with all existing questions.
+            foreach (var question in context.Questions)
+            {
+                quiz.QuizQuestions.Add(new QuizQuestion
+                {
+                    QuestionId = question.QuestionId
+                });
+            }
+            
+            context.Quizzes.Add(quiz);
+            context.SaveChanges();
+        }
     }
 }

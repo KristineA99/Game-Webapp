@@ -14,6 +14,9 @@ public class Question
     // Navigation property: the category associated with this question.
     public Category Category { get; set; } = null!;
 
+    // Quizzes that include this question (through the join entity).
+    public ICollection<QuizQuestion> QuizQuestions { get; set; } = new List<QuizQuestion>();
+
     // Question
     [Required(ErrorMessage = "The question text is required.")]
     [StringLength(300, MinimumLength = 5, ErrorMessage = "The question must be between 5 and 300 characters.")]

@@ -22,4 +22,18 @@ public class GameDbContext : DbContext
     public DbSet<Question> Questions { get; set; }
     // Represents the Categories table in the database.
     public DbSet<Category> Categories { get; set; }
+
+    // Represents the Quizzes table in the database.
+    public DbSet<Quiz> Quizzes { get; set; }
+    // Represents the join table between Quizzes and Questions.
+    public DbSet<QuizQuestion> QuizQuestions { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // A quiz cannot contain the same question more than once, so we define a composite primary key for the join table.
+        modelBuilder.Entity<QuizQuestion>() 
+            .HasKey(qq => new { qq.QuizId, qq.QuestionId });
+    }
 }

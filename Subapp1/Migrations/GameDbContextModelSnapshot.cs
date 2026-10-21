@@ -76,6 +76,41 @@ namespace Subapp1.Migrations
                     b.ToTable("Questions");
                 });
 
+            modelBuilder.Entity("Subapp1.Models.Quiz", b =>
+                {
+                    b.Property<int>("QuizId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("QuizId");
+
+                    b.ToTable("Quizzes");
+                });
+
+            modelBuilder.Entity("Subapp1.Models.QuizQuestion", b =>
+                {
+                    b.Property<int>("QuizId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("QuizId", "QuestionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("QuizQuestions");
+                });
+
             modelBuilder.Entity("Subapp1.Models.Question", b =>
                 {
                     b.HasOne("Subapp1.Models.Category", "Category")
@@ -87,9 +122,38 @@ namespace Subapp1.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("Subapp1.Models.QuizQuestion", b =>
+                {
+                    b.HasOne("Subapp1.Models.Question", "Question")
+                        .WithMany("QuizQuestions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Subapp1.Models.Quiz", "Quiz")
+                        .WithMany("QuizQuestions")
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Quiz");
+                });
+
             modelBuilder.Entity("Subapp1.Models.Category", b =>
                 {
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("Subapp1.Models.Question", b =>
+                {
+                    b.Navigation("QuizQuestions");
+                });
+
+            modelBuilder.Entity("Subapp1.Models.Quiz", b =>
+                {
+                    b.Navigation("QuizQuestions");
                 });
 #pragma warning restore 612, 618
         }
