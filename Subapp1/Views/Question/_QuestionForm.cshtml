@@ -1,4 +1,4 @@
-@model Subapp1.Models.Question
+@model Subapp1.ViewModels.QuestionFormViewModel
 
 @* 
 Partial view
@@ -15,6 +15,18 @@ This way the form fields are written only once instead of twice.
 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
 @* The question *@
+
+@* Select the category this question belongs to. *@
+<div class="mb-3">
+    <label asp-for="CategoryId" class="form-label"></label>
+    <select asp-for="CategoryId"
+            asp-items="Model.AvailableCategories"
+            class="form-select">
+        <option value="0">Choose a category</option>
+    </select>
+    <span asp-validation-for="CategoryId" class="text-danger"></span>
+</div>
+
 @* A textarea is used so longer questions fit *@
 <div class="mb-3">
     <label asp-for="Text" class="form-label"></label>

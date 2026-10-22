@@ -14,13 +14,19 @@ public static class DbInit
         // Seed initial questions only if the Questions table is empty.
         if (!context.Questions.Any())
         {
-            // Build the path to the JSON file containing the initial questions.
+            // Create the Computer Security category if it doesn't exist.
+            var category = context.Categories.FirstOrDefault(c => c.Name == "Computer Security");
+            if (category == null)
+            {
+                category = new Category { Name = "Computer Security" };
+                context.Categories.Add(category);
+            }
+
+            // Build the path to the JSON file containing the initial questions and read the file.
             var filePath = Path.Combine(
                 environment.ContentRootPath,
                 "Data",
                 "questions.json");
-                
-            // Read the JSON file.
             var json = File.ReadAllText(filePath);
 
             //Convert the JSON data into a list of Question objects.
@@ -29,9 +35,37 @@ public static class DbInit
             // Add the questions to the database.
             if (questions != null)
             {
+                // Assign all seeded questions to the "Computer Security" category.
+                foreach (var question in questions)
+                {
+                    question.Category = category;
+                }
+
                 context.Questions.AddRange(questions);
                 context.SaveChanges();
             }
+        }
+
+        // Create the initial quiz if it doesn't already exist.
+        if (!context.Quizzes.Any())
+        {
+            var quiz = new Quiz
+            {
+                Title = "Computer Security Practice Quiz",
+                Description = "Practice questions covering computer security concepts."
+            };
+
+            // Associate the quiz with all existing questions.
+            foreach (var question in context.Questions)
+            {
+                quiz.QuizQuestions.Add(new QuizQuestion
+                {
+                    QuestionId = question.QuestionId
+                });
+            }
+            
+            context.Quizzes.Add(quiz);
+            context.SaveChanges();
         }
     }
 }

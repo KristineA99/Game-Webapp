@@ -9,6 +9,13 @@ public class Question
     // Primary key: a unique id for each question.
     // and lets the database generate the number automatically.
     public int QuestionId { get; set; } 
+    // Foreign key: identifies the category this question belongs to.
+    public int CategoryId { get; set; }
+    // Navigation property: the category associated with this question.
+    public Category Category { get; set; } = null!;
+
+    // Quizzes that include this question (through the join entity).
+    public ICollection<QuizQuestion> QuizQuestions { get; set; } = new List<QuizQuestion>();
 
     // Question
     [Required(ErrorMessage = "The question text is required.")]

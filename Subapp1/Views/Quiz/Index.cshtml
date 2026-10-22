@@ -1,0 +1,38 @@
+@model IEnumerable<Subapp1.Models.Quiz>
+
+@{
+    ViewData["Title"] = "Manage Quizzes";
+}
+
+<h1>Manage Quizzes</h1>
+
+<p>View and manage available quizzes.</p>
+
+<p>
+    <a asp-controller="Quiz" asp-action="Create" class="btn btn-primary">Add New Quiz</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Quiz ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var quiz in Model)
+        {
+            <tr>
+                <td>@quiz.QuizId</td>
+                <td>@quiz.Title</td>
+                <td>@quiz.Description</td>
+                <td>
+                    <a asp-controller="Quiz" asp-action="Edit" asp-route-id="@quiz.QuizId" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-controller="Quiz" asp-action="Delete" asp-route-id="@quiz.QuizId" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

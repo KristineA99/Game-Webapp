@@ -20,4 +20,36 @@ public class GameDbContext : DbContext
     //Question is our model (Models/Question.cs), while Questions is the property
     //we use to access Question records through GameDbContext.
     public DbSet<Question> Questions { get; set; }
+    // Represents the Categories table in the database.
+    public DbSet<Category> Categories { get; set; }
+
+    // Represents the Quizzes table in the database.
+    public DbSet<Quiz> Quizzes { get; set; }
+    // Represents the join table between Quizzes and Questions.
+    public DbSet<QuizQuestion> QuizQuestions { get; set; }
+
+    // Represents completed game results stored in the database.
+    public DbSet<GameResult> GameResults { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // A quiz cannot contain the same question more than once, so we define a composite primary key for the join table.
+        modelBuilder.Entity<QuizQuestion>() 
+            .HasKey(qq => new { qq.QuizId, qq.QuestionId });
+        
+        modelBuilder.Entity<GameResult>()
+            .HasOne(result => result.Quiz)
+            .WithMany(quiz => quiz.GameResults)
+            .HasForeignKey(result => result.QuizId)
+            .OnDelete(DeleteBehavior.Restrict); // Prevent deletion of quizzes that have associated game results.
+
+        // Prevent deleting a category while it contains questions, to maintain data integrity.
+        modelBuilder.Entity<Question>()
+            .HasOne(q => q.Category)
+            .WithMany(c => c.Questions)
+            .HasForeignKey(question => question.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict); 
+    }
 }

@@ -27,8 +27,10 @@ builder.Services.AddDbContext<GameDbContext>(options =>
     options.UseSqlite(builder.Configuration["ConnectionStrings:GameDbContextConnection"]);
 });
 
-// When a class asks for IQuestionRepository, give it a QuestionRepository (one new instance per HTTP request)
+// Register repositories for dependency injection
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 
 var app = builder.Build();
 
@@ -44,11 +46,16 @@ using (var scope = app.Services.CreateScope())
     DbInit.Initialize(context, app.Environment);
 }
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Configure exception handling based on the environment.
+if (app.Environment.IsDevelopment())
 {
+    // Show detailed exception information during development.
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    // Show a user-friendly error page in production.
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
