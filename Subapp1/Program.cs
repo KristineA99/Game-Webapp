@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Subapp1.DAL;
@@ -25,6 +26,29 @@ builder.Services.AddSession();
 builder.Services.AddDbContext<GameDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration["ConnectionStrings:GameDbContextConnection"]);
+});
+
+// Register ASP.NET Core Identity and store users in GameDbContext
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false; // no email confirmation needed for local testing
+}).AddEntityFrameworkStores<GameDbContext>();
+
+// Redirect users who are not logged in to our own login page
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.LogoutPath = "/Account/Logout";
+    options.AccessDeniedPath = "/Account/Login";
+});
+
+// Session support for storing temporary game state and user data between requests.
+// options added as in the course demo
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 
 // Register repositories for dependency injection
@@ -62,9 +86,10 @@ else
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseSession();
+app.UseSession(); // must be placed before UseAuthentication
 
-app.UseAuthorization();
+app.UseAuthentication(); // Reads the login cookie and identifies the user
+app.UseAuthorization();  // checks [Authorize] attributes
 
 app.MapStaticAssets();
 

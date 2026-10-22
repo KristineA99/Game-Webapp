@@ -1,11 +1,13 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Subapp1.Models;
 
 namespace Subapp1.DAL;
 
-//GameDbContext represents the connextion between our C# models and the database.
-//It inherits from EF Core's DbContext, which provides the database functionality.
-public class GameDbContext : DbContext
+// GameDbContext represents the connection between our C# models and the database.
+// It inherits from IdentityDbContext, which adds the ASP.NET Core Identity tables
+// (users, roles, logins) in addition to our own domain tables.
+public class GameDbContext : IdentityDbContext
 {
     //The constructor receives the database configuration from ASP.NET
     //through dependency injection (for example that we are useing SQLite).
