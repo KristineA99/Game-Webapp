@@ -6,15 +6,17 @@ using NSubstitute;
 using Subapp1.Controllers;
 using Subapp1.DAL;
 using Subapp1.Models;
+using Subapp1.ViewModels;
 
 namespace Subapp1.Tests.Controllers;
 
 // Unit tests for QuestionController.
-// The repository and logger are replaced by substitutes (mocks),
+// The repositories and logger are replaced by substitutes (mocks),
 // so the controller is tested in isolation without a real database.
 public class QuestionControllerTests
 {
     private readonly IQuestionRepository _mockQuestionRepository;
+    private readonly ICategoryRepository _mockCategoryRepository;
     private readonly ILogger<QuestionController> _mockLogger;
     private readonly QuestionController _questionController;
 
@@ -23,8 +25,20 @@ public class QuestionControllerTests
     public QuestionControllerTests()
     {
         _mockQuestionRepository = Substitute.For<IQuestionRepository>();
+        _mockCategoryRepository = Substitute.For<ICategoryRepository>();
         _mockLogger = Substitute.For<ILogger<QuestionController>>();
-        _questionController = new QuestionController(_mockQuestionRepository, _mockLogger);
+
+        // Categories used to fill the dropdown in the question form
+        _mockCategoryRepository.GetAllAsync().Returns(new List<Category>
+        {
+            new Category { CategoryId = 1, Name = "Security" },
+            new Category { CategoryId = 2, Name = "Web development" }
+        });
+        // Category 1 exists, so ValidateCategoryAsync accepts it
+        _mockCategoryRepository.GetByIdAsync(1).Returns(new Category { CategoryId = 1, Name = "Security" });
+
+        _questionController = new QuestionController(
+            _mockQuestionRepository, _mockLogger, _mockCategoryRepository);
 
         // The controller writes to TempData after successful actions.
         // TempData is normally created by ASP.NET, so we create it manually here.
@@ -33,7 +47,7 @@ public class QuestionControllerTests
             Substitute.For<ITempDataProvider>());
     }
 
-    // Helper: creates a valid question used in several tests
+    // Helper: a question entity as it is stored in the database
     private static Question CreateTestQuestion()
     {
         return new Question
@@ -47,6 +61,12 @@ public class QuestionControllerTests
             OptionD = "Authentication",
             CorrectOption = 1
         };
+    }
+
+    // Helper: a valid form model as submitted from the Create/Update form
+    private static QuestionFormViewModel CreateValidFormModel()
+    {
+        return QuestionFormViewModel.FromQuestion(CreateTestQuestion());
     }
 
     // ===================== POSITIVE TESTS =====================
@@ -85,23 +105,25 @@ public class QuestionControllerTests
 
     // PT-02
     [Fact]
-    public async Task Create_WhenModelIsValid_SavesQuestionAndRedirectsToIndex()
+    public async Task CreatePost_WhenModelIsValid_SavesQuestionAndRedirectsToIndex()
     {
         // Arrange
-        var testQuestion = CreateTestQuestion();
+        var model = CreateValidFormModel();
 
         // Act
-        var result = await _questionController.Create(testQuestion);
+        var result = await _questionController.Create(model);
 
         // Assert
         var redirectResult = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal(nameof(QuestionController.Index), redirectResult.ActionName);
-        await _mockQuestionRepository.Received(1).AddAsync(testQuestion);
+        // ToQuestion() creates a new object, so we match on its content
+        await _mockQuestionRepository.Received(1).AddAsync(
+            Arg.Is<Question>(q => q.Text == model.Text && q.CategoryId == model.CategoryId));
     }
 
     // PT-03
     [Fact]
-    public async Task Update_WhenQuestionExists_ReturnsViewWithQuestion()
+    public async Task Update_WhenQuestionExists_ReturnsViewWithFormModelAndCategories()
     {
         // Arrange
         var testQuestion = CreateTestQuestion();
@@ -112,8 +134,10 @@ public class QuestionControllerTests
 
         // Assert
         var viewResult = Assert.IsType<ViewResult>(result);
-        var viewQuestion = Assert.IsAssignableFrom<Question>(viewResult.ViewData.Model);
-        Assert.Equal(testQuestion, viewQuestion);
+        var model = Assert.IsAssignableFrom<QuestionFormViewModel>(viewResult.ViewData.Model);
+        Assert.Equal(testQuestion.QuestionId, model.QuestionId);
+        Assert.Equal(testQuestion.Text, model.Text);
+        Assert.Equal(2, model.AvailableCategories.Count);
     }
 
     // PT-04
@@ -121,11 +145,11 @@ public class QuestionControllerTests
     public async Task UpdatePost_WhenUpdateSucceeds_RedirectsToIndex()
     {
         // Arrange
-        var testQuestion = CreateTestQuestion();
-        _mockQuestionRepository.UpdateAsync(testQuestion).Returns(true);
+        var model = CreateValidFormModel();
+        _mockQuestionRepository.UpdateAsync(Arg.Any<Question>()).Returns(true);
 
         // Act
-        var result = await _questionController.Update(testQuestion);
+        var result = await _questionController.Update(model);
 
         // Assert
         var redirectResult = Assert.IsType<RedirectToActionResult>(result);
@@ -168,25 +192,45 @@ public class QuestionControllerTests
 
     // NT-01
     [Fact]
-    public async Task Create_WhenModelIsInvalid_ReturnsViewWithSameQuestionAndDoesNotSave()
+    public async Task CreatePost_WhenModelIsInvalid_ReturnsFormAgainAndDoesNotSave()
     {
         // Arrange
-        var testQuestion = CreateTestQuestion();
-        testQuestion.Text = string.Empty;
+        var model = CreateValidFormModel();
+        model.Text = string.Empty;
         // Validation does not run automatically in unit tests, so we simulate the error
-        _questionController.ModelState.AddModelError("Text", "The question text is required.");
+        _questionController.ModelState.AddModelError(nameof(model.Text), "The question text is required.");
 
         // Act
-        var result = await _questionController.Create(testQuestion);
+        var result = await _questionController.Create(model);
 
         // Assert
         var viewResult = Assert.IsType<ViewResult>(result);
-        var viewQuestion = Assert.IsAssignableFrom<Question>(viewResult.ViewData.Model);
-        Assert.Equal(testQuestion, viewQuestion);
+        var viewModel = Assert.IsAssignableFrom<QuestionFormViewModel>(viewResult.ViewData.Model);
+        Assert.Same(model, viewModel);                      // the user's input is kept
+        Assert.Equal(2, viewModel.AvailableCategories.Count); // the dropdown is filled again
         await _mockQuestionRepository.DidNotReceive().AddAsync(Arg.Any<Question>());
     }
 
     // NT-02
+    [Fact]
+    public async Task CreatePost_WhenCategoryDoesNotExist_ReturnsFormWithCategoryError()
+    {
+        // Arrange
+        var model = CreateValidFormModel();
+        model.CategoryId = 99;
+        _mockCategoryRepository.GetByIdAsync(99).Returns((Category?)null);
+
+        // Act
+        var result = await _questionController.Create(model);
+
+        // Assert
+        Assert.IsType<ViewResult>(result);
+        Assert.False(_questionController.ModelState.IsValid);
+        Assert.True(_questionController.ModelState.ContainsKey(nameof(QuestionFormViewModel.CategoryId)));
+        await _mockQuestionRepository.DidNotReceive().AddAsync(Arg.Any<Question>());
+    }
+
+    // NT-03
     [Fact]
     public async Task Update_WhenQuestionDoesNotExist_ReturnsNotFound()
     {
@@ -200,35 +244,16 @@ public class QuestionControllerTests
         Assert.IsType<NotFoundObjectResult>(result);
     }
 
-    // NT-03
-    [Fact]
-    public async Task UpdatePost_WhenModelIsInvalid_ReturnsViewWithSameQuestionAndDoesNotSave()
-    {
-        // Arrange
-        var testQuestion = CreateTestQuestion();
-        testQuestion.CorrectOption = 0;
-        _questionController.ModelState.AddModelError("CorrectOption", "Choose which option is correct.");
-
-        // Act
-        var result = await _questionController.Update(testQuestion);
-
-        // Assert
-        var viewResult = Assert.IsType<ViewResult>(result);
-        var viewQuestion = Assert.IsAssignableFrom<Question>(viewResult.ViewData.Model);
-        Assert.Equal(testQuestion, viewQuestion);
-        await _mockQuestionRepository.DidNotReceive().UpdateAsync(Arg.Any<Question>());
-    }
-
     // NT-04
     [Fact]
     public async Task UpdatePost_WhenQuestionDoesNotExist_ReturnsNotFound()
     {
         // Arrange
-        var testQuestion = CreateTestQuestion();
-        _mockQuestionRepository.UpdateAsync(testQuestion).Returns(false);
+        var model = CreateValidFormModel();
+        _mockQuestionRepository.UpdateAsync(Arg.Any<Question>()).Returns(false);
 
         // Act
-        var result = await _questionController.Update(testQuestion);
+        var result = await _questionController.Update(model);
 
         // Assert
         Assert.IsType<NotFoundObjectResult>(result);
