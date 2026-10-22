@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "frontend": "vite --open",
+    "backend": "dotnet run --project ../api/api.csproj",
+    "watch": "dotnet watch --project ../api/api.csproj",
+    "dev": "concurrently -k -s first \"npm run backend\" \"npm run frontend\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
