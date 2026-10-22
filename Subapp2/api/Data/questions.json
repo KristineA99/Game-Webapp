@@ -1,0 +1,162 @@
+[
+  {
+    "Text": "Which part of the CIA triad protects information from unauthorized disclosure?",
+    "OptionA": "Confidentiality",
+    "OptionB": "Integrity",
+    "OptionC": "Availability",
+    "OptionD": "Authentication",
+    "CorrectOption": 1
+  },
+  {
+    "Text": "Which security principle gives users only the permissions they need to perform their tasks?",
+    "OptionA": "Defense in depth",
+    "OptionB": "Least privilege",
+    "OptionC": "Separation of duties",
+    "OptionD": "Availability",
+    "CorrectOption": 2
+  },
+  {
+    "Text": "Which access control model assigns permissions according to a user's job role?",
+    "OptionA": "DAC",
+    "OptionB": "MAC",
+    "OptionC": "RBAC",
+    "OptionD": "ABAC",
+    "CorrectOption": 3
+  },
+  {
+    "Text": "Which part of the CIA triad ensures that information remains accurate and unaltered?",
+    "OptionA": "Availability",
+    "OptionB": "Authentication",
+    "OptionC": "Confidentiality",
+    "OptionD": "Integrity",
+    "CorrectOption": 4
+  },
+  {
+    "Text": "Which type of encryption uses the same key for encryption and decryption?",
+    "OptionA": "Symmetric encryption",
+    "OptionB": "Asymmetric encryption",
+    "OptionC": "Hashing",
+    "OptionD": "Digital signing",
+    "CorrectOption": 1
+  },
+  {
+    "Text": "What is the main purpose of authentication?",
+    "OptionA": "To determine what a user may access",
+    "OptionB": "To verify an identity",
+    "OptionC": "To encrypt stored information",
+    "OptionD": "To create backups",
+    "CorrectOption": 2
+  },
+  {
+    "Text": "Which security principle uses multiple layers of protection so that one failed control does not leave a system unprotected?",
+    "OptionA": "Least privilege",
+    "OptionB": "Separation of duties",
+    "OptionC": "Defense in depth",
+    "OptionD": "Single sign-on",
+    "CorrectOption": 3
+  },
+  {
+    "Text": "Which type of malware can spread between systems without requiring a user to run an infected file?",
+    "OptionA": "Trojan",
+    "OptionB": "Rootkit",
+    "OptionC": "Spyware",
+    "OptionD": "Worm",
+    "CorrectOption": 4
+  },
+  {
+    "Text": "Which cryptographic technique produces a fixed-length value from input data?",
+    "OptionA": "Hashing",
+    "OptionB": "Asymmetric encryption",
+    "OptionC": "Tokenization",
+    "OptionD": "Steganography",
+    "CorrectOption": 1
+  },
+  {
+    "Text": "What is the main purpose of authorization?",
+    "OptionA": "To verify who a user is",
+    "OptionB": "To determine what an authenticated user is allowed to do",
+    "OptionC": "To encrypt a user's password",
+    "OptionD": "To record network traffic",
+    "CorrectOption": 2
+  },
+  {
+    "Text": "What does a digital signature primarily help verify?",
+    "OptionA": "Availability and redundancy",
+    "OptionB": "Confidentiality and anonymity",
+    "OptionC": "Integrity and authenticity",
+    "OptionD": "Compression and encryption",
+    "CorrectOption": 3
+  },
+  {
+    "Text": "In asymmetric cryptography, which key should remain secret to its owner?",
+    "OptionA": "Public key",
+    "OptionB": "Session key",
+    "OptionC": "Shared key",
+    "OptionD": "Private key",
+    "CorrectOption": 4
+  },
+  {
+    "Text": "Which security principle divides critical tasks between multiple people?",
+    "OptionA": "Separation of duties",
+    "OptionB": "Least privilege",
+    "OptionC": "Defense in depth",
+    "OptionD": "Need to know",
+    "CorrectOption": 1
+  },
+  {
+    "Text": "What is the primary purpose of a firewall?",
+    "OptionA": "To hash passwords",
+    "OptionB": "To control network traffic based on defined rules",
+    "OptionC": "To create digital certificates",
+    "OptionD": "To physically secure a server",
+    "CorrectOption": 2
+  },
+  {
+    "Text": "Which access control model uses attributes of subjects, objects, and the environment to make access decisions?",
+    "OptionA": "DAC",
+    "OptionB": "RBAC",
+    "OptionC": "ABAC",
+    "OptionD": "MAC",
+    "CorrectOption": 3
+  },
+  {
+    "Text": "Which part of the CIA triad focuses on ensuring systems and data are accessible when needed?",
+    "OptionA": "Integrity",
+    "OptionB": "Confidentiality",
+    "OptionC": "Accountability",
+    "OptionD": "Availability",
+    "CorrectOption": 4
+  },
+  {
+    "Text": "What is a vulnerability?",
+    "OptionA": "A weakness that could be exploited by a threat",
+    "OptionB": "An event that has already caused damage",
+    "OptionC": "A security control that reduces risk",
+    "OptionD": "A method of encrypting data",
+    "CorrectOption": 1
+  },
+  {
+    "Text": "What is the purpose of security logging?",
+    "OptionA": "To prevent every security incident",
+    "OptionB": "To record events that can be monitored and investigated",
+    "OptionC": "To replace access controls",
+    "OptionD": "To encrypt network traffic",
+    "CorrectOption": 2
+  },
+  {
+    "Text": "What does a digital certificate bind to an identity?",
+    "OptionA": "A password",
+    "OptionB": "A private key",
+    "OptionC": "A public key",
+    "OptionD": "A hash algorithm",
+    "CorrectOption": 3
+  },
+  {
+    "Text": "Which practice helps reduce software vulnerabilities before an application is released?",
+    "OptionA": "Disabling all logging",
+    "OptionB": "Giving developers administrator access",
+    "OptionC": "Avoiding software updates",
+    "OptionD": "Performing security testing during development",
+    "CorrectOption": 4
+  }
+]

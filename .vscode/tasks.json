@@ -10,6 +10,16 @@
                 "${workspaceFolder}/Subapp1/Subapp1.csproj"
             ],
             "problemMatcher": "$msCompile"
+        }, 
+        {
+            "label": "build-api",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "build",
+                "${workspaceFolder}/Subapp2/api/api.csproj"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }
