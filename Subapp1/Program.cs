@@ -30,6 +30,7 @@ builder.Services.AddDbContext<GameDbContext>(options =>
 // Register repositories for dependency injection
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 
 var app = builder.Build();
 
