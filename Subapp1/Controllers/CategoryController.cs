@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Subapp1.DAL;
 using Subapp1.Models;
 
 namespace Subapp1.Controllers;
 
+[Authorize]
 public class CategoryController : Controller
 {
     private readonly ICategoryRepository _categoryRepository;

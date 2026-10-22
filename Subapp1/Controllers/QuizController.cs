@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Subapp1.DAL;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,6 +7,7 @@ using Subapp1.ViewModels;
 
 namespace Subapp1.Controllers;
 
+[Authorize]
 public class QuizController : Controller
 {
     private readonly IQuizRepository _quizRepository;
