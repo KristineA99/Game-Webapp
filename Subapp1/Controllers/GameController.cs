@@ -57,6 +57,8 @@ public class GameController : Controller
 
         // Start a new game with a score of 0.
         HttpContext.Session.SetInt32("Score", 0);
+        // Clear any victory flag left by the player's previous game.
+        HttpContext.Session.Remove("HasWon");
 
         // Pass the question and starting score to Play.cshtml through the ViewModel.
         var viewModel = new GameViewModel
@@ -132,13 +134,9 @@ public class GameController : Controller
         // If no unanswered questions remain, the player has completed the game.
         if (question == null)
         {
-            var victoryViewModel = new GameViewModel
-            {
-                Score = score,
-                HasWon = true
-            };
-
-            return View("Play", victoryViewModel);
+            // Store the win for the redirected request, then show the dedicated result page.
+            HttpContext.Session.SetString("HasWon", "true");
+            return RedirectToAction(nameof(Result));
         }
 
         // Keep the current score when loading the next question. 
@@ -149,5 +147,23 @@ public class GameController : Controller
         };
 
         return View("Play", viewModel);
+    }
+
+    // Displays the result after the player has completed the game.
+    [HttpGet]
+    public IActionResult Result()
+    {
+        // Only completed games should be able to open the victory result page.
+        if (HttpContext.Session.GetString("HasWon") != "true")
+        {
+            return RedirectToAction(nameof(Play));
+        }
+
+        // Reuse the final score from the session to display the completed game result.
+        return View(new GameViewModel
+        {
+            Score = HttpContext.Session.GetInt32("Score") ?? 0,
+            HasWon = true
+        });
     }
 }

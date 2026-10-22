@@ -11,18 +11,7 @@
 }
 
 <div class="game-container">
-    @if (Model.HasWon)
-    {
-        <div class="victory">
-            <img src="~/images/trophy.png" alt="" class="victory-trophy" /> @* png image from pngtree.com *@
-            <h1>Victory!</h1>
-            <p>You answered all the questions correctly, you've munched your way to an A!</p>
-        </div>
-    
-    }
-    else
-    {
-        <h1>Battle!</h1>
+    <h1>Battle!</h1>
 
     <div class="monster">
         <img src="~/images/monster2.gif" alt="Monster" class="monster-image" />
@@ -86,7 +75,6 @@
                 <button type="submit" class="attack-button">Attack</button>
         </form>
         }
-    }
 
     <div class="score">
         <span class="score-icon"><img src="~/images/medal.png" alt="" class="score-image"></span>
