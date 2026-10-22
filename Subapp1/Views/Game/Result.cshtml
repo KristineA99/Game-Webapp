@@ -1,0 +1,27 @@
+@model Subapp1.ViewModels.GameViewModel
+
+@{
+    ViewData["Title"] = "Game Result";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/game.css" asp-append-version="true" />
+}
+
+<div class="game-container">
+    @* Display the victory message when the controller marks the game as won. *@
+    @if (Model.HasWon)
+    {
+        <div class="victory">
+            <img src="~/images/trophy.png" alt="" class="victory-trophy" />
+            <h1>Victory!</h1>
+            <p>You answered all the questions correctly, you've munched your way to an A!</p>
+        </div>
+    }
+
+    <div class="score">
+        <span class="score-icon"><img src="~/images/medal.png" alt="" class="score-image"></span>
+        <span class="score-label">Final Score:</span>
+        <span class="score-value">@Model.Score</span>
+    </div>
+</div>
