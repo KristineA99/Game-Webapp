@@ -38,5 +38,18 @@ public class GameDbContext : DbContext
         // A quiz cannot contain the same question more than once, so we define a composite primary key for the join table.
         modelBuilder.Entity<QuizQuestion>() 
             .HasKey(qq => new { qq.QuizId, qq.QuestionId });
+        
+        modelBuilder.Entity<GameResult>()
+            .HasOne(result => result.Quiz)
+            .WithMany(quiz => quiz.GameResults)
+            .HasForeignKey(result => result.QuizId)
+            .OnDelete(DeleteBehavior.Restrict); // Prevent deletion of quizzes that have associated game results.
+
+        // Prevent deleting a category while it contains questions, to maintain data integrity.
+        modelBuilder.Entity<Question>()
+            .HasOne(q => q.Category)
+            .WithMany(c => c.Questions)
+            .HasForeignKey(question => question.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict); 
     }
 }

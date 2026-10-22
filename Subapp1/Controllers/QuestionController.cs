@@ -26,13 +26,6 @@ public class QuestionController : Controller
     public async Task<IActionResult> Index()
     {
         var questions = await _questionRepository.GetAllAsync();
-        
-        // null means the database call failed (an empty list would mean "no questions yet")
-        if (questions == null)
-        {
-            _logger.LogError("[QuestionController] Question list not found while executing GetAllAsync()");
-            return NotFound("Question list not found");
-        }
         // Send the list to Views/Question/Index.cshtml
         return View(questions);
     }
@@ -50,28 +43,16 @@ public class QuestionController : Controller
     // other websites (the form includes a hidden security token automatically).
     public async Task<IActionResult> Create(Question question)
     {
-        // Server-side validation: show the form again with error messages if invalid
+        // Server-side validation
         if (!ModelState.IsValid)
         {
             return View(question);
         }
 
-        bool ok = await _questionRepository.AddAsync(question);
-        if (ok)
-        {
-            // TempData keeps a message for the next page only,
-            // so the Index page can show "Question created."
-            TempData["Message"] = "Question created.";
+        await _questionRepository.AddAsync(question);
 
-            // Redirect to the list, so refreshing the page does not submit the form again
-            return RedirectToAction(nameof(Index));
-        }
-
-        // Saving failed (the repository has already logged the details).
-        _logger.LogWarning("[QuestionController] Question creation failed {@question}", question);
-        // Log a warning here too and show a general error message at the top of the form.
-        ModelState.AddModelError(string.Empty, "The question could not be saved. Please try again.");
-        return View(question);
+        TempData["Message"] = "Question created successfully.";
+        return RedirectToAction(nameof(Index));
     }
 
     // UPDATE - show form filled in with existing values
@@ -81,7 +62,7 @@ public class QuestionController : Controller
         var question = await _questionRepository.GetByIdAsync(id);
         if (question == null)
         {
-            _logger.LogError("[QuestionController] Question not found when updating QuestionId {id}", id);
+            _logger.LogWarning("Question '{QuestionId}' was not found when opening the update form", id);
             return NotFound("Question not found");
         }
         return View(question);
@@ -93,32 +74,30 @@ public class QuestionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Update(Question question)
     {
+        // Server-side validation
         if (!ModelState.IsValid)
         {
             return View(question);
         }
 
-        bool ok = await _questionRepository.UpdateAsync(question);
-        if (ok)
+        bool updated = await _questionRepository.UpdateAsync(question);
+        if (!updated)
         {
-            TempData["Message"] = "Question updated.";
-            return RedirectToAction(nameof(Index));
+            return NotFound("Question not found.");
         }
 
-        _logger.LogWarning("[QuestionController] Question update failed {@question}", question);
-        ModelState.AddModelError(string.Empty, "The question could not be updated. Please try again.");
-        return View(question);
+        TempData["Message"] = "Question updated successfully.";
+        return RedirectToAction(nameof(Index));
     }
 
     // DELETE - show confirmation page before deleting
-    // Nothing is deleted here; the user must confirm first.
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         var question = await _questionRepository.GetByIdAsync(id);
         if (question == null)
         {
-            _logger.LogError("[QuestionController] Question not found when deleting QuestionId {id}", id);
+            _logger.LogWarning("Question '{QuestionId}' was not found when opening the delete confirmation page.", id);
             return NotFound("Question not found");
         }
         return View(question);
@@ -129,11 +108,10 @@ public class QuestionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        bool ok = await _questionRepository.DeleteAsync(id);
-        if (!ok)
+        bool deleted = await _questionRepository.DeleteAsync(id);
+        if (!deleted)
         {
-            _logger.LogError("[QuestionController] Question deletion failed for QuestionId {id}", id);
-            return BadRequest("Question deletion failed");
+            return NotFound("Question not found or could.");
         }
 
         TempData["Message"] = "Question deleted.";

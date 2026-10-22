@@ -23,4 +23,5 @@ public class GameResult
     public int QuizId { get; set; }
 
     // Navigation property to the associated Quiz.
+    public Quiz Quiz { get; set; } = null!;
 }

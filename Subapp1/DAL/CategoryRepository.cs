@@ -6,10 +6,12 @@ namespace Subapp1.DAL;
 public class CategoryRepository : ICategoryRepository
 {
     private readonly GameDbContext _context;
+    private readonly ILogger<CategoryRepository> _logger;
 
-    public CategoryRepository(GameDbContext context)
+    public CategoryRepository(GameDbContext context, ILogger<CategoryRepository> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     // Retrieve all categories.
@@ -27,8 +29,19 @@ public class CategoryRepository : ICategoryRepository
     // Create a new category.
     public async Task<bool> AddAsync(Category category)
     {
+        try
+        {
         _context.Categories.Add(category);
-        return await _context.SaveChangesAsync() > 0;
+        await _context.SaveChangesAsync();   
+
+        _logger.LogInformation("Category '{CategoryName}' created successfully with ID '{CategoryId}'.", category.Name, category.CategoryId);
+        return true;
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Database error occurred while creating category '{CategoryName}'.", category.Name);
+            throw; // Rethrow the exception to be handled by the calling code.
+        }
     }
 
     // Update an existing category.
@@ -37,13 +50,23 @@ public class CategoryRepository : ICategoryRepository
         var existingCategory = await _context.Categories.FindAsync(category.CategoryId);
         if (existingCategory == null)
         {
+            _logger.LogWarning("Category update failed: Category with ID '{CategoryId}' not found.", category.CategoryId);
             return false;
         }
 
         existingCategory.Name = category.Name;
 
+        try
+        {
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Category '{CategorId}' updated successfully.", existingCategory.CategoryId);
         return true;
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Database error occurred while updating category '{CategoryId}'.", category.CategoryId);
+            throw; // Rethrow the exception to be handled by the calling code.
+        } 
     }
 
     // Delete a category by its ID, but only if it has no associated questions.
@@ -53,6 +76,7 @@ public class CategoryRepository : ICategoryRepository
 
         if (category == null)
         {
+            _logger.LogWarning("Category deletion failed: Category with ID '{CategoryId}' not found.", id);
             return false;
         }
 
@@ -61,12 +85,23 @@ public class CategoryRepository : ICategoryRepository
         
         if (hasQuestions)
         {
+            _logger.LogWarning("Category with ID '{CategoryId}' cannot be deleted because it has associated questions.", id);
             // Cannot delete the category because it has associated questions.
             return false;
         }
 
-        _context.Categories.Remove(category);
-        return await _context.SaveChangesAsync() > 0;
-        
+        try
+        {
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Category '{CategoryId}' deleted successfully.", id);
+            return true;
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Database error occurred while deleting the category '{CategoryId}'.", id);
+            throw; // Rethrow the exception to be handled by the calling code.
+        } 
     }
 }

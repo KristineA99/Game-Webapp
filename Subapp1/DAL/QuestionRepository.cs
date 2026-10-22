@@ -3,9 +3,9 @@ using Subapp1.Models;
 
 namespace Subapp1.DAL;
 
-// Handles all database access for questions.
-// Every method catches and logs database access exceptions.
-// The controller decides how failed operations are presented to the user.
+// Handles database access for questions using asynchronous EF Core operations.
+// Missing records return null or false, while database errors are logged
+// and rethrown for centralized exception handling.
 
 // Based on the repository and error handling patterns from the course demos
 // Demo-ShopDatabase-6-Repository and Demo-ShopErrorHandlingLogging.
@@ -25,10 +25,10 @@ public class QuestionRepository : IQuestionRepository
         _logger = logger;
     }
 
-    // READ - all questions
+    // READ - retrieve all questions
     // Used by the admin page that lists all questions.
     // "async" and "await" let the app keep working while it waits for the database.
-    public async Task<IEnumerable<Question>?> GetAllAsync()
+    public async Task<IEnumerable<Question>> GetAllAsync()
     {
         try
         {
@@ -36,13 +36,13 @@ public class QuestionRepository : IQuestionRepository
                 .OrderBy(q => q.QuestionId)
                 .ToListAsync();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
             // The tag [QuestionRepository] shows where in the code the error came from
             _logger.LogError(
-                e,
-                "[QuestionRepository] GetAllAsync() failed.");
-            return null;
+                ex,
+                "Database error occurred while retrieving questions.");
+            throw; // Rethrow the exception to be handled by the calling code.
         }
     }
 
@@ -54,14 +54,15 @@ public class QuestionRepository : IQuestionRepository
         {
             return await _context.Questions.FindAsync(id); // FindAsync looks up the row by its primary key (QuestionId).
         }
-        // Returns null if no question has that id, or if the database call fails.
-        catch (Exception e)
+        // Returns null if the question doesn not exist.
+        // Database errors are logged and rethrown.
+        catch (Exception ex)
         {
             _logger.LogError(
-                e,
-                "[QuestionRepository] GetByIdAsync() failed for QuestionId {id}.",
+                ex,
+                "Database error occurred while retrieving question with ID {QuestionId}.",
                 id);
-            return null;
+            throw;
         }
     }
 
@@ -76,18 +77,19 @@ public class QuestionRepository : IQuestionRepository
                 .OrderBy(q => EF.Functions.Random()) // EF.Functions.Random() gives every row a random number, the questions are
                 .FirstOrDefaultAsync();              //sorted by that number, and FirstOrDefaultAsync picks the first one
         }
-        // Returns null if the table is empty or the database call fails.
-        catch (Exception e)
+        // Returns null if no eligible questions remain.
+        // Database errors are logged and rethrown.
+        catch (Exception ex)
         {
             _logger.LogError(
-                e,
-                "[QuestionRepository] GetRandomAsync() failed,");
-            return null;
+                ex,
+                "Database error occurred while retrieving a random question.");
+            throw;
         }
     }
 
     // CREATE - add a new question to the database.
-    public async Task<bool> AddAsync(Question question)
+    public async Task AddAsync(Question question)
     {
         try
         {
@@ -95,18 +97,15 @@ public class QuestionRepository : IQuestionRepository
             await _context.SaveChangesAsync(); // SaveChangesAsync() is what actually writes it to the database.
 
             _logger.LogInformation(
-                "[QuestionRepository] Question {id} was added successfully.",
+                "Question '{QuestionId}' was added successfully.",
                 question.QuestionId);
-            return true; // Returns true if it was saved, false if something went wrong.
         }
-        catch (Exception e)
+        catch (DbUpdateException ex)
         {
-            // {@question} logs the whole question object, which helps with debugging
             _logger.LogError(
-                e,
-                "[QuestionRepository] AddAsync() failed for question {@question}",
-                question); 
-            return false;
+                ex,
+                "Database error occurred while adding a new question."); 
+            throw;
         }
     }
 
@@ -115,22 +114,38 @@ public class QuestionRepository : IQuestionRepository
     {
         try
         {
-            _context.Questions.Update(question);// Update() marks the question as changed.
-            await _context.SaveChangesAsync(); // SaveChangesAsync() writes the changes to the database.
+            var existingQuestion = await _context.Questions.FindAsync(question.QuestionId);
+            if (existingQuestion == null)
+            {
+               _logger.LogWarning(
+                  "Question update failed: Question with ID '{QuestionId}' not found.",
+                  question.QuestionId);
+               return false; // The question does not exist in the database.
+            }
+
+            // Update only the editable properties.
+            existingQuestion.Text = question.Text;
+            existingQuestion.OptionA = question.OptionA;
+            existingQuestion.OptionB = question.OptionB;
+            existingQuestion.OptionC = question.OptionC;
+            existingQuestion.OptionD = question.OptionD;
+            existingQuestion.CorrectOption = question.CorrectOption;
+            existingQuestion.CategoryId = question.CategoryId;
+
+            await _context.SaveChangesAsync(); 
 
             _logger.LogInformation(
-                "[QuestionRepository] Question {id} was updated successfully.",
-                question.QuestionId);
-            return true; // Returns true even if nothing was changed.
+                "Question with id '{QuestionId}' was updated successfully.",
+                existingQuestion.QuestionId);
+            return true; 
         }
-        // Returns false only if an error occurs.
-        catch (Exception e)
+        catch (Exception ex)
         {
             _logger.LogError(
-                e,
-                "[QuestionRepository] UpdateAsync() failed for question {@question}.",
-                question);
-            return false; 
+                ex,
+                "Database error occurred while updating question '{QuestionId}'.",
+                question.QuestionId);
+            throw; 
         }
     }
 
@@ -139,32 +154,31 @@ public class QuestionRepository : IQuestionRepository
     {
         try
         {
-            var question = await _context.Questions.FindAsync(id); //look up the question. 
+            var question = await _context.Questions.FindAsync(id);
 
-            if (question == null) // If the question does not exist, we log it and return false.
+            if (question == null)
             {
-                _logger.LogWarning("[QuestionRepository] Question not found for QuestionId {id}", id);
-
-                return false;
+                _logger.LogWarning(
+                    "Question deletion failed: Question with ID '{QuestionId}' was not found.",
+                    id);
+                return false; // The question does not exist in the database.
             }
-
-             // If the question exist, we remove it and save the change.
-            _context.Questions.Remove(question);
-            await _context.SaveChangesAsync();
+            _context.Questions.Remove(question); // Remove() marks the question for deletion.
+            await _context.SaveChangesAsync(); // SaveChangesAsync() actually deletes it from the database
 
             _logger.LogInformation(
-                "[QuestionRepository] Question {id} was deleted successfully.",
+                "Question with ID '{QuestionId}' was deleted successfully.",
                 id);
-            return true;
+            
+            return true; 
         }
-        // If the question exist, but an error occures.
-        catch (Exception e)
+        catch (Exception ex)
         {
             _logger.LogError(
-                e,
-                "[QuestionRepository] DeleteAsync() failed for QuestionId {id}",
+                ex,
+                "Database error occurred while deleting question '{QuestionId}'.",
                 id);
-            return false;
+            throw;
         }
     }
 }

@@ -141,11 +141,13 @@ namespace Subapp1.Migrations
 
             modelBuilder.Entity("Subapp1.Models.GameResult", b =>
                 {
-                    b.HasOne("Subapp1.Models.Quiz", null)
+                    b.HasOne("Subapp1.Models.Quiz", "Quiz")
                         .WithMany("GameResults")
                         .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Quiz");
                 });
 
             modelBuilder.Entity("Subapp1.Models.Question", b =>
@@ -153,7 +155,7 @@ namespace Subapp1.Migrations
                     b.HasOne("Subapp1.Models.Category", "Category")
                         .WithMany("Questions")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");

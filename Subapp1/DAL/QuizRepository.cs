@@ -6,10 +6,12 @@ namespace Subapp1.DAL;
 public class QuizRepository : IQuizRepository
 {
     private readonly GameDbContext _context;
+    private readonly ILogger<QuizRepository> _logger;
 
-    public QuizRepository(GameDbContext context)
+    public QuizRepository(GameDbContext context, ILogger<QuizRepository> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     // Retrieve all quizzes from the database.
@@ -43,6 +45,7 @@ public class QuizRepository : IQuizRepository
         
         if (validQuestionIds.Count != selectedQuestionIds.Distinct().Count())
         {
+            _logger.LogWarning("Quiz creation rejected because one or more selected question IDs are invalid.");
             return false; // Some selected questions do not exist.
         }
 
@@ -54,10 +57,19 @@ public class QuizRepository : IQuizRepository
                 QuestionId = questionId
             });
         }
+        try
+        {
+           _context.Quizzes.Add(quiz);
+           await _context.SaveChangesAsync();; 
 
-        // Save the quiz and its question relationships together.
-        _context.Quizzes.Add(quiz);
-        return await _context.SaveChangesAsync() > 0;
+           _logger.LogInformation("Quiz '{QuizId}' created successfully", quiz.QuizId);
+              return true;
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Database error occurred while creating the quiz.");
+            throw; // Rethrow the exception to be handled by the calling code.
+        }     
     }
 
     // Update a quiz and its associated questions.
@@ -67,6 +79,7 @@ public class QuizRepository : IQuizRepository
 
         if (existingQuiz == null)
         {
+            _logger.LogWarning("Quiz update failed: Quiz with ID '{QuizId}' not found.", quiz.QuizId);
             return false;
         }
 
@@ -78,6 +91,7 @@ public class QuizRepository : IQuizRepository
 
         if (validQuestionIds.Count != selectedQuestionIds.Distinct().Count())
         {
+            _logger.LogWarning("Quiz with Id '{QuizId}' update rejected because one or more selected question IDs are invalid.", quiz.QuizId);
             return false; // Some selected questions do not exist.
         }
 
@@ -95,7 +109,7 @@ public class QuizRepository : IQuizRepository
             _context.QuizQuestions.Remove(quizQuestion);
         }
 
-        // Find the questions that are newly selected.
+        // Add relationships for questions that are newly selected.
         var existingQuestionIds = existingQuiz.QuizQuestions.Select(qq => qq.QuestionId).ToHashSet();
 
         foreach (int questionId in validQuestionIds)
@@ -110,8 +124,18 @@ public class QuizRepository : IQuizRepository
             }
         }
 
-        await _context.SaveChangesAsync();
-        return true;
+        try
+        {
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Quiz '{QuizId}' updated successfully.", existingQuiz.QuizId);
+
+            return true;
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Database error occurred while updating the quiz '{QuizId}'.", quiz.QuizId);
+            throw; // Rethrow the exception to be handled by the calling code.
+        }
     }
 
     // Delete a quiz by its ID, only if it has no recorded game results.
@@ -121,16 +145,28 @@ public class QuizRepository : IQuizRepository
 
         if (quiz == null)
         {
+            _logger.LogWarning("Quiz deletion failed: Quiz with ID '{QuizId}' not found.", id);
             return false;
         }
         // Preserve quizzes that have recorded game results to maintain historical data integrity.
         bool hasGameResults = await _context.GameResults.AnyAsync(result => result.QuizId == id);
         if (hasGameResults)
         {
-            return false; // Cannot delete the quiz as it has associated game results.
+            _logger.LogWarning("Quiz '{QuizId}' cannot be deleted because it has recordedgame results.", id);
+            return false; 
         }
 
-        _context.Quizzes.Remove(quiz);
-        return await _context.SaveChangesAsync() > 0;
+        try
+        {
+            _context.Quizzes.Remove(quiz);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Quiz '{QuizId}' deleted successfully.", id);
+            return true;
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Database error occurred while deleting the quiz '{QuizId}'.", id);
+            throw; // Rethrow the exception to be handled by the calling code.
+        }
     }
 }
