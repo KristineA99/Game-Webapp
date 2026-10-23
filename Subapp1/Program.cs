@@ -41,7 +41,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
     options.LogoutPath = "/Account/Logout";
-    options.AccessDeniedPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied"; // Redirect to AccessDenied page if user lacks required role
 });
 
 // Session support for storing temporary game state and user data between requests.
