@@ -33,7 +33,7 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+            var user = new IdentityUser { UserName = model.Nickname, Email = model.Email };
             // CreateAsync hashes the password and saves the user to the database
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -77,13 +77,19 @@ public class AccountController : Controller
         if (ModelState.IsValid)
         {
             // Checks the password hash and sets the login cookie
-            var result = await _signInManager.PasswordSignInAsync(
-                model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
-            if (result.Succeeded)
+            if (user != null)
             {
-                _logger.LogInformation("[AccountController] User logged in: {Email}", model.Email);
-                return Redirect(targetUrl);
+                // Checks the password hash and sets the login cookie
+                var result = await _signInManager.PasswordSignInAsync(
+                    user, model.Password, model.RememberMe, lockoutOnFailure: false);
+            
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("[AccountController] User logged in: {Email}", model.Email);
+                    return Redirect(targetUrl);
+                }
             }
 
             _logger.LogWarning("[AccountController] Failed login attempt for {Email}", model.Email);

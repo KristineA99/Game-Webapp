@@ -1,16 +1,24 @@
 @model Subapp1.ViewModels.LoginViewModel
+
 @{
     ViewData["Title"] = "Log in";
 }
 
-<h2>Log in</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/questions.css" asp-append-version="true" />
+}
+
+<h1>Log in</h1>
+
 <div class="row">
     <div class="col-md-6">
         <form asp-action="Login" method="post">
             @* Hidden input keeps ReturnUrl when the form is submitted *@
             <input type="hidden" asp-for="ReturnUrl" />
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @* General errors, e.g. "Invalid login attempt." *@
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
 
             <div class="mb-3">
                 <label asp-for="Email" class="form-label"></label>
@@ -30,10 +38,18 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Log in</button>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancel</a>
         </form>
+
+        @* Link for new users *@
+        <p class="mt-4">
+            No account yet?
+            <a asp-action="Register" class="fw-bold text-dark">Register here</a>
+        </p>
     </div>
 </div>
 
+@* Shows validation errors in the browser before the form is sent *@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

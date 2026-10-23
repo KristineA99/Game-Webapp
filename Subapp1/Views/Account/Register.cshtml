@@ -1,37 +1,63 @@
 @model Subapp1.ViewModels.RegisterViewModel
+
 @{
     ViewData["Title"] = "Register";
 }
 
-<h2>Register</h2>
+@* Loads the black and white style used on the other pages *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/questions.css" asp-append-version="true" />
+}
+
+<h1>Create user</h1>
+
 <div class="row">
     <div class="col-md-6">
         <form asp-action="Register" method="post">
+            @* General errors from Identity, e.g. "Email is already taken" *@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="mb-3">
                 <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
+                <input asp-for="Email" class="form-control" autocomplete="email" />
                 <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+              <div class="mb-3">
+                <label asp-for="Nickname" class="form-label"></label>
+                <input asp-for="Nickname" class="form-control" />
+                <span asp-validation-for="Nickname" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <input asp-for="Password" class="form-control" autocomplete="new-password" aria-describedby="password-help" />
+                @* Tells the user the password rules before they submit, so they avoid an error *@
+                <div id="password-help" class="form-text">
+                    At least 6 characters, with an uppercase letter, a lowercase letter, a number and a symbol.
+                </div>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
+                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-primary">Create user</button>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancel</a>
         </form>
+
+        @* Link for existing users *@
+        <p class="mt-4">
+            Already have a user?
+            <a asp-action="Login" class="fw-bold text-dark">Log in here</a>
+        </p>
     </div>
 </div>
 
+@* Shows validation errors in the browser before the form is sent *@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

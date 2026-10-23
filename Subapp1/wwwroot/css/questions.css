@@ -58,7 +58,7 @@ h1 {
  
 /* Pressed: the button moves into its shadow. */
 .btn:first-child:active, :not(.btn-check) + .btn:active {
-    color: #000;
+    color: #000000;
     background-color: #fff;
     border-color: #000;
     transform: translate(3px, 3px);
@@ -183,6 +183,18 @@ for example due to motor impairments or because they use a screen reader.*/
     box-shadow: 4px 4px 0 #000;
 }
 
+/* Checkboxes (e.g. "Remember me" on the login page): square with a thick black border */
+.form-check-input {
+    border: 3px solid #000;
+    border-radius: 0;
+}
+
+/* Checked checkbox: black fill */
+.form-check-input:checked {
+    background-color: #000;
+    border-color: #000;
+}
+
 /* Forms - fields that failed validation get a light red background */
 .input-validation-error {
     background-color: #ffd4d4;
@@ -196,8 +208,8 @@ for example due to motor impairments or because they use a screen reader.*/
 /* Validation messages in red, smaller text.
    !important is needed because Bootstrap's .text-danger uses it. */
 .text-danger {
-    color: #ff2626 !important;
-    font-size: 1rem;
+    color: #ff2626;
+    font-size: 0.9rem;
 }
  
 /* Messages */
