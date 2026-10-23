@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Access denied";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/questions.css" asp-append-version="true" />
+}
+
+<h1>Access denied
+    <img src="~/images/monster3.gif" alt="" class="heading-gif" />
+</h1>
+
+<p>Only admins can manage questions, categories and quizzes.</p>
+
+<a asp-controller="Game" asp-action="Play" class="btn btn-primary">Play the game</a>
+<a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to home</a>

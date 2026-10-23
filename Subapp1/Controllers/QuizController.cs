@@ -7,7 +7,7 @@ using Subapp1.ViewModels;
 
 namespace Subapp1.Controllers;
 
-[Authorize]
+[Authorize (Roles = "Admin")] // Only users in the Admin role can access these pages
 public class QuizController : Controller
 {
     private readonly IQuizRepository _quizRepository;

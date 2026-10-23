@@ -5,7 +5,7 @@ using Subapp1.Models;
 
 namespace Subapp1.Controllers;
 
-[Authorize]
+[Authorize (Roles = "Admin")] // Only users in the Admin role can access these pages
 public class CategoryController : Controller
 {
     private readonly ICategoryRepository _categoryRepository;

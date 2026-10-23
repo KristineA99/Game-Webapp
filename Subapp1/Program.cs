@@ -32,7 +32,9 @@ builder.Services.AddDbContext<GameDbContext>(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false; // no email confirmation needed for local testing
-}).AddEntityFrameworkStores<GameDbContext>();
+})
+.AddRoles<IdentityRole>() // Enables roles such as "Admin" for user authorization
+.AddEntityFrameworkStores<GameDbContext>();
 
 // Redirect users who are not logged in to our own login page
 builder.Services.ConfigureApplicationCookie(options =>
@@ -68,6 +70,9 @@ using (var scope = app.Services.CreateScope())
 
     // Add initial data if the database contains no questions.
     DbInit.Initialize(context, app.Environment);
+
+    //Create the Admin role and the admin user
+    await IdentitySeeder.SeedAsync(scope.ServiceProvider, builder.Configuration);
 }
 
 // Configure exception handling based on the environment.

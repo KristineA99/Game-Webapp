@@ -12,7 +12,7 @@ namespace Subapp1.Controllers;
 // Based on the ItemController pattern from the course demos
 // Demo-ShopDatabase-6-Repository and Demo-ShopErrorHandlingLogging.
 
-[Authorize]
+[Authorize (Roles = "Admin")] // Only users in the Admin role can access these pages
 public class QuestionController : Controller
 {
     // The repository used for all database operations on questions

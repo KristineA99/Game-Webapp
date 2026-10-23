@@ -64,6 +64,15 @@ public class AccountController : Controller
         return View(model);
     }
 
+    // GET: /Account/AccessDenied
+    // Shown when a logged-in user opens a page that requires the Admin role
+    [HttpGet]
+    public IActionResult AccessDenied()
+    {
+        _logger.LogWarning("[AccountController] Access denied for user {User}", User.Identity?.Name);
+        return View();
+    }
+
     // POST: /Account/Login
     [HttpPost]
     [ValidateAntiForgeryToken]
