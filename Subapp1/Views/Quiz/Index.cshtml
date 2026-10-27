@@ -18,16 +18,32 @@
             <th>Quiz ID</th>
             <th>Title</th>
             <th>Description</th>
+            <th>Questions</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var quiz in Model)
         {
+            var questionCount = quiz.QuizQuestions.Count;
+            var isPlayable = questionCount >= 5; // Setting the quiz status to playable if it has at least 5 questions
+
             <tr>
                 <td>@quiz.QuizId</td>
                 <td>@quiz.Title</td>
                 <td>@quiz.Description</td>
+                <td>@questionCount</td>
+                <td>
+                    @if (isPlayable)
+                    {
+                        <span class="badge bg-success">Playable</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Not Playable</span>
+                    }
+                </td>
                 <td>
                     <a asp-controller="Quiz" asp-action="Edit" asp-route-id="@quiz.QuizId" class="btn btn-sm btn-outline-primary">Edit</a>
                     <a asp-controller="Quiz" asp-action="Delete" asp-route-id="@quiz.QuizId" class="btn btn-sm btn-outline-danger">Delete</a>

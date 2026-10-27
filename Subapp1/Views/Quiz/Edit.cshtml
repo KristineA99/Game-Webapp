@@ -29,30 +29,7 @@
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
-        <h4>Select Questions</h4>
-        <p>Choose at least one question for this quiz.</p>
-
-        <span asp-validation-for="SelectedQuestionIds"
-              class="text-danger"></span>
-
-        @foreach (var question in Model.AvailableQuestions)
-        {
-            <div class="form-check">
-                <input type="checkbox"
-                       name="SelectedQuestionIds"
-                       value="@question.Value"
-                       checked="@question.Selected"
-                       class="form-check-input"
-                       id="question-@question.Value" />
-
-                <label class="form-check-label"
-                       for="question-@question.Value">
-                    @question.Text
-                </label>
-            </div>
-        }
-    </div>
+    <partial name="_QuestionSelection" model="Model" />
 
     <button type="submit" class="btn btn-primary">
         Save Changes
@@ -65,4 +42,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/quiz-category-filter.js" asp-append-version="true"></script>
 }

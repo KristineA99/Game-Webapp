@@ -12,12 +12,14 @@ public class QuizController : Controller
 {
     private readonly IQuizRepository _quizRepository;
     private readonly IQuestionRepository _questionRepository;
+    private readonly ICategoryRepository _categoryRepository;
 
     // Inject the quiz repository through the constructor.
-    public QuizController(IQuizRepository quizRepository, IQuestionRepository questionRepository)
+    public QuizController(IQuizRepository quizRepository, IQuestionRepository questionRepository, ICategoryRepository categoryRepository)
     {
         _quizRepository = quizRepository;
         _questionRepository = questionRepository;
+        _categoryRepository = categoryRepository;
     }
 
     // GET: /Quiz/
@@ -54,6 +56,8 @@ public class QuizController : Controller
                 );
         }
 
+        await ValidateSelectionsAsync(viewModel);
+
         // Check all validation rules before saving.
         if (!ModelState.IsValid)
         {
@@ -88,7 +92,7 @@ public class QuizController : Controller
     }
 
     // GET: /Quiz/Edit/{id}
-    // Display the form for editing an existing quiz and its selected questions.
+    // Display the form for editing an existing quiz with its questions and categories preselected.
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -98,12 +102,23 @@ public class QuizController : Controller
             return NotFound();
         }
 
+        var selectedQuestionIds = quiz.QuizQuestions.Select(qq => qq.QuestionId).ToList();
+
+        // Get the categories of the selected questions.
+        var questions = await _questionRepository.GetAllAsync();
+        var selectedCategoryIds = questions
+            .Where(q => selectedQuestionIds.Contains(q.QuestionId))
+            .Select(q => q.CategoryId)
+            .Distinct()
+            .ToList();
+
         var viewModel = new QuizFormViewModel
         {
             QuizId = quiz.QuizId,
             Title = quiz.Title,
             Description = quiz.Description,
-            SelectedQuestionIds = quiz.QuizQuestions.Select(qq => qq.QuestionId).ToList()
+            SelectedQuestionIds = selectedQuestionIds,
+            SelectedCategoryIds = selectedCategoryIds
         };
 
         await PopulateAvailableQuestionsAsync(viewModel);
@@ -129,6 +144,9 @@ public class QuizController : Controller
                 "At least one question must be selected."
                 );
         }
+
+        // Validate that selected categories and questions exist, contain no duplicates, and belong together.
+        await ValidateSelectionsAsync(viewModel);
 
         // Check all validation rules before saving.
         if (!ModelState.IsValid)
@@ -204,12 +222,67 @@ public class QuizController : Controller
     // Helper method to populate the AvailableQuestions list in the ViewModel.
     private async Task PopulateAvailableQuestionsAsync(QuizFormViewModel viewModel)
     {
+        var categories = await _categoryRepository.GetAllAsync();
         var questions = await _questionRepository.GetAllAsync();
-        viewModel.AvailableQuestions = questions?.Select(q => new SelectListItem
+
+        viewModel.AvailableCategories = categories.OrderBy(c => c.CategoryId).Select(c => new SelectListItem    
+            {
+                Value = c.CategoryId.ToString(),
+                Text = c.Name,
+                Selected = viewModel.SelectedCategoryIds.Contains(c.CategoryId)
+            }).ToList();
+
+        viewModel.AvailableQuestions = questions
+            .OrderBy(q => q.CategoryId)
+            .ThenBy(q => q.QuestionId)
+            .Select(q => new SelectListItem
         {
             Value = q.QuestionId.ToString(),
             Text = q.Text,
-            Selected = viewModel.SelectedQuestionIds?.Contains(q.QuestionId) == true
-        }).ToList() ?? new List<SelectListItem>();
+            Selected = viewModel.SelectedQuestionIds.Contains(q.QuestionId)
+        }).ToList();
+
+        viewModel.QuestionCategoryIds = questions.ToDictionary(
+        q => q.QuestionId,
+        q => q.CategoryId);
+    }
+
+    // Validate category and question selections against the database.
+    private async Task ValidateSelectionsAsync(QuizFormViewModel viewModel)
+    {
+        var categories = (await _categoryRepository.GetAllAsync()).ToList();
+        var questions = (await _questionRepository.GetAllAsync()).ToList();
+
+        var validCategoryIds = categories.Select(c => c.CategoryId).ToHashSet();
+        var validQuestionIds = questions.Select(q => q.QuestionId).ToHashSet();
+
+        var selectedCategories = viewModel.SelectedCategoryIds;
+        var selectedQuestions = viewModel.SelectedQuestionIds;
+
+        if (selectedCategories.Count != selectedCategories.Distinct().Count() ||
+            selectedCategories.Any(id => !validCategoryIds.Contains(id)))
+        {
+            ModelState.AddModelError(
+                nameof(viewModel.SelectedCategoryIds),
+                "One or more selected categories are invalid.");
+        }
+
+        if (selectedQuestions.Count != selectedQuestions.Distinct().Count() ||
+            selectedQuestions.Any(id => !validQuestionIds.Contains(id)))
+        {
+            ModelState.AddModelError(
+                nameof(viewModel.SelectedQuestionIds),
+                "One or more selected questions are invalid.");
+        }
+
+        if (selectedQuestions.Any(id =>
+            !questions.Any(q =>
+                q.QuestionId == id &&
+                selectedCategories.Contains(q.CategoryId))))
+        {
+            ModelState.AddModelError(
+                nameof(viewModel.SelectedQuestionIds),
+                "Selected questions must belong to the selected categories.");
+        }
     }
 }

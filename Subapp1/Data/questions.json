@@ -1,5 +1,6 @@
 [
   {
+    "Category": "Module 2 - Introduction to Principles of Computer Security",
     "Text": "Which part of the CIA triad protects information from unauthorized disclosure?",
     "OptionA": "Confidentiality",
     "OptionB": "Integrity",
@@ -8,6 +9,7 @@
     "CorrectOption": 1
   },
   {
+    "Category": "Module 2 - Introduction to Principles of Computer Security",
     "Text": "Which security principle gives users only the permissions they need to perform their tasks?",
     "OptionA": "Defense in depth",
     "OptionB": "Least privilege",
@@ -16,14 +18,7 @@
     "CorrectOption": 2
   },
   {
-    "Text": "Which access control model assigns permissions according to a user's job role?",
-    "OptionA": "DAC",
-    "OptionB": "MAC",
-    "OptionC": "RBAC",
-    "OptionD": "ABAC",
-    "CorrectOption": 3
-  },
-  {
+    "Category": "Module 2 - Introduction to Principles of Computer Security",
     "Text": "Which part of the CIA triad ensures that information remains accurate and unaltered?",
     "OptionA": "Availability",
     "OptionB": "Authentication",
@@ -32,22 +27,7 @@
     "CorrectOption": 4
   },
   {
-    "Text": "Which type of encryption uses the same key for encryption and decryption?",
-    "OptionA": "Symmetric encryption",
-    "OptionB": "Asymmetric encryption",
-    "OptionC": "Hashing",
-    "OptionD": "Digital signing",
-    "CorrectOption": 1
-  },
-  {
-    "Text": "What is the main purpose of authentication?",
-    "OptionA": "To determine what a user may access",
-    "OptionB": "To verify an identity",
-    "OptionC": "To encrypt stored information",
-    "OptionD": "To create backups",
-    "CorrectOption": 2
-  },
-  {
+    "Category": "Module 2 - Introduction to Principles of Computer Security",
     "Text": "Which security principle uses multiple layers of protection so that one failed control does not leave a system unprotected?",
     "OptionA": "Least privilege",
     "OptionB": "Separation of duties",
@@ -56,46 +36,7 @@
     "CorrectOption": 3
   },
   {
-    "Text": "Which type of malware can spread between systems without requiring a user to run an infected file?",
-    "OptionA": "Trojan",
-    "OptionB": "Rootkit",
-    "OptionC": "Spyware",
-    "OptionD": "Worm",
-    "CorrectOption": 4
-  },
-  {
-    "Text": "Which cryptographic technique produces a fixed-length value from input data?",
-    "OptionA": "Hashing",
-    "OptionB": "Asymmetric encryption",
-    "OptionC": "Tokenization",
-    "OptionD": "Steganography",
-    "CorrectOption": 1
-  },
-  {
-    "Text": "What is the main purpose of authorization?",
-    "OptionA": "To verify who a user is",
-    "OptionB": "To determine what an authenticated user is allowed to do",
-    "OptionC": "To encrypt a user's password",
-    "OptionD": "To record network traffic",
-    "CorrectOption": 2
-  },
-  {
-    "Text": "What does a digital signature primarily help verify?",
-    "OptionA": "Availability and redundancy",
-    "OptionB": "Confidentiality and anonymity",
-    "OptionC": "Integrity and authenticity",
-    "OptionD": "Compression and encryption",
-    "CorrectOption": 3
-  },
-  {
-    "Text": "In asymmetric cryptography, which key should remain secret to its owner?",
-    "OptionA": "Public key",
-    "OptionB": "Session key",
-    "OptionC": "Shared key",
-    "OptionD": "Private key",
-    "CorrectOption": 4
-  },
-  {
+    "Category": "Module 2 - Introduction to Principles of Computer Security",
     "Text": "Which security principle divides critical tasks between multiple people?",
     "OptionA": "Separation of duties",
     "OptionB": "Least privilege",
@@ -104,22 +45,7 @@
     "CorrectOption": 1
   },
   {
-    "Text": "What is the primary purpose of a firewall?",
-    "OptionA": "To hash passwords",
-    "OptionB": "To control network traffic based on defined rules",
-    "OptionC": "To create digital certificates",
-    "OptionD": "To physically secure a server",
-    "CorrectOption": 2
-  },
-  {
-    "Text": "Which access control model uses attributes of subjects, objects, and the environment to make access decisions?",
-    "OptionA": "DAC",
-    "OptionB": "RBAC",
-    "OptionC": "ABAC",
-    "OptionD": "MAC",
-    "CorrectOption": 3
-  },
-  {
+    "Category": "Module 2 - Introduction to Principles of Computer Security",
     "Text": "Which part of the CIA triad focuses on ensuring systems and data are accessible when needed?",
     "OptionA": "Integrity",
     "OptionB": "Confidentiality",
@@ -128,6 +54,7 @@
     "CorrectOption": 4
   },
   {
+    "Category": "Module 2 - Introduction to Principles of Computer Security",
     "Text": "What is a vulnerability?",
     "OptionA": "A weakness that could be exploited by a threat",
     "OptionB": "An event that has already caused damage",
@@ -136,14 +63,106 @@
     "CorrectOption": 1
   },
   {
-    "Text": "What is the purpose of security logging?",
-    "OptionA": "To prevent every security incident",
-    "OptionB": "To record events that can be monitored and investigated",
-    "OptionC": "To replace access controls",
-    "OptionD": "To encrypt network traffic",
+    "Category": "Module 3 - Introduction to Cryptology",
+    "Text": "Which type of encryption uses the same key for encryption and decryption?",
+    "OptionA": "Symmetric encryption",
+    "OptionB": "Asymmetric encryption",
+    "OptionC": "Hashing",
+    "OptionD": "Digital signing",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 3 - Introduction to Cryptology",
+    "Text": "Which cryptographic technique produces a fixed-length value from input data?",
+    "OptionA": "Hashing",
+    "OptionB": "Asymmetric encryption",
+    "OptionC": "Tokenization",
+    "OptionD": "Steganography",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 3 - Introduction to Cryptology",
+    "Text": "In asymmetric cryptography, which key should remain secret to its owner?",
+    "OptionA": "Public key",
+    "OptionB": "Session key",
+    "OptionC": "Shared key",
+    "OptionD": "Private key",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 3 - Introduction to Cryptology",
+    "Text": "Why are cryptographic hash functions useful for integrity checks?",
+    "OptionA": "They decrypt files",
+    "OptionB": "Changed inputs usually produce different digests",
+    "OptionC": "They require certificates",
+    "OptionD": "They store private keys",
     "CorrectOption": 2
   },
   {
+    "Category": "Module 3 - Introduction to Cryptology",
+    "Text": "Which technique conceals information within another file?",
+    "OptionA": "Steganography",
+    "OptionB": "Authorization",
+    "OptionC": "Key exchange",
+    "OptionD": "Digital signing",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 4 - Cryptographic Algorithms",
+    "Text": "What block size does AES use?",
+    "OptionA": "64 bits",
+    "OptionB": "128 bits",
+    "OptionC": "192 bits",
+    "OptionD": "256 bits",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 4 - Cryptographic Algorithms",
+    "Text": "Which of these is a symmetric block cipher?",
+    "OptionA": "RSA",
+    "OptionB": "Diffie-Hellman",
+    "OptionC": "AES",
+    "OptionD": "SHA-256",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 4 - Cryptographic Algorithms",
+    "Text": "What is a weakness of ECB mode when plaintext blocks repeat?",
+    "OptionA": "It needs a certificate",
+    "OptionB": "It cannot decrypt",
+    "OptionC": "It changes keys automatically",
+    "OptionD": "Equal plaintext blocks yield equal ciphertext blocks",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 4 - Cryptographic Algorithms",
+    "Text": "Why are nonces used in many encryption schemes?",
+    "OptionA": "To avoid unsafe reuse of encryption inputs",
+    "OptionB": "To replace secret keys",
+    "OptionC": "To assign user roles",
+    "OptionD": "To sign certificates",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 4 - Cryptographic Algorithms",
+    "Text": "Which algorithm supports public-key encryption and digital signatures?",
+    "OptionA": "AES",
+    "OptionB": "RSA",
+    "OptionC": "SHA-256",
+    "OptionD": "HMAC",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 5 - Security protocols",
+    "Text": "What does a digital signature primarily help verify?",
+    "OptionA": "Availability and redundancy",
+    "OptionB": "Confidentiality and anonymity",
+    "OptionC": "Integrity and authenticity",
+    "OptionD": "Compression and encryption",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 5 - Security protocols",
     "Text": "What does a digital certificate bind to an identity?",
     "OptionA": "A password",
     "OptionB": "A private key",
@@ -152,11 +171,390 @@
     "CorrectOption": 3
   },
   {
+    "Category": "Module 5 - Security protocols",
+    "Text": "What does a certificate authority do in a public key infrastructure?",
+    "OptionA": "Stores all private keys",
+    "OptionB": "Routes encrypted traffic",
+    "OptionC": "Issues and signs validated certificates",
+    "OptionD": "Replaces authentication",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 5 - Security protocols",
+    "Text": "What does certificate revocation mean?",
+    "OptionA": "It is now a symmetric key",
+    "OptionB": "It has no public key",
+    "OptionC": "It is always expired",
+    "OptionD": "It should no longer be trusted",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 5 - Security protocols",
+    "Text": "Which technology can encrypt and sign email using public keys?",
+    "OptionA": "OpenPGP",
+    "OptionB": "DHCP",
+    "OptionC": "ARP",
+    "OptionD": "SNMP",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 6 - Authentication (Digital Security)",
+    "Text": "What is the main purpose of authentication?",
+    "OptionA": "To determine what a user may access",
+    "OptionB": "To verify an identity",
+    "OptionC": "To encrypt stored information",
+    "OptionD": "To create backups",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 6 - Authentication (Digital Security)",
+    "Text": "Which pair uses two different authentication factors?",
+    "OptionA": "Password and PIN",
+    "OptionB": "Password and authenticator code",
+    "OptionC": "Two passwords",
+    "OptionD": "Two security questions",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 6 - Authentication (Digital Security)",
+    "Text": "Why are unique salts added when hashing passwords?",
+    "OptionA": "To enable decryption",
+    "OptionB": "To avoid access control",
+    "OptionC": "To resist precomputed attacks and hide identical passwords",
+    "OptionD": "To stop all phishing",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 6 - Authentication (Digital Security)",
+    "Text": "A fingerprint is which kind of authentication factor?",
+    "OptionA": "Something you know",
+    "OptionB": "Somewhere you are",
+    "OptionC": "Something you have",
+    "OptionD": "Something you are",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 6 - Authentication (Digital Security)",
+    "Text": "What is credential stuffing?",
+    "OptionA": "Trying stolen credentials on other services",
+    "OptionB": "Brute-forcing AES keys",
+    "OptionC": "Changing file permissions",
+    "OptionD": "Encrypting cookies",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 7 - Authorization",
+    "Text": "Which access control model assigns permissions according to a user's job role?",
+    "OptionA": "DAC",
+    "OptionB": "MAC",
+    "OptionC": "RBAC",
+    "OptionD": "ABAC",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 7 - Authorization",
+    "Text": "What is the main purpose of authorization?",
+    "OptionA": "To verify who a user is",
+    "OptionB": "To determine what an authenticated user is allowed to do",
+    "OptionC": "To encrypt a user's password",
+    "OptionD": "To record network traffic",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 7 - Authorization",
+    "Text": "Which access control model uses attributes of subjects, objects, and the environment to make access decisions?",
+    "OptionA": "DAC",
+    "OptionB": "RBAC",
+    "OptionC": "ABAC",
+    "OptionD": "MAC",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 7 - Authorization",
+    "Text": "With Linux permissions rw-r-----, what can the owning group do?",
+    "OptionA": "Read and write",
+    "OptionB": "Read only",
+    "OptionC": "Execute only",
+    "OptionD": "Read, write and execute",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 7 - Authorization",
+    "Text": "Which access control model uses centrally enforced security labels?",
+    "OptionA": "DAC",
+    "OptionB": "RBAC",
+    "OptionC": "MAC",
+    "OptionD": "ReBAC",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 8 - Identity, Authentication and Authorization protocols and standards",
+    "Text": "What is the purpose of identity federation?",
+    "OptionA": "To remove all accounts",
+    "OptionB": "To encrypt databases",
+    "OptionC": "To replace TLS",
+    "OptionD": "To use an identity provider across services",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 8 - Identity, Authentication and Authorization protocols and standards",
+    "Text": "Which identity standard builds on OAuth 2.0?",
+    "OptionA": "OpenID Connect",
+    "OptionB": "DNSSEC",
+    "OptionC": "IPsec",
+    "OptionD": "S/MIME",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 8 - Identity, Authentication and Authorization protocols and standards",
+    "Text": "What does single sign-on primarily enable?",
+    "OptionA": "Skipping authorization",
+    "OptionB": "Accessing multiple applications after one sign-in",
+    "OptionC": "Avoiding all MFA",
+    "OptionD": "Using public keys as passwords",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 8 - Identity, Authentication and Authorization protocols and standards",
+    "Text": "What does a SAML assertion typically communicate?",
+    "OptionA": "Network routes",
+    "OptionB": "Hard drive keys",
+    "OptionC": "Authentication or identity information",
+    "OptionD": "Firewall rules",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 8 - Identity, Authentication and Authorization protocols and standards",
+    "Text": "What should happen to access when an employee leaves?",
+    "OptionA": "Keep it indefinitely",
+    "OptionB": "Share the password",
+    "OptionC": "Grant admin rights",
+    "OptionD": "Revoke access promptly",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 9 - Network Security Protocols",
+    "Text": "What does correctly configured TLS protect?",
+    "OptionA": "Data in transit",
+    "OptionB": "Offline disk data",
+    "OptionC": "Server room access",
+    "OptionD": "Database schemas",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 9 - Network Security Protocols",
+    "Text": "Which protocol secures HTTPS connections?",
+    "OptionA": "FTP",
+    "OptionB": "TLS",
+    "OptionC": "ARP",
+    "OptionD": "SMTP",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 9 - Network Security Protocols",
+    "Text": "What does HTTP Strict Transport Security tell browsers?",
+    "OptionA": "Ignore certificates",
+    "OptionB": "Allow HTTP fallback",
+    "OptionC": "Use HTTPS for the site",
+    "OptionD": "Store passwords unencrypted",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 9 - Network Security Protocols",
+    "Text": "Why validate a server's TLS certificate?",
+    "OptionA": "To accelerate DNS",
+    "OptionB": "To compress webpages",
+    "OptionC": "To change IP addresses",
+    "OptionD": "To help verify server identity",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 9 - Network Security Protocols",
+    "Text": "Which version introduced a simplified TLS handshake?",
+    "OptionA": "TLS 1.3",
+    "OptionB": "SSL 2.0",
+    "OptionC": "SSL 3.0",
+    "OptionD": "TLS 1.0",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 10 - Network Security 1 (Firewalls)",
+    "Text": "What is the primary purpose of a firewall?",
+    "OptionA": "To hash passwords",
+    "OptionB": "To control network traffic based on defined rules",
+    "OptionC": "To create digital certificates",
+    "OptionD": "To physically secure a server",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 10 - Network Security 1 (Firewalls)",
+    "Text": "What does a stateful firewall track?",
+    "OptionA": "Password hashes",
+    "OptionB": "Connection state",
+    "OptionC": "File ownership",
+    "OptionD": "Certificate expiry",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 10 - Network Security 1 (Firewalls)",
+    "Text": "Which firewall default policy is generally safer?",
+    "OptionA": "Allow all traffic",
+    "OptionB": "Ignore unmatched traffic",
+    "OptionC": "Deny unless explicitly allowed",
+    "OptionD": "Allow all inbound traffic",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 10 - Network Security 1 (Firewalls)",
+    "Text": "What can an application-layer firewall inspect?",
+    "OptionA": "Disk encryption",
+    "OptionB": "BIOS passwords",
+    "OptionC": "File permissions",
+    "OptionD": "HTTP request content",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 10 - Network Security 1 (Firewalls)",
+    "Text": "Why segment a network into security zones?",
+    "OptionA": "To limit lateral movement",
+    "OptionB": "To eliminate vulnerabilities",
+    "OptionC": "To guarantee encryption",
+    "OptionD": "To replace authentication",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 11 - Network Security 2 (Intrusion Detection/Prevention Systems)",
+    "Text": "What is the purpose of security logging?",
+    "OptionA": "To prevent every security incident",
+    "OptionB": "To record events that can be monitored and investigated",
+    "OptionC": "To replace access controls",
+    "OptionD": "To encrypt network traffic",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 11 - Network Security 2 (Intrusion Detection/Prevention Systems)",
+    "Text": "What distinguishes an IPS from an IDS?",
+    "OptionA": "IDS always blocks",
+    "OptionB": "IPS can actively block traffic",
+    "OptionC": "IPS cannot inspect packets",
+    "OptionD": "IDS only runs on endpoints",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 11 - Network Security 2 (Intrusion Detection/Prevention Systems)",
+    "Text": "What is a false positive from an IDS?",
+    "OptionA": "An undetected attack",
+    "OptionB": "A confirmed intrusion",
+    "OptionC": "Legitimate activity flagged as malicious",
+    "OptionD": "A failed update",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 11 - Network Security 2 (Intrusion Detection/Prevention Systems)",
+    "Text": "Which detection method looks for deviations from normal behavior?",
+    "OptionA": "Signature-only detection",
+    "OptionB": "Port forwarding",
+    "OptionC": "Static routing",
+    "OptionD": "Anomaly-based detection",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 11 - Network Security 2 (Intrusion Detection/Prevention Systems)",
+    "Text": "Why correlate IDS alerts with other security logs?",
+    "OptionA": "To improve investigation context",
+    "OptionB": "To eliminate analysts",
+    "OptionC": "To generate keys",
+    "OptionD": "To guarantee no missed attacks",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 12 - Software Security 1",
     "Text": "Which practice helps reduce software vulnerabilities before an application is released?",
     "OptionA": "Disabling all logging",
     "OptionB": "Giving developers administrator access",
     "OptionC": "Avoiding software updates",
     "OptionD": "Performing security testing during development",
     "CorrectOption": 4
+  },
+  {
+    "Category": "Module 12 - Software Security 1",
+    "Text": "How should user input generally be included in SQL queries?",
+    "OptionA": "String concatenation",
+    "OptionB": "Parameterized queries",
+    "OptionC": "Removing spaces",
+    "OptionD": "Base64 encoding",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 12 - Software Security 1",
+    "Text": "Which vulnerability executes untrusted scripts in a browser?",
+    "OptionA": "CSRF",
+    "OptionB": "SQL injection",
+    "OptionC": "Cross-site scripting (XSS)",
+    "OptionD": "Buffer overflow",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 12 - Software Security 1",
+    "Text": "Why validate user input on the server?",
+    "OptionA": "To avoid HTTPS",
+    "OptionB": "To speed up CSS",
+    "OptionC": "To remove logs",
+    "OptionD": "Client-side checks can be bypassed",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 12 - Software Security 1",
+    "Text": "What is meant by secure defaults?",
+    "OptionA": "Start with restrictive settings",
+    "OptionB": "Make all users admins",
+    "OptionC": "Disable controls by default",
+    "OptionD": "Open all ports",
+    "CorrectOption": 1
+  },
+  {
+    "Category": "Module 13 - Software Security 2",
+    "Text": "Which type of malware can spread between systems without requiring a user to run an infected file?",
+    "OptionA": "Trojan",
+    "OptionB": "Rootkit",
+    "OptionC": "Spyware",
+    "OptionD": "Worm",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 13 - Software Security 2",
+    "Text": "Which attack tricks users through fraudulent messages?",
+    "OptionA": "Packet filtering",
+    "OptionB": "Phishing",
+    "OptionC": "Hashing",
+    "OptionD": "Load balancing",
+    "CorrectOption": 2
+  },
+  {
+    "Category": "Module 13 - Software Security 2",
+    "Text": "What does ransomware commonly do?",
+    "OptionA": "Only attacks routers",
+    "OptionB": "Always spreads automatically",
+    "OptionC": "Encrypts or blocks data and demands payment",
+    "OptionD": "Creates backups",
+    "CorrectOption": 3
+  },
+  {
+    "Category": "Module 13 - Software Security 2",
+    "Text": "What does spyware typically attempt to do?",
+    "OptionA": "Manage permissions",
+    "OptionB": "Issue certificates",
+    "OptionC": "Improve TLS",
+    "OptionD": "Secretly collect information",
+    "CorrectOption": 4
+  },
+  {
+    "Category": "Module 13 - Software Security 2",
+    "Text": "Which action helps address known software vulnerabilities?",
+    "OptionA": "Apply security updates",
+    "OptionB": "Disable backups",
+    "OptionC": "Reuse passwords",
+    "OptionD": "Ignore advisories",
+    "CorrectOption": 1
   }
 ]

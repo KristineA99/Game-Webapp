@@ -23,4 +23,15 @@ public class QuizFormViewModel
     // Questions available for selection in the form.
     public List<SelectListItem> AvailableQuestions { get; set; } = new ();
 
+    // Categories selected in the quiz form.
+    // Used to filter which questions are displayed.
+    public List<int> SelectedCategoryIds { get; set; } = new();
+
+    // Categories available for filtering.
+    public List<SelectListItem> AvailableCategories { get; set; } = new();
+
+    // Maps each question ID to its category ID.
+    // This allows JavaScript to filter questions without another server request.
+    public Dictionary<int, int> QuestionCategoryIds { get; set; } = new();
+
 }
