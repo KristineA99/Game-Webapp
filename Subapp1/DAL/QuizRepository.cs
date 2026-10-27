@@ -17,7 +17,10 @@ public class QuizRepository : IQuizRepository
     // Retrieve all quizzes from the database.
     public async Task<IEnumerable<Quiz>> GetAllAsync()
     {
-        return await _context.Quizzes.ToListAsync();
+        return await _context.Quizzes
+        .Include(q => q.QuizQuestions)
+        .AsNoTracking() 
+        .ToListAsync();
     }
 
     // Retrieve a quiz by its ID.
