@@ -1,0 +1,64 @@
+@model Subapp1.ViewModels.QuizFormViewModel
+
+@* Partial view used to display the question selection form for the quiz, used by both Create and Edit views. *@
+
+<div class="mb-4">
+    <h4>Filter by Category</h4>
+    <p>Select one or more modules to display their questions.</p>
+
+    <span asp-validation-for="SelectedCategoryIds"
+          class="text-danger"></span>
+
+    @foreach (var category in Model.AvailableCategories)
+    {
+        <div class="form-check">
+            <input type="checkbox"
+                   class="form-check-input category-checkbox"
+                   name="SelectedCategoryIds"
+                   value="@category.Value"
+                   id="category-@category.Value"
+                   checked="@category.Selected" />
+
+            <label class="form-check-label"
+                   for="category-@category.Value">
+                @category.Text
+            </label>
+        </div>
+    }
+</div>
+
+<div class="mb-4">
+    <h4>Select Questions</h4>
+    <p id="question-help">
+        Select a category above to display its questions.
+    </p>
+
+    <span asp-validation-for="SelectedQuestionIds"
+          class="text-danger"></span>
+
+    <div id="question-list">
+        @foreach (var question in Model.AvailableQuestions)
+        {
+            var questionId = int.Parse(question.Value);
+            var categoryId = Model.QuestionCategoryIds[questionId];
+
+            <div class="form-check question-item"
+                 data-category-id="@categoryId"
+                 hidden>
+
+                <input type="checkbox"
+                       class="form-check-input question-checkbox"
+                       name="SelectedQuestionIds"
+                       value="@question.Value"
+                       id="question-@question.Value"
+                       checked="@question.Selected"
+                       disabled />
+
+                <label class="form-check-label"
+                       for="question-@question.Value">
+                    @question.Text
+                </label>
+            </div>
+        }
+    </div>
+</div>
