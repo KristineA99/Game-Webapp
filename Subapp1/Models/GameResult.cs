@@ -8,7 +8,8 @@ public class GameResult
     // Primary key
     public int GameResultId { get; set; }
 
-    // Display name for the leaderboard (including guest players)
+    // The player's nickname when the game was played.
+    // Only logged-in players can save results.
     [Required]
     [StringLength(30)]
     public string PlayerName { get; set; } = string.Empty;
@@ -19,11 +20,14 @@ public class GameResult
 
     // Number of questions the quiz had when it was played.
     // Stored as a snapshot, because an admin can add or remove questions from the quiz later.
-    // A result is a perfect score when Score == TotalQuestions.
     [Range(0, int.MaxValue)]
     public int TotalQuestions { get; set; }
 
-    // Date and time the game was completed, stored in UTC.
+    // How long the attempt took, in whole seconds. Stored as seconds (int).
+    [Range(0, int.MaxValue)]
+    public int DurationSeconds { get; set; }
+
+    // Date the game was completed.
     public DateTime CompletedAt { get; set; } = DateTime.UtcNow;
 
     // Foreign key referencing the Quiz that was played.
@@ -38,8 +42,4 @@ public class GameResult
 
     // Navigation property to the Identity user.
     public IdentityUser? User { get; set; }
-
-    // Helper for views: true when every question in the quiz was answered correctly.
-    // Not stored in the database. Database queries use the same rule directly (see GameResultFilter).
-    public bool IsPerfect => TotalQuestions > 0 && Score == TotalQuestions;
 }

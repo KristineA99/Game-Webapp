@@ -15,7 +15,7 @@ namespace Subapp1.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.14");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -237,6 +237,9 @@ namespace Subapp1.Migrations
 
                     b.Property<DateTime>("CompletedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("DurationSeconds")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("PlayerName")
                         .IsRequired()

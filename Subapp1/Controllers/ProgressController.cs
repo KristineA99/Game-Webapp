@@ -12,16 +12,12 @@ namespace Subapp1.Controllers;
 public class ProgressController : Controller
 {
     private readonly IGameResultRepository _gameResultRepository;
-    private readonly ILogger<ProgressController> _logger;
 
-    public ProgressController(IGameResultRepository gameResultRepository, ILogger<ProgressController> logger)
+    public ProgressController(IGameResultRepository gameResultRepository)
     {
         _gameResultRepository = gameResultRepository;
-        _logger = logger;
     }
 
-    // GET: /Progress?Search=crypto&Result=Perfect&Sort=HighestScore ...
-    // The filter values come from the query string, so the form uses method="get".
     [HttpGet]
     public async Task<IActionResult> Index([FromQuery] ProgressFilterViewModel filter)
     {
@@ -38,7 +34,6 @@ public class ProgressController : Controller
         var effectiveFilter = filter;
         if (!ModelState.IsValid)
         {
-            _logger.LogWarning("[ProgressController] Invalid progress filter for user {UserId}.", userId);
             effectiveFilter = new ProgressFilterViewModel { Sort = filter.Sort };
         }
 

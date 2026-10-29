@@ -234,6 +234,7 @@ public static class DbInit
                 PlayerName = user.UserName ?? "Player",
                 TotalQuestions = total,
                 Score = score < 0 ? total : Math.Min(score, total),
+                DurationSeconds = 60 + (daysAgo * 47 + quizIndex * 13) % 300,
                 CompletedAt = DateTime.UtcNow.AddDays(-daysAgo).AddHours(-quizIndex)
             });
         }
