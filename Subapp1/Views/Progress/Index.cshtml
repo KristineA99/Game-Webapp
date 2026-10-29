@@ -1,0 +1,113 @@
+@using System.Globalization
+@using Subapp1.ViewModels
+@model PlayerProgressViewModel
+
+@*
+    The player's progress page.
+*@
+
+@* Sets the page title shown in the browser tab *@
+
+@{
+    ViewData["Title"] = "My Progress";
+    var filter = Model.Filter;
+    var attemptCount = Model.Attempts.Count();
+
+    // Open the "More filters" panel automatically if one of its filters is in use,
+    // so the player can see why the list is filtered.
+    bool hasExtraFilters = !string.IsNullOrWhiteSpace(filter.Search)
+        || filter.FromDate.HasValue
+        || filter.ToDate.HasValue
+        || filter.MinScore.HasValue
+        || filter.Result != ResultFilter.All
+        || !ViewData.ModelState.IsValid;
+}
+
+@* Styles *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/questions.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/player-progress.css" asp-append-version="true" />
+}
+
+@* Page header *@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-3">Player Progress</h1>
+</div>
+
+@* ---------- Summary cards ---------- *@
+<section class="progress-summary" aria-label="Summary">
+    <div class="progress-stat progress-start-main">
+        <div class="progress-stat-value">@Model.Summary.TotalPoints</div>
+        <div class="progress-stat-label">Total points</div>
+    </div>
+    
+    <div class="progress-stat-group">
+        <div class="progress-stat">
+            <div class="progress-stat-value">@Model.Summary.QuizzesPlayed</div>
+            <div class="progress-stat-label">Quizzes played</div>
+        </div>
+   
+         <div class="progress-stat-group">
+            <div class="progress-stat-value">@Model.Summary.PerfectScores</div>
+            <div class="progress-stat-label"> Perfect scores</div>
+        </div>
+    </div>
+</section>
+
+@* ---------- Filters ---------- *@
+<form method="get" asp-controller="Progress" asp-action="Index" class="card card-body mb-3">
+
+
+  @* Toolbar on the right: More filters, Quiz and Sort by.
+       The dropdowns submit the form as soon as the player picks something (onchange). *@
+    <div class="progress-toolbar">
+
+        <label for="QuizId" class="visually-hidden">Quiz</label>
+        <select id="QuizId" name="QuizId" class="form-select"
+                asp-items="Model.AvailableQuizzes" onchange="this.form.submit()">
+            <option value="">Quiz</option>
+        </select>
+
+        <label for="Sort" class="visually-hidden">Sort by</label>
+        <select id="Sort" name="Sort" class="form-select" onchange="this.form.submit()">
+            @foreach (var option in Html.GetEnumSelectList<ProgressSortOrder>())
+            {
+                <option value="@option.Value" selected="@(option.Value == ((int)filter.Sort).ToString())">@option.Text</option>
+            }
+        </select>
+    </div>
+</form>
+
+
+@* ---------- List of previous attempts ---------- *@
+@if (Model.Summary.QuizzesPlayed == 0)
+{
+    <p>You have not completed any quizzes yet.</p>
+}
+else if (attemptCount == 0)
+{
+    <p>No attempts match your search. Try changing or clearing the filters.</p>
+}
+else
+{
+    @* table-responsive makes the table scroll sideways on small screens instead of breaking the layout *@
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+
+        <tbody class="attempt-list">
+        @foreach (var attempt in Model.Attempts)
+        {
+            var completed = attempt.CompletedAt.ToLocalTime();
+            <tr class="attempt-row">
+                <td>@attempt.Quiz.Title</td>
+                @* InvariantCulture keeps the "/" in the date. With Norwegian culture, "/" would turn into "." *@
+                <span class="attempt-date">@completed.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)</span>
+                <span class="attempt-time">@completed.ToString("HH:mm:ss", CultureInfo.InvariantCulture)</span>
+                <span class="attempt-score">@attempt.Score / @attempt.TotalQuestions</span>
+            </tr>
+        }
+    </tbody>
+    </div>
+}
+
+        

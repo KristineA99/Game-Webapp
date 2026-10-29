@@ -41,6 +41,17 @@
                                aria-current="@(currentController == "Game" ? "page" : null)"
                                asp-area="" asp-controller="Game" asp-action="Play">Game</a>
                         </li>
+
+                        @* Logged-in players can see their own progress *@
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController == "Progress" ? "active" : "")"
+                                   aria-current="@(currentController == "Progress" ? "page" : null)"
+                                   asp-area="" asp-controller="Progress" asp-action="Index">My progress</a>
+                            </li>
+                        }
+
                         @* Only admins see the link to the admin pages *@
                         @if (User.IsInRole("Admin"))
                         {

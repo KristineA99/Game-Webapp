@@ -57,6 +57,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+builder.Services.AddScoped<IGameResultRepository, GameResultRepository>();
 
 var app = builder.Build();
 
@@ -73,6 +74,19 @@ using (var scope = app.Services.CreateScope())
 
     //Create the Admin role and the admin user
     await IdentitySeeder.SeedAsync(scope.ServiceProvider, builder.Configuration);
+
+    // In development only: give the admin user some example quiz attempts,
+    // so the progress page and its filters can be tested without playing many games first.
+    if (app.Environment.IsDevelopment())
+    {
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        var adminEmail = builder.Configuration["AdminUser:Email"];
+        var admin = string.IsNullOrEmpty(adminEmail) ? null : await userManager.FindByEmailAsync(adminEmail);
+        if (admin != null)
+        {
+            DbInit.SeedSampleGameResults(context, admin);
+        }
+    }
 }
 
 // Configure exception handling based on the environment.
