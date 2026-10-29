@@ -90,9 +90,10 @@
                     
                     <tr>
                         <td class="attempt-title">@attempt.Quiz.Title</td>
-                        @* InvariantCulture keeps the "/" in the date. With Norwegian culture, "/" would turn into "." *@
+                        @* InvariantCulture keeps the "/" in the date. "/" would turn into "." *@
                         <td>@completed.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)</td>
-                        <td>@completed.ToString("HH:mm:ss", CultureInfo.InvariantCulture)</td>
+                        @* How long the attempt took *@
+                        <td>@TimeSpan.FromSeconds(attempt.DurationSeconds).ToString(@"hh\:mm\:ss")</td>
                         <td class="attempt-score">@attempt.Score / @attempt.TotalQuestions</td>
                     </tr>
                     }
