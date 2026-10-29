@@ -37,9 +37,9 @@ public class GameResult
     public Quiz Quiz { get; set; } = null!;
 
     // Foreign key to the logged-in user who played the game.
-    // Nullable, so guest players can still have results on the leaderboard.
-    public string? UserId { get; set; }
+    // Required: guest players cannot save results, so every result belongs to a user.
+    public string UserId { get; set; } = string.Empty;
 
     // Navigation property to the Identity user.
-    public IdentityUser? User { get; set; }
+    public IdentityUser User { get; set; } = null!;
 }
