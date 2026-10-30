@@ -1,0 +1,136 @@
+/* Heading */
+h1.progress-title {
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    margin-bottom: 2rem;
+}
+
+/* Summary */
+/* Three equally wide columns that ALWAYS stay on one line, whatever the screen size.
+   Each column is number on top, label underneath, so the labels can never move away. */
+.progress-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 3rem;
+    align-items: end;
+}
+ 
+.progress-stat {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+ 
+/* Numbers in the same pixel font as the headings */
+.progress-stat-value {
+    font-family: "Press Start 2P", "Courier New", monospace;
+    font-size: clamp(1.4rem, 6vw, 3rem);
+    line-height: 1.4;
+}
+
+.progress-stat-main .progress-stat-value {
+    font-size: clamp(2rem, 8vw, 4rem);
+}
+
+.progress-stat-main .progress-stat-label {
+    font-weight: bold;
+}
+ 
+
+/* White box with the filters and the list of attempts */
+.progress-box {
+    border: 3px solid #000;
+    background-color: #fff;
+    padding: 1.5rem;
+    margin-bottom: 24rem;
+}
+
+/* Filters and Sort by on one line to the right */
+.progress-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+ 
+.progress-toolbar .form-select {
+    width: auto;
+    min-width: 11rem;
+}
+ 
+.progress-empty {
+    color: #555;
+    text-align: center;
+    margin-top: 4rem;
+}
+
+/* List of attempts: one box per attempt, title | date | time | score */
+.attempt-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+    font-variant-numeric: tabular-nums; /* dates and times line up from row to row */
+}
+
+/* Column labels */
+.attempt-table thead th {
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: #666;
+    padding: 0 1.25rem;
+}
+
+/* Each row gets a black border: top and bottom on every cell, left on the first, right on the last */
+.attempt-table tbody td {
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    padding: 0.75rem 1.25rem;
+    font-size: 1.05rem;
+    white-space: nowrap;
+}
+ .attempt-table tbody td:first-child {
+    border-left: 2px solid #000;
+}
+
+.attempt-table tbody td:last-child {
+    border-right: 2px solid #000;
+}
+
+/* The quiz title takes the free space and can wrap if it is long */
+.attempt-table .attempt-title {
+    width: 100%;
+    white-space: normal;
+}
+
+.attempt-title .attempt-score {
+    font-weight: 700;
+}
+
+.attempt-table .attempt-score {
+    text-align: right;
+}
+
+
+/* Small screens: everything stacked, the title on its own line in each row */
+@media (max-width: 576px) {
+    .progress-box {
+        padding: 1rem;
+    }
+ 
+    .progress-toolbar .form-select {
+        flex: 1 1 100%;
+    }
+ 
+    .attempt-table thead th, .attempt-table thead td{
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+        font-size: 0.85rem;
+    }
+ 
+    .attempt-table thead th{
+        font-size: 0.7rem
+    }
+}

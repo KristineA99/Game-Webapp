@@ -1,0 +1,107 @@
+@using System.Globalization
+@using Subapp1.ViewModels
+@model PlayerProgressViewModel
+
+@*
+    The player's progress page.
+*@
+
+@* Sets the page title shown in the browser tab *@
+@{
+    ViewData["Title"] = "My Progress";
+    var filter = Model.Filter;
+    var attemptCount = Model.Attempts.Count();
+}
+
+@* Styles *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/questions.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/player-progress.css" asp-append-version="true" />
+}
+
+@* ---------- Summary (total points, quizzes played, perfect scores) ---------- *@
+<section class="progress-summary" aria-label="Summary">
+    <div class="progress-stat progress-stat-main">
+        <div class="progress-stat-value">@Model.Summary.TotalPoints</div>
+        <div class="progress-stat-label">Total points</div>
+    </div>
+
+    <div class="progress-stat">
+        <div class="progress-stat-value">@Model.Summary.QuizzesPlayed</div>
+        <div class="progress-stat-label">Quizzes played</div>
+    </div>
+   
+    <div class="progress-stat">
+        <div class="progress-stat-value">@Model.Summary.PerfectScores</div>
+        <div class="progress-stat-label"> Perfect scores</div>
+    </div>
+</section>
+
+@* Page header *@
+<h1>Player Progress</h1>
+
+@* ---------- White box: filters at the top, results underneath ---------- *@
+ <div class="progress-box">
+
+    <form method="get" asp-controller="Progress" asp-action="Index" class="progress-toolbar">
+        <label for="QuizId" class="visually-hidden">Quiz</label>
+        <select id="QuizId" name="QuizId" class="form-select"
+                asp-items="Model.AvailableQuizzes" onchange="this.form.submit()">
+            <option value="">Quiz</option>
+        </select>
+
+        <label for="Sort" class="visually-hidden">Sort by</label>
+        <select id="Sort" name="Sort" class="form-select" onchange="this.form.submit()">
+            @foreach (var option in Html.GetEnumSelectList<ProgressSortOrder>())
+            {
+                <option value="@option.Value" selected="@(option.Value == ((int)filter.Sort).ToString())">@option.Text</option>
+            }
+        </select>
+    </form>
+
+
+    @* ---------- List of previous attempts ---------- *@
+    @if (Model.Summary.QuizzesPlayed == 0)
+    {
+        <p class="progress-empty">You have not completed any quizzes yet.</p>
+    }
+    else if (attemptCount == 0)
+    {
+        <p class="progress-empty">No attempts match your search. Try changing or clearing the filters.</p>
+    }
+    else
+    {
+        @* table-responsive makes the table scroll sideways on small screens instead of breaking the layout *@
+        <div class="table-responsive">
+            <table class="attempt-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Quiz</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col" class="attempt-score">Score</th>
+                    </tr>
+                </thead> 
+
+                <tbody>
+                    @foreach (var attempt in Model.Attempts)
+                    {
+                        var completed = attempt.CompletedAt.ToLocalTime();
+                    
+                    <tr>
+                        <td class="attempt-title">@attempt.Quiz.Title</td>
+                        @* InvariantCulture keeps the "/" in the date. "/" would turn into "." *@
+                        <td>@completed.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)</td>
+                        @* How long the attempt took *@
+                        <td>@TimeSpan.FromSeconds(attempt.DurationSeconds).ToString(@"hh\:mm\:ss")</td>
+                        <td class="attempt-score">@attempt.Score / @attempt.TotalQuestions</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+
+        

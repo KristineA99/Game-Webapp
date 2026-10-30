@@ -15,7 +15,7 @@ namespace Subapp1.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.14");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -238,6 +238,9 @@ namespace Subapp1.Migrations
                     b.Property<DateTime>("CompletedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("DurationSeconds")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("PlayerName")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -249,9 +252,18 @@ namespace Subapp1.Migrations
                     b.Property<int>("Score")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("TotalQuestions")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("GameResultId");
 
                     b.HasIndex("QuizId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("GameResults");
                 });
@@ -394,7 +406,15 @@ namespace Subapp1.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Quiz");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Subapp1.Models.Question", b =>
