@@ -4,15 +4,20 @@
     ViewData["Title"] = "Manage Quizzes";
 }
 
-<h1>Manage Quizzes</h1>
+@* Page heading and create button *@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>@ViewData["Title"]</h1>
+    <a asp-controller="Quiz" asp-action="Create" class="btn btn-primary">Add New Quiz</a>
+</div>
 
 <p>View and manage available quizzes.</p>
 
-<p>
-    <a asp-controller="Quiz" asp-action="Create" class="btn btn-primary">Add New Quiz</a>
+@* Responsive table hint, only visible on small screens *@
+<p class="d-md-none text-muted small">
+    Scroll horizontally to view all columns and actions.
 </p>
-
-<table class="table table-striped">
+<div class=" table-responsive">
+<table class="table table-striped align-middle">
     <thead>
         <tr>
             <th>Quiz ID</th>
@@ -37,14 +42,14 @@
                 <td>
                     @if (isPlayable)
                     {
-                        <span class="badge bg-success">Playable</span>
+                        <span class="table-status table-status-playable">Playable</span>
                     }
                     else
                     {
-                        <span class="badge bg-warning text-dark">Not Playable</span>
+                        <span class="table-status table-status-unplayable">Not Playable</span>
                     }
                 </td>
-                <td>
+                <td class="text-end text-nowrap">
                     <a asp-controller="Quiz" asp-action="Edit" asp-route-id="@quiz.QuizId" class="btn btn-sm btn-outline-primary">Edit</a>
                     <a asp-controller="Quiz" asp-action="Delete" asp-route-id="@quiz.QuizId" class="btn btn-sm btn-outline-danger">Delete</a>
                 </td>
@@ -52,3 +57,4 @@
         }
     </tbody>
 </table>
+</div>

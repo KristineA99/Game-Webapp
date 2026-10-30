@@ -52,13 +52,16 @@
                             </li>
                         }
 
-                        @* Only admins see the link to the admin pages *@
+                        @* Only admins see the admin dashboard link. *@
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link @(currentController == "Question" ? "active" : "")"
-                                   aria-current="@(currentController == "Question" ? "page" : null)"
-                                   asp-area="" asp-controller="Question" asp-action="Index">Questions</a>
+                                <a class="nav-link @(new[] { "Admin", "Category", "Question", "Quiz" }.Contains(currentController) ? "active" : "")"
+                                   aria-current="@(new[] { "Admin", "Category", "Question", "Quiz" }.Contains(currentController) ? "page" : null)"
+                                   asp-controller="Admin" 
+                                   asp-action="Index">
+                                   Admin Dashboard
+                                </a>
                             </li>
                         }
                     </ul>

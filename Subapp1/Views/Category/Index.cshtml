@@ -4,33 +4,39 @@
     ViewData["Title"] = "Manage Categories";
 }
 
-<h1>Manage Categories</h1>
+@* Page heading and create button*@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>@ViewData["Title"]</h1>
+    <a asp-controller="Category" asp-action="Create" class="btn btn-primary">Add New Category</a>
+</div>
 
 <p>View and manage question categories.</p>
 
-<p>
-    <a asp-controller="Category" asp-action="Create" class="btn btn-primary">Add New Category</a>
+@* Responsive table hint, only visible on small screens *@
+<p class="d-md-none text-muted small">
+    Scroll horizontally to view all columns and actions.
 </p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Category ID</th>
-            <th>Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var category in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
             <tr>
-                <td>@category.CategoryId</td>
-                <td>@category.Name</td>
-                <td>
-                    <a asp-controller="Category" asp-action="Edit" asp-route-id="@category.CategoryId" class="btn btn-sm btn-outline-primary">Edit</a>
-                    <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.CategoryId" class="btn btn-sm btn-outline-danger">Delete</a>
-                </td>
+                <th>Category ID</th>
+                <th>Name</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td>@category.CategoryId</td>
+                    <td>@category.Name</td>
+                    <td class="text-end text-nowrap">
+                        <a asp-controller="Category" asp-action="Edit" asp-route-id="@category.CategoryId" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.CategoryId" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
+</div>  
