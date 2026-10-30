@@ -1,0 +1,100 @@
+@model Subapp1.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+
+<div class="text-center mb-4">
+    <h1>@ViewData["Title"]</h1>
+    <p class="mb-0"> Manage categories, questions, and quizzes.</p>
+</div>
+
+@* Overview statistics*@
+<section class="mb-5" aria-label="Content Overview">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="dashboard-stat-number"><h2>@Model.CategoryCount</h2></div>
+                    <p class="mb-0">Categories</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="dashboard-stat-number"><h2>@Model.QuestionCount</h2></div>
+                    <p class="mb-0">Questions</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="dashboard-stat-number"><h2>@Model.QuizCount</h2></div>
+                    <p class="mb-0">Quizzes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* Quiz readiness summary *@
+<section class="mb-5 text-center" aria-labelledby="quiz-readiness-heading">
+    <h2 class="dashboard-section-heading">Quiz Readiness</h2>
+    <p class="mb-3">
+        Quizzes must contain at least five questions to be playable.
+    </p>
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+        <div class="dashboard-status dashboard-status-playable">
+           <strong> @Model.PlayableQuizCount</strong>
+           <span>Playable</span>
+        </div>
+        <div class="dashboard-status dashboard-status-unplayable">
+            <strong> @Model.UnplayableQuizCount</strong>
+            <span>Not Playable</span>
+        </div>
+    </div>
+</section>
+
+@* Management links *@
+<section aria-labelledby="manage-content-heading">
+    <h2 class="dashboard-section-heading text-center">Manage Content</h2>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h3 class="dashboard-card-heading">Categories</h3>
+                    <p>Manage the categories used to organize questions.</p>
+                    <a asp-controller="Category" asp-action="Index" class="btn btn-primary mt-auto align-self-start">Manage Categories</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h3 class="dashboard-card-heading">Questions</h3>
+                    <p>Manage the questions used in quizzes.</p>
+                    <a asp-controller="Question" 
+                    asp-action="Index" class="btn btn-primary mt-auto align-self-start">Manage Questions</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h3 class="dashboard-card-heading">Quizzes</h3>
+                    <p>Manage the quizzes available to users.</p>
+                    <a asp-controller="Quiz" asp-action="Index" class="btn btn-primary mt-auto align-self-start">Manage Quizzes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

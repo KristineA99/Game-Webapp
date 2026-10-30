@@ -1,0 +1,51 @@
+/* Admin Dashboard */
+
+/* Section headings */
+.dashboard-section-heading {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-family: "Press Start 2P", "Courier New", monospace;
+}
+
+/* Management card headings */
+.dashboard-card-heading {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-family: "Press Start 2P", "Courier New", monospace;
+}
+
+/* Statistics displayed in the overview cards */
+.dashboard-stat-number {
+    font-family: "Press Start 2P", "Courier New", monospace;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+/* Quiz readiness indicators - informational, not clickable */
+.dashboard-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-left: 5px solid;
+    font-size: 0.9rem;
+}
+
+/* Pixelated question count */
+.dashboard-status strong {
+    font-family: "Press Start 2P", "Courier New", monospace;
+    font-size: 1rem;
+}
+
+/* Playable quizzes */
+.dashboard-status-playable {
+    border-left-color: #198754;
+}
+
+/* Quizzes needing more questions */
+.dashboard-status-unplayable {
+    border-left-color: #d6a000;
+}
