@@ -14,6 +14,11 @@ public class GameResult
     [StringLength(30)]
     public string PlayerName { get; set; } = string.Empty;
 
+    // Quiz title at the time the game was played.
+    [Required]
+    [StringLength(100)]
+    public string QuizName { get; set; } = string.Empty;
+
     // Number of correctly answered questions.
     [Range(0, int.MaxValue)]
     public int Score{ get; set; }
@@ -30,11 +35,11 @@ public class GameResult
     // Date the game was completed.
     public DateTime CompletedAt { get; set; } = DateTime.UtcNow;
 
-    // Foreign key referencing the Quiz that was played.
-    public int QuizId { get; set; }
+    // Optional foreign key: the result remains after its quiz is deleted.
+    public int? QuizId { get; set; }
 
-    // Navigation property to the associated Quiz.
-    public Quiz Quiz { get; set; } = null!;
+    // Navigation property to the associated Quiz, if it still exists.
+    public Quiz? Quiz { get; set; }
 
     // Foreign key to the logged-in user who played the game.
     // Required: guest players cannot save results, so every result belongs to a user.

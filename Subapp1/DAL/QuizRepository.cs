@@ -141,7 +141,7 @@ public class QuizRepository : IQuizRepository
         }
     }
 
-    // Delete a quiz by its ID, only if it has no recorded game results.
+    // Delete a quiz by its ID while retaining associated historical results.
     public async Task<bool> DeleteAsync(int id)
     {
         var quiz = await _context.Quizzes.FindAsync(id);
@@ -150,13 +150,6 @@ public class QuizRepository : IQuizRepository
         {
             _logger.LogWarning("Quiz deletion failed: Quiz with ID '{QuizId}' not found.", id);
             return false;
-        }
-        // Preserve quizzes that have recorded game results to maintain historical data integrity.
-        bool hasGameResults = await _context.GameResults.AnyAsync(result => result.QuizId == id);
-        if (hasGameResults)
-        {
-            _logger.LogWarning("Quiz '{QuizId}' cannot be deleted because it has recordedgame results.", id);
-            return false; 
         }
 
         try

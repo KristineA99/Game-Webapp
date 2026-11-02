@@ -41,12 +41,12 @@ public class GameDbContext : IdentityDbContext
         modelBuilder.Entity<QuizQuestion>() 
             .HasKey(qq => new { qq.QuizId, qq.QuestionId });
         
-        // Prevent deletion of quizzes that have associated game results.
+        // Keep results but detach them when their quiz is deleted.
         modelBuilder.Entity<GameResult>()
             .HasOne(result => result.Quiz)
             .WithMany(quiz => quiz.GameResults)
             .HasForeignKey(result => result.QuizId)
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.SetNull);
 
         // Prevent deleting a category while it contains questions, to maintain data integrity.
         modelBuilder.Entity<Question>()
