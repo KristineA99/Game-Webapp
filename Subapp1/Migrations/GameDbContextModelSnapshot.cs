@@ -246,8 +246,13 @@ namespace Subapp1.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("QuizId")
+                    b.Property<int?>("QuizId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("QuizName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Score")
                         .HasColumnType("INTEGER");
@@ -403,8 +408,7 @@ namespace Subapp1.Migrations
                     b.HasOne("Subapp1.Models.Quiz", "Quiz")
                         .WithMany("GameResults")
                         .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
