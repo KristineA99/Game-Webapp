@@ -31,10 +31,12 @@ public class GameResult
     public DateTime CompletedAt { get; set; } = DateTime.UtcNow;
 
     // Foreign key referencing the Quiz that was played.
-    public int QuizId { get; set; }
+    //Optional: if the quiz was deleted, the result can still be kept for historical purposes.
+    public int? QuizId { get; set; }
 
     // Navigation property to the associated Quiz.
-    public Quiz Quiz { get; set; } = null!;
+    // Optional: if the quiz was deleted, the result can still be kept for historical purposes.
+    public Quiz? Quiz { get; set; } = null!;
 
     // Foreign key to the logged-in user who played the game.
     // Required: guest players cannot save results, so every result belongs to a user.
