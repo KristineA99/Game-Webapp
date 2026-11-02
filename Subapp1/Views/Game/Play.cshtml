@@ -72,8 +72,14 @@
         {
             @* No question is active yet: allow the player to start the game.*@
             <form asp-controller="Game" asp-action="Attack" method="post" class="attack-form">
-                <button type="submit" class="attack-button">Attack</button>
-        </form>
+                <label asp-for="SelectedQuizId">Choose a quiz</label>
+                <select asp-for="SelectedQuizId" asp-items="Model.AvailableQuizzes">
+                    <option value="">Select a quiz</option>
+                </select>
+                <span asp-validation-for="SelectedQuizId" class="text-danger"></span>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <button type="submit" class="attack-button">Start quiz</button>
+            </form>
         }
 
     <div class="score">
