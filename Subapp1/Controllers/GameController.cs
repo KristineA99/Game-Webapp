@@ -179,11 +179,17 @@ public class GameController : Controller
     [HttpPost]
     public async Task<IActionResult> Continue()
     {
+        int? selectedQuizId = HttpContext.Session.GetInt32(SelectedQuizIdSessionKey);
+        if (!selectedQuizId.HasValue)
+        {
+            return RedirectToAction(nameof(Play));
+        }
+
         // Get the completed question IDs stored in the player's session.
         var completedQuestionIds = GetCompletedQuestionIds();
 
-        // Retrieve a random question that has not already been answered correctly.
-        var question = await _questionRepository.GetRandomAsync(completedQuestionIds);
+        // Retrieve an unanswered question from the quiz selected when the game started.
+        var question = await _questionRepository.GetRandomAsync(completedQuestionIds, selectedQuizId.Value);
 
         // Get the current score from the player's session.
         int score = HttpContext.Session.GetInt32("Score") ?? 0;

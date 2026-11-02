@@ -88,6 +88,28 @@ public class QuestionRepository : IQuestionRepository
         }
     }
 
+    // Retrieve a random question assigned to a specific quiz.
+    public async Task<Question?> GetRandomAsync(List<int> excludeIds, int quizId)
+    {
+        try
+        {
+            return await _context.Questions
+                .Where(q =>
+                    q.QuizQuestions.Any(qq => qq.QuizId == quizId) &&
+                    !excludeIds.Contains(q.QuestionId))
+                .OrderBy(q => EF.Functions.Random())
+                .FirstOrDefaultAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Database error occurred while retrieving a random question for quiz '{QuizId}'.",
+                quizId);
+            throw;
+        }
+    }
+
     // CREATE - add a new question to the database.
     public async Task AddAsync(Question question)
     {
