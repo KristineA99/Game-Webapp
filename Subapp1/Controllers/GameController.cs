@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Subapp1.DAL;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Subapp1.ViewModels;
 
 namespace Subapp1.Controllers;
@@ -9,9 +10,14 @@ public class GameController : Controller
 {
     // Repository used to retrieve questions from the database.
     private readonly IQuestionRepository _questionRepository;
-    public GameController(IQuestionRepository questionRepository)
+    private readonly IQuizRepository _quizRepository;
+
+    public GameController(
+        IQuestionRepository questionRepository,
+        IQuizRepository quizRepository)
     {
         _questionRepository = questionRepository;
+        _quizRepository = quizRepository;
     }
 
     // Retrieves the completed question Ids stored in the player's session and converts them from JSON into a list of integers.
@@ -32,11 +38,23 @@ public class GameController : Controller
     }
 
     // Displays the initial game page.
-    public IActionResult Play()   
-   {
-        // The GameViewModel contains the data that Play.cshtml needs.
-        // At the start of the game, Question is null and Score defaults to 0.
-        var viewModel = new GameViewModel();
+    public async Task<IActionResult> Play()
+    {
+        // Only offer quizzes with enough questions to support a complete game.
+        var quizzes = await _quizRepository.GetAllAsync();
+        var viewModel = new GameViewModel
+        {
+            AvailableQuizzes = quizzes
+                .Where(quiz => quiz.QuizQuestions.Count >= 5)
+                // Keep the selection list easy to scan and provide the fields the dropdown needs.
+                .OrderBy(quiz => quiz.Title)
+                .Select(quiz => new SelectListItem
+                {
+                    Value = quiz.QuizId.ToString(),
+                    Text = quiz.Title
+                })
+                .ToList()
+        };
 
         return View(viewModel);
     }
