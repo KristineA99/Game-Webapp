@@ -13,6 +13,9 @@ public interface IQuestionRepository
     // READ - get a random question for the game
     Task<Question?> GetRandomAsync(List<int> excludeIds);
 
+    // READ - get a random question from one quiz, excluding previously completed questions.
+    Task<Question?> GetRandomAsync(List<int> excludeIds, int quizId);
+
     // CREATE - add a new question.
     Task AddAsync(Question question);
 

@@ -1,17 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Subapp1.DAL;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Subapp1.ViewModels;
 
 namespace Subapp1.Controllers;
 
 public class GameController : Controller 
 {
+    private const string SelectedQuizIdSessionKey = "SelectedQuizId";
+
     // Repository used to retrieve questions from the database.
     private readonly IQuestionRepository _questionRepository;
-    public GameController(IQuestionRepository questionRepository)
+    private readonly IQuizRepository _quizRepository;
+
+    public GameController(
+        IQuestionRepository questionRepository,
+        IQuizRepository quizRepository)
     {
         _questionRepository = questionRepository;
+        _quizRepository = quizRepository;
     }
 
     // Retrieves the completed question Ids stored in the player's session and converts them from JSON into a list of integers.
@@ -32,28 +40,77 @@ public class GameController : Controller
     }
 
     // Displays the initial game page.
-    public IActionResult Play()   
-   {
-        // The GameViewModel contains the data that Play.cshtml needs.
-        // At the start of the game, Question is null and Score defaults to 0.
-        var viewModel = new GameViewModel();
+    public async Task<IActionResult> Play()
+    {
+        return View(await CreateStartViewModelAsync());
+    }
 
-        return View(viewModel);
+    private async Task<GameViewModel> CreateStartViewModelAsync(int? selectedQuizId = null)
+    {
+        // Only offer quizzes with enough questions to support a complete game.
+        var quizzes = await _quizRepository.GetAllAsync();
+        return new GameViewModel
+        {
+            AvailableQuizzes = quizzes
+                .Where(quiz => quiz.QuizQuestions.Count >= 5)
+                // Keep the selection list easy to scan and provide the fields the dropdown needs.
+                .OrderBy(quiz => quiz.Title)
+                .Select(quiz => new SelectListItem
+                {
+                    Value = quiz.QuizId.ToString(),
+                    Text = quiz.Title,
+                    Selected = quiz.QuizId == selectedQuizId
+                })
+                .ToList()
+        };
     }
  
-    // Starts the game by retrieving the first random question.
+    // Starts a game with a random question from the selected quiz.
     [HttpPost]
-    public async Task<IActionResult> Attack()
+    public async Task<IActionResult> Attack(int? selectedQuizId)
     {
+        if (!selectedQuizId.HasValue)
+        {
+            ModelState.AddModelError(
+                nameof(GameViewModel.SelectedQuizId),
+                "Select a quiz to start.");
+            return View("Play", await CreateStartViewModelAsync());
+        }
+
+        var quiz = await _quizRepository.GetByIdWithQuestionsAsync(selectedQuizId.Value);
+        if (quiz == null)
+        {
+            ModelState.AddModelError(
+                nameof(GameViewModel.SelectedQuizId),
+                "The selected quiz is no longer available.");
+            return View("Play", await CreateStartViewModelAsync(selectedQuizId));
+        }
+
+        if (quiz.QuizQuestions.Count < 5)
+        {
+            ModelState.AddModelError(
+                nameof(GameViewModel.SelectedQuizId),
+                "The selected quiz must contain at least five questions.");
+            return View("Play", await CreateStartViewModelAsync(selectedQuizId));
+        }
+
         // Start with no completed questions for a new game.
         var completedQuestionIds = new List<int>();
 
-        // Retrieve a random question from the full question pool.
-        var question = await _questionRepository.GetRandomAsync(completedQuestionIds);    
+        // Choose the opening question only from the selected quiz.
+        int questionIndex = Random.Shared.Next(quiz.QuizQuestions.Count);
+        int questionId = quiz.QuizQuestions.ElementAt(questionIndex).QuestionId;
+        var question = await _questionRepository.GetByIdAsync(questionId);
+        if (question == null)
+        {
+            return NotFound();
+        }
 
         // Store the empty completed-question list in the session.           
         SaveCompletedQuestionIds(completedQuestionIds);
         
+        // Keep the selection so subsequent game requests can stay within this quiz.
+        HttpContext.Session.SetInt32(SelectedQuizIdSessionKey, selectedQuizId.Value);
 
         // Start a new game with a score of 0.
         HttpContext.Session.SetInt32("Score", 0);
@@ -122,11 +179,17 @@ public class GameController : Controller
     [HttpPost]
     public async Task<IActionResult> Continue()
     {
+        int? selectedQuizId = HttpContext.Session.GetInt32(SelectedQuizIdSessionKey);
+        if (!selectedQuizId.HasValue)
+        {
+            return RedirectToAction(nameof(Play));
+        }
+
         // Get the completed question IDs stored in the player's session.
         var completedQuestionIds = GetCompletedQuestionIds();
 
-        // Retrieve a random question that has not already been answered correctly.
-        var question = await _questionRepository.GetRandomAsync(completedQuestionIds);
+        // Retrieve an unanswered question from the quiz selected when the game started.
+        var question = await _questionRepository.GetRandomAsync(completedQuestionIds, selectedQuizId.Value);
 
         // Get the current score from the player's session.
         int score = HttpContext.Session.GetInt32("Score") ?? 0;
