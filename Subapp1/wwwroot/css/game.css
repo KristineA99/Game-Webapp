@@ -103,6 +103,63 @@
     margin-top: 1rem;
 }
 
+.quiz-selection-card {
+    width: calc(100% - 2rem);
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #fff;
+    text-align: left;
+}
+
+.attack-form fieldset {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    border: 0;
+    padding: 0;
+}
+
+.attack-form legend {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.quiz-start-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.quiz-start-button {
+    background-color: #90ff86;
+}
+
+.quiz-choice {
+    display: flex;
+    justify-content: center;
+}
+
+.quiz-choice input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.quiz-choice label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.quiz-choice input[type="radio"]:checked + label {
+    background-color: #e3f3e5;
+    border-color: #276b36;
+}
+
+.quiz-choice input[type="radio"]:focus-visible + label {
+    outline: 3px solid #276b36;
+    outline-offset: 3px;
+}
+
 /* Score */
 .score {
     font-family: "Press Start 2P", monospace;

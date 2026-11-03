@@ -11,15 +11,15 @@
 }
 
 <div class="game-container">
-    <h1>Battle!</h1>
-
-    <div class="monster">
-        <img src="~/images/monster2.gif" alt="Monster" class="monster-image" />
-    </div>
-
     @* If a question has been passed to this view, display it *@
     @if (Model.Question != null)
     {
+        <h1>Battle!</h1>
+
+        <div class="monster">
+            <img src="~/images/monster2.gif" alt="Monster" class="monster-image" />
+        </div>
+
         <div class="question">
 
             <h2>@Model.Question.Text</h2>
@@ -70,22 +70,40 @@
     }
     else
         {
-            @* No question is active yet: allow the player to start the game.*@
-            <form asp-controller="Game" asp-action="Attack" method="post" class="attack-form">
-                <label asp-for="SelectedQuizId">Choose a quiz</label>
-                <select asp-for="SelectedQuizId" asp-items="Model.AvailableQuizzes">
-                    <option value="">Select a quiz</option>
-                </select>
-                <span asp-validation-for="SelectedQuizId" class="text-danger"></span>
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <button type="submit" class="attack-button">Start quiz</button>
-            </form>
+            @* No question is active yet: allow the player to choose a quiz to start the game.*@
+            <h2>Choose a quiz</h2>
+            <div class="quiz-selection-card card">
+                <form asp-controller="Game" asp-action="Attack" method="post" class="attack-form">
+                    <fieldset>
+                        @foreach (var quiz in Model.AvailableQuizzes)
+                        {
+                            var radioId = $"quiz-{quiz.Value}";
+                            <div class="quiz-choice">
+                                <input id="@radioId"
+                                       type="radio"
+                                       name="selectedQuizId"
+                                       value="@quiz.Value"
+                                       required />
+                                <label for="@radioId" class="attack-button">@quiz.Text</label>
+                            </div>
+                        }
+                        <div class="quiz-start-actions">
+                            <button type="submit" class="attack-button quiz-start-button">Start Game</button>
+                        </div>
+                    </fieldset>
+                    <span asp-validation-for="SelectedQuizId" class="text-danger"></span>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </form>
+            </div>
         }
 
-    <div class="score">
-        <span class="score-icon"><img src="~/images/medal.png" alt="" class="score-image"></span>
-        <span class="score-label">Score:</span> 
-        <span class="score-value">@Model.Score</span>
-   </div>
+    @if (Model.Question != null)
+    {
+        <div class="score">
+            <span class="score-icon"><img src="~/images/medal.png" alt="" class="score-image"></span>
+            <span class="score-label">Score:</span>
+            <span class="score-value">@Model.Score</span>
+        </div>
+    }
 
 </div>
