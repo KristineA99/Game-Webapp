@@ -14,6 +14,14 @@ body {
     background-color:lavender;
 }
 
+body.home-page {
+    background-image: url("../images/forest-background.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
 .btn.home-action-button {
     font-size: 1rem;
     padding: 0.7rem 1rem;
@@ -24,6 +32,10 @@ main {
     color: #000;
     font-family: Verdana, Tahoma, Geneva, sans-serif;
     margin-top: 1rem;
+}
+
+body.home-page main {
+    padding-top: 2rem;
 }
  
 /* Heading and "Add question" button on one line, wrapping on small screens */
@@ -44,6 +56,10 @@ h1 {
     font-size: 1.25rem;
     line-height: 1.6;
     margin-bottom: 1.5rem;
+}
+
+body.home-page h1 {
+    -webkit-text-stroke: 1px #90ff86;
 }
  
 /* Small animated GIF at the end of the heading, aligned with the text */
@@ -280,4 +296,3 @@ for example due to motor impairments or because they use a screen reader.*/
     }
 }
  
-

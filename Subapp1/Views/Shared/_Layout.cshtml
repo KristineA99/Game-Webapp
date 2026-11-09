@@ -14,7 +14,9 @@
     <link rel="stylesheet" href="~/Subapp1.styles.css" asp-append-version="true" />
 </head>
 
-<body>
+<body class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" &&
+               ViewContext.RouteData.Values["action"]?.ToString() == "Index"
+               ? "home-page" : "")">
     <header>
         @* Finds the current controller, so the matching menu link can be highlighted *@
         @{
