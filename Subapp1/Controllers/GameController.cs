@@ -114,6 +114,10 @@ public class GameController : Controller
 
         // Start a new game with a score of 0.
         HttpContext.Session.SetInt32("Score", 0);
+
+        // Store the number of questions for the final score display.
+        HttpContext.Session.SetInt32("TotalQuestions", quiz.QuizQuestions.Count);
+
         // Clear any victory flag left by the player's previous game.
         HttpContext.Session.Remove("HasWon");
 
@@ -121,7 +125,8 @@ public class GameController : Controller
         var viewModel = new GameViewModel
         {
             Question = question,
-            Score = 0
+            Score = 0,
+            TotalQuestions = quiz.QuizQuestions.Count
         };
 
         return View("Play", viewModel);
@@ -150,17 +155,21 @@ public class GameController : Controller
         // Get the completed question IDs stored in the player's session.
         var completedQuestionIds = GetCompletedQuestionIds();
 
-        // Increase the score and mark the question as completed
-        // only when the answer is correct.
+        //Prevent the same question from being scored more than once.
+        if (completedQuestionIds.Contains(questionId))
+        {
+            return RedirectToAction(nameof(Play));
+        }
+        
+        // only correct answers increase the score.
         if (isCorrect)
         {
-            score++;
-
-            completedQuestionIds.Add(question.QuestionId);
-
-            SaveCompletedQuestionIds(completedQuestionIds);
+            score++;  
         }
-
+        // Mark the question as completed when answered, regardless of correct/incorrect status
+        completedQuestionIds.Add(question.QuestionId);
+        SaveCompletedQuestionIds(completedQuestionIds);
+        
         // Store the updated score in the session.
         HttpContext.Session.SetInt32("Score", score);
 
@@ -214,7 +223,7 @@ public class GameController : Controller
 
     // Displays the result after the player has completed the game.
     [HttpGet]
-    public IActionResult Result()
+    public async Task <IActionResult> Result()
     {
         // Only completed games should be able to open the victory result page.
         if (HttpContext.Session.GetString("HasWon") != "true")
@@ -222,10 +231,21 @@ public class GameController : Controller
             return RedirectToAction(nameof(Play));
         }
 
+        int? selectedQuizId = HttpContext.Session.GetInt32(SelectedQuizIdSessionKey);
+
+        if (!selectedQuizId.HasValue)
+        {
+            return RedirectToAction(nameof(Play));
+        }
+
+        var quiz = await _quizRepository.GetByIdAsync(selectedQuizId.Value);
+
         // Reuse the final score from the session to display the completed game result.
         return View(new GameViewModel
         {
             Score = HttpContext.Session.GetInt32("Score") ?? 0,
+            TotalQuestions = HttpContext.Session.GetInt32("TotalQuestions") ?? 0,
+            QuizName = quiz?.Title ?? "Quiz",
             HasWon = true
         });
     }
