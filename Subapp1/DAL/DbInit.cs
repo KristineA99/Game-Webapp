@@ -230,6 +230,7 @@ public static class DbInit
             context.GameResults.Add(new GameResult
             {
                 QuizId = quiz.QuizId,
+                QuizName = quiz.Title,
                 UserId = user.Id,
                 PlayerName = user.UserName ?? "Player",
                 TotalQuestions = total,

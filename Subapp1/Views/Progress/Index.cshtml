@@ -89,7 +89,7 @@
                         var completed = attempt.CompletedAt.ToLocalTime();
                     
                     <tr>
-                        <td class="attempt-title">@attempt.Quiz.Title</td>
+                        <td class="attempt-title">@attempt.QuizName</td>
                         @* InvariantCulture keeps the "/" in the date. "/" would turn into "." *@
                         <td>@completed.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)</td>
                         @* How long the attempt took *@
