@@ -9,6 +9,8 @@ namespace Subapp1.Controllers;
 public class GameController : Controller 
 {
     private const string SelectedQuizIdSessionKey = "SelectedQuizId";
+    private const string CurrentQuestionIdSessionKey = "CurrentQuestionId";
+    private const string AwaitingAnswerSessionKey = "AwaitingAnswer";
 
     // Repository used to retrieve questions from the database.
     private readonly IQuestionRepository _questionRepository;
@@ -112,6 +114,10 @@ public class GameController : Controller
         // Keep the selection so subsequent game requests can stay within this quiz.
         HttpContext.Session.SetInt32(SelectedQuizIdSessionKey, selectedQuizId.Value);
 
+        // Track the question currently presented to the player.
+        HttpContext.Session.SetInt32(CurrentQuestionIdSessionKey, questionId);
+        HttpContext.Session.SetString(AwaitingAnswerSessionKey, "true");
+
         // Start a new game with a score of 0.
         HttpContext.Session.SetInt32("Score", 0);
 
@@ -138,6 +144,19 @@ public class GameController : Controller
         int questionId, 
         int selectedOption)
     {
+        // Only accept answers to the question currently shown in this game.
+        int? currentQuestionId = HttpContext.Session.GetInt32(CurrentQuestionIdSessionKey);
+        bool awaitingAnswer = HttpContext.Session.GetString(AwaitingAnswerSessionKey) == "true";
+
+        if (!awaitingAnswer || currentQuestionId != questionId)
+        {
+            return RedirectToAction(nameof(Play));
+        }
+        // Reject invalid answer options.
+        if (selectedOption < 1 || selectedOption > 4)
+        {
+            return BadRequest();
+        }
         // Retrieves the question that the player answered.
         var question = await _questionRepository.GetByIdAsync(questionId);
 
@@ -169,9 +188,12 @@ public class GameController : Controller
         // Mark the question as completed when answered, regardless of correct/incorrect status
         completedQuestionIds.Add(question.QuestionId);
         SaveCompletedQuestionIds(completedQuestionIds);
-        
+
         // Store the updated score in the session.
         HttpContext.Session.SetInt32("Score", score);
+
+        // The current question has been answered; wait for Continue().
+        HttpContext.Session.SetString(AwaitingAnswerSessionKey, "false");
 
         // Pass the answered question, updated score and answer result back to Play.cshtml through the ViewModel.
         var viewModel = new GameViewModel
@@ -188,6 +210,15 @@ public class GameController : Controller
     [HttpPost]
     public async Task<IActionResult> Continue()
     {
+        // Don't allow the player to skip a question without answering.
+        if (HttpContext.Session.GetString(AwaitingAnswerSessionKey) != "false")
+        {
+            return RedirectToAction(nameof(Play));
+        }
+
+        // Consume the Continue action so it cannot advance twice.
+        HttpContext.Session.Remove(AwaitingAnswerSessionKey);
+
         int? selectedQuizId = HttpContext.Session.GetInt32(SelectedQuizIdSessionKey);
         if (!selectedQuizId.HasValue)
         {
@@ -210,6 +241,10 @@ public class GameController : Controller
             HttpContext.Session.SetString("HasWon", "true");
             return RedirectToAction(nameof(Result));
         }
+
+        // Register the next question as the only one that can be answered.
+        HttpContext.Session.SetInt32(CurrentQuestionIdSessionKey, question.QuestionId);
+        HttpContext.Session.SetString(AwaitingAnswerSessionKey, "true");
 
         // Keep the current score when loading the next question. 
         var viewModel = new GameViewModel
