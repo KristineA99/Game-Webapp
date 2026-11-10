@@ -3,6 +3,8 @@ using Subapp1.DAL;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Subapp1.ViewModels;
+using System.Security.Claims;
+using Subapp1.Models;
 
 namespace Subapp1.Controllers;
 
@@ -15,13 +17,16 @@ public class GameController : Controller
     // Repository used to retrieve questions from the database.
     private readonly IQuestionRepository _questionRepository;
     private readonly IQuizRepository _quizRepository;
+    private readonly IGameResultRepository _gameResultRepository;
 
     public GameController(
         IQuestionRepository questionRepository,
-        IQuizRepository quizRepository)
+        IQuizRepository quizRepository,
+        IGameResultRepository gameResultRepository)
     {
         _questionRepository = questionRepository;
         _quizRepository = quizRepository;
+        _gameResultRepository = gameResultRepository;
     }
 
     // Retrieves the completed question Ids stored in the player's session and converts them from JSON into a list of integers.
@@ -39,6 +44,65 @@ public class GameController : Controller
         HttpContext.Session.SetString(
             "CompletedQuestionIds",
             JsonSerializer.Serialize(ids));
+    }
+
+    // Saves a completed game for a logged-in player
+    // Guest players can finish quizzes and see their score, but their results are not stored.
+    private async Task<bool> SaveGameResultAsync(int selectedQuizId)
+    {
+        // Guests do not have a user ID, so there is nothing to save.
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return true;
+        }
+
+        // Avoid saving the same completed attempt more than once.
+        if (HttpContext.Session.GetString("ResultSaved") == "true")
+        {
+            return true;
+        }
+
+        int score = HttpContext.Session.GetInt32("Score") ?? 0;
+        int totalQuestions = HttpContext.Session.GetInt32("TotalQuestions") ?? 0;
+
+        //Calculate how long the player spent on the quiz.
+        string? startedAtValue = HttpContext.Session.GetString("GameStartedAt");
+
+        if (!DateTime.TryParse(
+            startedAtValue,
+            System.Globalization.CultureInfo.InvariantCulture,
+            System.Globalization.DateTimeStyles.RoundtripKind,
+            out DateTime startedAt))
+        {
+            return false;
+        }
+
+        int durationSeconds = (int)Math.Max(
+            0,
+            (DateTime.UtcNow - startedAt).TotalSeconds);
+        
+        var result = new GameResult
+        {
+            UserId = userId,
+            PlayerName = User.Identity?.Name ?? "Player",
+            QuizId = selectedQuizId,
+            QuizName = HttpContext.Session.GetString("QuizName") ?? "Quiz",
+            Score = score,
+            TotalQuestions = totalQuestions,
+            DurationSeconds = durationSeconds,
+            CompletedAt = DateTime.UtcNow
+        };
+
+        bool saved = await _gameResultRepository.AddAsync(result);
+
+        if (saved)
+        {
+            HttpContext.Session.SetString("ResultSaved", "true");
+        }
+        
+        return saved;
     }
 
     // Displays the initial game page.
@@ -123,6 +187,17 @@ public class GameController : Controller
 
         // Store the number of questions for the final score display.
         HttpContext.Session.SetInt32("TotalQuestions", quiz.QuizQuestions.Count);
+
+        // Store the start time so we can calculate the game duration.
+        HttpContext.Session.SetString(
+            "GameStartedAt",
+            DateTime.UtcNow.ToString("O"));
+        
+        // Keep a snapshot of the quiz title for the completed result.
+        HttpContext.Session.SetString("QuizName", quiz.Title);
+
+        // A new game has not yet been saved.
+        HttpContext.Session.Remove("ResultSaved");
 
         // Clear any victory flag left by the player's previous game.
         HttpContext.Session.Remove("HasWon");
@@ -234,13 +309,30 @@ public class GameController : Controller
         // Get the current score from the player's session.
         int score = HttpContext.Session.GetInt32("Score") ?? 0;
 
-        // If no unanswered questions remain, the player has completed the game.
         if (question == null)
         {
-            // Store the win for the redirected request, then show the dedicated result page.
-            HttpContext.Session.SetString("HasWon", "true");
-            return RedirectToAction(nameof(Result));
+        // Only finish when every question in the quiz has been answered.
+        int totalQuestions = HttpContext.Session.GetInt32("TotalQuestions") ?? 0;
+
+        if (totalQuestions < 5 || completedQuestionIds.Distinct().Count() != totalQuestions)
+        {
+            return RedirectToAction(nameof(Play));
         }
+
+        // Save the result for logged-in players before showing the result page.
+        bool saved = await SaveGameResultAsync(selectedQuizId.Value);
+
+        if (!saved)
+        {
+            // Restore the completed-answer state so the player can retry Continue.
+            HttpContext.Session.SetString(AwaitingAnswerSessionKey, "false");
+            return StatusCode(500, "Could not save your game result. Please try again");
+        }
+
+        HttpContext.Session.SetString("HasWon", "true");
+        return RedirectToAction(nameof(Result));
+        }
+    
 
         // Register the next question as the only one that can be answered.
         HttpContext.Session.SetInt32(CurrentQuestionIdSessionKey, question.QuestionId);
