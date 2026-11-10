@@ -15,13 +15,30 @@
         <div class="victory">
             <img src="~/images/trophy.png" alt="" class="victory-trophy" />
             <h1>Victory!</h1>
-            <p>You answered all the questions correctly, you've munched your way to an A!</p>
+            <p>You've munched your way through every question and completed <strong>@Model.QuizName</strong>!</p>
         </div>
     }
 
     <div class="score">
         <span class="score-icon"><img src="~/images/medal.png" alt="" class="score-image"></span>
         <span class="score-label">Final Score:</span>
-        <span class="score-value">@Model.Score</span>
+        <span class="score-value">@Model.Score/@Model.TotalQuestions</span>
+    </div>
+
+    <div class="game-result-actions">
+        <a asp-controller="Game"
+           asp-action="Play"
+           class="btn btn-primary">
+           Play Again
+        </a>
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-controller="Progress"
+               asp-action="Index"
+               class="btn btn-secondary">
+               View My Progress
+            </a>
+        }
     </div>
 </div>

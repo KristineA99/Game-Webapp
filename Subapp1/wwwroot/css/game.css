@@ -223,8 +223,26 @@
     margin-bottom: 0;
 }
 
+/* Separate the final score from the victory message. */
 .victory + .score {
-    margin-top: 0.3rem;
+    margin-top: 2rem;
+}
+
+/* Navigation actions below the final score. */
+.game-result-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.game-result-actions .btn {
+    font-family: "Press Start 2P", monospace;
+    font-size: 0.7rem;
+    line-height: 1.5;
+    padding: 0.9rem 1rem;
+    text-decoration: none;
 }
 
 /* Mobile layout */
