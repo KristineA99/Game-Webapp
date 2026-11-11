@@ -37,7 +37,6 @@ h1.progress-title {
     font-weight: bold;
 }
  
-
 /* White box with the filters and the list of attempts */
 .progress-box {
     border: 3px solid #000;
@@ -60,6 +59,33 @@ h1.progress-title {
     min-width: 11rem;
 }
  
+
+/* Date filter */
+.progress-date-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.progress-date-field label {
+    font-weight: 600;
+    margin: 0;
+}
+
+.progress-date-field .form-control {
+    width: auto;
+}
+
+.progress-validation:empty,
+.progress-validation.validation-summary-valid {
+    display: none;
+}
+
+.progress-validation ul {
+    margin-bottom: 1rem;
+    padding-left: 1.25rem;
+}
+
 .progress-empty {
     color: #555;
     text-align: center;
@@ -105,14 +131,10 @@ h1.progress-title {
     white-space: normal;
 }
 
-.attempt-title .attempt-score {
-    font-weight: 700;
-}
-
 .attempt-table .attempt-score {
     text-align: right;
+    font-weight: 700;
 }
-
 
 /* Small screens: everything stacked, the title on its own line in each row */
 @media (max-width: 576px) {
@@ -120,8 +142,14 @@ h1.progress-title {
         padding: 1rem;
     }
  
-    .progress-toolbar .form-select {
+    .progress-toolbar .form-select,
+    .progress-date-field, 
+    .progress-clear {
         flex: 1 1 100%;
+    }
+
+    .progress-date-field .form-control {
+        flex: 1;
     }
  
     .attempt-table thead th, .attempt-table thead td{

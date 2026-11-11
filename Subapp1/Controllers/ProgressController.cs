@@ -29,12 +29,12 @@ public class ProgressController : Controller
             return Challenge();
         }
 
-        // If the filter is invalid (for example From is after To), show the error
-        // and the full list instead, while keeping the player's input in the form.
+        // If the filter is invalid (for example From is after To), show the error.
         var effectiveFilter = filter;
         if (!ModelState.IsValid)
         {
             effectiveFilter = new ProgressFilterViewModel { Sort = filter.Sort };
+            effectiveFilter = new ProgressFilterViewModel { QuizId = filter.QuizId, Sort = filter.Sort };
         }
 
         var playedQuizzes = await _gameResultRepository.GetPlayedQuizzesForUserAsync(userId);
