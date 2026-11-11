@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="~/css/player-progress.css" asp-append-version="true" />
 }
 
-@* ---------- Summary (total points, quizzes played, perfect scores) ---------- *@
+@* Summary (total points, quizzes played, perfect scores) *@
 <section class="progress-summary" aria-label="Summary">
     <div class="progress-stat progress-stat-main">
         <div class="progress-stat-value">@Model.Summary.TotalPoints</div>
@@ -38,9 +38,9 @@
 </section>
 
 @* Page header *@
-<h1>Player Progress</h1>
+<h1 class="progress-title">Player Progress</h1>
 
-@* ---------- White box: filters at the top, results underneath ---------- *@
+@* White box: filters at the top, results underneath *@
  <div class="progress-box">
 
     <form method="get" asp-controller="Progress" asp-action="Index" class="progress-toolbar">
@@ -50,6 +50,23 @@
             <option value="">Quiz</option>
         </select>
 
+        @* Date picker yyyy-MM-dd *@
+        <div class="progress-date-field">
+            <label for="FromDate">From</label>
+            <input type="date" id="FromDate" name="FromDate" class="form-control"
+                   value="@filter.FromDate?.ToString("yyyy-MM-dd")"
+                   max="@filter.ToDate?.ToString("yyyy-MM-dd")"
+                   onchange="this.form.submit()" />
+        </div>
+
+        <div class="progress-date-field">
+            <label for="ToDate">To</label>
+            <input type="date" id="ToDate" name="ToDate" class="form-control"
+                   value="@filter.ToDate?.ToString("yyyy-MM-dd")"
+                   min="@filter.FromDate?.ToString("yyyy-MM-dd")"
+                   onchange="this.form.submit()" />
+        </div>
+
         <label for="Sort" class="visually-hidden">Sort by</label>
         <select id="Sort" name="Sort" class="form-select" onchange="this.form.submit()">
             @foreach (var option in Html.GetEnumSelectList<ProgressSortOrder>())
@@ -57,10 +74,18 @@
                 <option value="@option.Value" selected="@(option.Value == ((int)filter.Sort).ToString())">@option.Text</option>
             }
         </select>
+
+        @* Only shown when a filter is in use *@
+        @if (filter.HasActiveFilters)
+        {
+            <a asp-controller="Progress" asp-action="Index" asp-route-Sort="@filter.Sort"
+               class="btn btn-outline-secondary progress-clear">Clear filters</a>
+        }
     </form>
 
+    <div asp-validation-summary="All" class="text-danger progress-validation"></div>
 
-    @* ---------- List of previous attempts ---------- *@
+    @* List of previous attempts *@
     @if (Model.Summary.QuizzesPlayed == 0)
     {
         <p class="progress-empty">You have not completed any quizzes yet.</p>

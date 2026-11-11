@@ -14,6 +14,18 @@ public static class GameResultFilter
             query = query.Where(r => r.QuizId == filter.QuizId.Value);
         }
 
+        if (filter.FromDate.HasValue)
+        {
+            var fromUtc = StartOfLocalDayInUtc(filter.FromDate.Value);
+            query = query.Where(r => r.CompletedAt >= fromUtc);
+        }
+
+        if (filter.ToDate.HasValue)
+        {
+            var toUtcExclusive = StartOfLocalDayInUtc(filter.ToDate.Value.AddDays(1));
+            query = query.Where(r => r.CompletedAt < toUtcExclusive);
+        }
+
         // Sorting by date and score.
         query = filter.Sort switch
         {
@@ -25,4 +37,7 @@ public static class GameResultFilter
 
         return query;
     }
+
+    private static DateTime StartOfLocalDayInUtc(DateTime date) => 
+    DateTime.SpecifyKind(date.Date, DateTimeKind.Local).ToUniversalTime();
 }
