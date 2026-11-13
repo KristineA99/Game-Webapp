@@ -1,21 +1,28 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Subapp1.Models;
+namespace Subapp2.Models;
 
 // A quiz question with four fixed answer options.
 // Validation attributes are checked server-side through ModelState in the controller.
 public class Question
 {
     // Primary key: a unique id for each question.
-    // and lets the database generate the number automatically.
     public int QuestionId { get; set; } 
+
+    // Foreign key: identifies the category this question belongs to.
+    public int CategoryId { get; set; }
+
+    // The category associated with this question.
+    public Category Category { get; set; } = null!;
+
+    // Quizzes that include this question.
+    public ICollection<QuizQuestion> QuizQuestions { get; set; } = new List<QuizQuestion>();
 
     // Question
     [Required(ErrorMessage = "The question text is required.")]
     [StringLength(300, MinimumLength = 5, ErrorMessage = "The question must be between 5 and 300 characters.")]
     [Display(Name = "Question")] // the label shown in the form
     public string Text { get; set; } = string.Empty; // gives the property a default value, so it is never null.
-
 
     // Answer A
     [Required(ErrorMessage = "Option A is required.")]
