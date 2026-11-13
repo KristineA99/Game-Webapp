@@ -1,20 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Serilog;
-using Subapp1.DAL;
+using Subapp2.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register API controllers. IgnoreCycles prevents crashes if entities
-// reference each other (e.g. many-to-many relationships) during JSON serialization.
+// Register API controllers. so ASP.NET can find them and send requests to them.
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    // Configure JSON serialization to use camelCase for property names.
+    // When .NET turns our objects into JSON, two entities can point to each other
+    // IgnoreCycles stops this from going in an endless loop and crashing the request.
     options.JsonSerializerOptions.ReferenceHandler = 
         System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 // Register the database context with SQLite
@@ -22,7 +21,6 @@ builder.Services.AddDbContext<GameDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("GameDbContextConnection"));
 });
-
 
 // So the React frontend (running on another localhost port) can call the API
 builder.Services.AddCors(options =>
@@ -36,8 +34,10 @@ builder.Services.AddCors(options =>
 
 // Repository pattern: controllers ask for IQuestionRepository and get a QuestionRepository
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 
-// Serilog: write warnings and errors to a log file in the Logs/ folder
+// Write warnings and errors to a log file.
 var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Information()
     .WriteTo.File($"Logs/api_{DateTime.Now:yyyyMMdd_HHmmss}.log");

@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Subapp1.DAL;
+using Subapp2.DAL;
 
 #nullable disable
 
-namespace Subapp1.Migrations
+namespace api.Migrations
 {
     [DbContext(typeof(GameDbContext))]
     partial class GameDbContextModelSnapshot : ModelSnapshot
@@ -16,10 +16,29 @@ namespace Subapp1.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
 
-            modelBuilder.Entity("Subapp1.Models.Question", b =>
+            modelBuilder.Entity("Subapp2.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Subapp2.Models.Question", b =>
                 {
                     b.Property<int>("QuestionId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("CorrectOption")
@@ -52,7 +71,89 @@ namespace Subapp1.Migrations
 
                     b.HasKey("QuestionId");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("Subapp2.Models.Quiz", b =>
+                {
+                    b.Property<int>("QuizId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("QuizId");
+
+                    b.ToTable("Quizzes");
+                });
+
+            modelBuilder.Entity("Subapp2.Models.QuizQuestion", b =>
+                {
+                    b.Property<int>("QuizId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("QuizId", "QuestionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("QuizQuestions");
+                });
+
+            modelBuilder.Entity("Subapp2.Models.Question", b =>
+                {
+                    b.HasOne("Subapp2.Models.Category", "Category")
+                        .WithMany("Questions")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Subapp2.Models.QuizQuestion", b =>
+                {
+                    b.HasOne("Subapp2.Models.Question", "Question")
+                        .WithMany("QuizQuestions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Subapp2.Models.Quiz", "Quiz")
+                        .WithMany("QuizQuestions")
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Quiz");
+                });
+
+            modelBuilder.Entity("Subapp2.Models.Category", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("Subapp2.Models.Question", b =>
+                {
+                    b.Navigation("QuizQuestions");
+                });
+
+            modelBuilder.Entity("Subapp2.Models.Quiz", b =>
+                {
+                    b.Navigation("QuizQuestions");
                 });
 #pragma warning restore 612, 618
         }

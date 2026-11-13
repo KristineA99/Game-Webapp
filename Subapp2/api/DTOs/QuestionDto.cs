@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Subapp1.DTOs;
+namespace Subapp2.DTOs;
 
 // Data Transfer Object: defines exactly which question data the API
 // sends to and receives from the React frontend.
@@ -30,4 +30,9 @@ public class QuestionDto
 
     [Range(1, 4, ErrorMessage = "Choose which option is correct.")]
     public int CorrectOption { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "Choose a category.")]
+    public int CategoryId { get; set; }
+
+    public string? CategoryName { get; set; }
 }
