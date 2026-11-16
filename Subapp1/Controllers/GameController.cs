@@ -148,6 +148,7 @@ public class GameController : Controller
 
     // Starts a game with a random question from the selected quiz.
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Attack(int? selectedQuizId)
     {
         if (!selectedQuizId.HasValue)
@@ -230,6 +231,7 @@ public class GameController : Controller
 
     // Handles the answer selected by player
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Answer(
         int questionId,
         int selectedOption)
@@ -388,7 +390,7 @@ public class GameController : Controller
 
     // Displays the result after the player has completed the game.
     [HttpGet]
-    public async Task<IActionResult> Result()
+    public IActionResult Result()
     {
         // Only completed games should be able to open the victory result page.
         if (HttpContext.Session.GetString("HasWon") != "true")
@@ -403,14 +405,14 @@ public class GameController : Controller
             return RedirectToAction(nameof(Play));
         }
 
-        var quiz = await _quizRepository.GetByIdAsync(selectedQuizId.Value);
 
         // Reuse the final score from the session to display the completed game result.
         return View(new GameViewModel
         {
             Score = HttpContext.Session.GetInt32("Score") ?? 0,
             TotalQuestions = HttpContext.Session.GetInt32("TotalQuestions") ?? 0,
-            QuizName = quiz?.Title ?? "Quiz",
+            // Preserve the title shown during this attempt, even if the quiz is renamed or deleted
+            QuizName = HttpContext.Session.GetString("QuizName") ?? "Quiz",
             HasWon = true
         });
     }
