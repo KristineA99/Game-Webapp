@@ -7,7 +7,7 @@ using Subapp1.ViewModels;
 
 namespace Subapp1.Controllers;
 
-[Authorize (Roles = "Admin")] // Only users in the Admin role can access these pages
+[Authorize(Roles = "Admin")] // Only users in the Admin role can access these pages
 public class QuizController : Controller
 {
     private readonly IQuizRepository _quizRepository;
@@ -37,7 +37,7 @@ public class QuizController : Controller
     public async Task<IActionResult> Create()
     {
         var viewModel = new QuizFormViewModel();
-        await PopulateAvailableQuestionsAsync(viewModel); 
+        await PopulateAvailableQuestionsAsync(viewModel);
         return View(viewModel);
     }
 
@@ -45,13 +45,18 @@ public class QuizController : Controller
     // Validate and save the new quiz with its selected questions.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create( QuizFormViewModel viewModel)
+    public async Task<IActionResult> Create(QuizFormViewModel viewModel)
     {
+        // Treat missing selections as empty lists so validation can return form errors
+        //instead of failing when it reads the selected IDs.
+        viewModel.SelectedQuestionIds ??= new List<int>();
+        viewModel.SelectedCategoryIds ??= new List<int>();
+
         // A quiz must have at least one question selected.
-        if (viewModel.SelectedQuestionIds == null || viewModel.SelectedQuestionIds.Count == 0)
+        if (viewModel.SelectedQuestionIds.Count == 0)
         {
             ModelState.AddModelError(
-                nameof(viewModel.SelectedQuestionIds), 
+                nameof(viewModel.SelectedQuestionIds),
                 "At least one question must be selected."
                 );
         }
@@ -73,14 +78,14 @@ public class QuizController : Controller
         };
 
         bool success = await _quizRepository.AddAsync(
-            quiz, 
-            viewModel.SelectedQuestionIds ?? new List<int>()
+            quiz,
+            viewModel.SelectedQuestionIds
             );
 
         if (!success)
         {
             ModelState.AddModelError(
-                "", 
+                "",
                 "Unable to create the quiz. Please check the selected questions."
                 );
 
@@ -136,11 +141,16 @@ public class QuizController : Controller
             return BadRequest();
         }
 
+        // Treat missing selections as empty lists before validating their IDs
+        // and checking that the selected questions belong to the chosen categories.
+        viewModel.SelectedQuestionIds ??= new List<int>();
+        viewModel.SelectedCategoryIds ??= new List<int>();
+
         // A quiz must have at least one question selected.
-        if (viewModel.SelectedQuestionIds == null || viewModel.SelectedQuestionIds.Count == 0)
+        if (viewModel.SelectedQuestionIds.Count == 0)
         {
             ModelState.AddModelError(
-                nameof(viewModel.SelectedQuestionIds), 
+                nameof(viewModel.SelectedQuestionIds),
                 "At least one question must be selected."
                 );
         }
@@ -163,14 +173,14 @@ public class QuizController : Controller
         };
 
         bool success = await _quizRepository.UpdateAsync(
-            quiz, 
-            viewModel.SelectedQuestionIds ?? new List<int>()
+            quiz,
+            viewModel.SelectedQuestionIds
             );
 
         if (!success)
         {
             ModelState.AddModelError(
-                "", 
+                "",
                 "Unable to update the quiz. It may no longer exist, or some selected questions are invalid."
                 );
 
@@ -195,7 +205,7 @@ public class QuizController : Controller
     }
 
     // POST: /Quiz/Delete/{id}
-    // Delete the quiz if it has no recorded game results.
+    // Delete the quiz while preserving previously recorded game results.
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -210,8 +220,8 @@ public class QuizController : Controller
         if (!success)
         {
             ModelState.AddModelError(
-                "", 
-                "Unable to delete this quiz. It may have recorded game results."
+                "",
+                "Unable to delete this quiz. Please refresh the page and try again."
                 );
             return View("Delete", quiz);
         }
@@ -225,22 +235,22 @@ public class QuizController : Controller
         var categories = await _categoryRepository.GetAllAsync();
         var questions = await _questionRepository.GetAllAsync();
 
-        viewModel.AvailableCategories = categories.OrderBy(c => c.CategoryId).Select(c => new SelectListItem    
-            {
-                Value = c.CategoryId.ToString(),
-                Text = c.Name,
-                Selected = viewModel.SelectedCategoryIds.Contains(c.CategoryId)
-            }).ToList();
+        viewModel.AvailableCategories = categories.OrderBy(c => c.CategoryId).Select(c => new SelectListItem
+        {
+            Value = c.CategoryId.ToString(),
+            Text = c.Name,
+            Selected = viewModel.SelectedCategoryIds.Contains(c.CategoryId)
+        }).ToList();
 
         viewModel.AvailableQuestions = questions
             .OrderBy(q => q.CategoryId)
             .ThenBy(q => q.QuestionId)
             .Select(q => new SelectListItem
-        {
-            Value = q.QuestionId.ToString(),
-            Text = q.Text,
-            Selected = viewModel.SelectedQuestionIds.Contains(q.QuestionId)
-        }).ToList();
+            {
+                Value = q.QuestionId.ToString(),
+                Text = q.Text,
+                Selected = viewModel.SelectedQuestionIds.Contains(q.QuestionId)
+            }).ToList();
 
         viewModel.QuestionCategoryIds = questions.ToDictionary(
         q => q.QuestionId,

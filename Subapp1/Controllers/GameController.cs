@@ -8,7 +8,7 @@ using Subapp1.Models;
 
 namespace Subapp1.Controllers;
 
-public class GameController : Controller 
+public class GameController : Controller
 {
     private const string SelectedQuizIdSessionKey = "SelectedQuizId";
     private const string CurrentQuestionIdSessionKey = "CurrentQuestionId";
@@ -18,15 +18,18 @@ public class GameController : Controller
     private readonly IQuestionRepository _questionRepository;
     private readonly IQuizRepository _quizRepository;
     private readonly IGameResultRepository _gameResultRepository;
+    private readonly ILogger<GameController> _logger;
 
     public GameController(
         IQuestionRepository questionRepository,
         IQuizRepository quizRepository,
-        IGameResultRepository gameResultRepository)
+        IGameResultRepository gameResultRepository,
+        ILogger<GameController> logger)
     {
         _questionRepository = questionRepository;
         _quizRepository = quizRepository;
         _gameResultRepository = gameResultRepository;
+        _logger = logger;
     }
 
     // Retrieves the completed question Ids stored in the player's session and converts them from JSON into a list of integers.
@@ -46,22 +49,29 @@ public class GameController : Controller
             JsonSerializer.Serialize(ids));
     }
 
+    private enum GameResultSaveStatus
+    {
+        Completed,
+        RetryableFailure,
+        InvalidSession
+    }
+
     // Saves a completed game for a logged-in player
     // Guest players can finish quizzes and see their score, but their results are not stored.
-    private async Task<bool> SaveGameResultAsync(int selectedQuizId)
+    private async Task<GameResultSaveStatus> SaveGameResultAsync(int selectedQuizId)
     {
         // Guests do not have a user ID, so there is nothing to save.
         string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrEmpty(userId))
         {
-            return true;
+            return GameResultSaveStatus.Completed;
         }
 
         // Avoid saving the same completed attempt more than once.
         if (HttpContext.Session.GetString("ResultSaved") == "true")
         {
-            return true;
+            return GameResultSaveStatus.Completed;
         }
 
         int score = HttpContext.Session.GetInt32("Score") ?? 0;
@@ -76,13 +86,17 @@ public class GameController : Controller
             System.Globalization.DateTimeStyles.RoundtripKind,
             out DateTime startedAt))
         {
-            return false;
+            _logger.LogWarning(
+                "Cannot save game result for quiz {QuizId}: session start time is missing or invalid.",
+                selectedQuizId);
+
+            return GameResultSaveStatus.InvalidSession;
         }
 
         int durationSeconds = (int)Math.Max(
             0,
             (DateTime.UtcNow - startedAt).TotalSeconds);
-        
+
         var result = new GameResult
         {
             UserId = userId,
@@ -101,8 +115,9 @@ public class GameController : Controller
         {
             HttpContext.Session.SetString("ResultSaved", "true");
         }
-        
-        return saved;
+
+        return saved
+            ? GameResultSaveStatus.Completed : GameResultSaveStatus.RetryableFailure;
     }
 
     // Displays the initial game page.
@@ -130,9 +145,10 @@ public class GameController : Controller
                 .ToList()
         };
     }
- 
+
     // Starts a game with a random question from the selected quiz.
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Attack(int? selectedQuizId)
     {
         if (!selectedQuizId.HasValue)
@@ -174,7 +190,7 @@ public class GameController : Controller
 
         // Store the empty completed-question list in the session.           
         SaveCompletedQuestionIds(completedQuestionIds);
-        
+
         // Keep the selection so subsequent game requests can stay within this quiz.
         HttpContext.Session.SetInt32(SelectedQuizIdSessionKey, selectedQuizId.Value);
 
@@ -192,7 +208,7 @@ public class GameController : Controller
         HttpContext.Session.SetString(
             "GameStartedAt",
             DateTime.UtcNow.ToString("O"));
-        
+
         // Keep a snapshot of the quiz title for the completed result.
         HttpContext.Session.SetString("QuizName", quiz.Title);
 
@@ -215,8 +231,9 @@ public class GameController : Controller
 
     // Handles the answer selected by player
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Answer(
-        int questionId, 
+        int questionId,
         int selectedOption)
     {
         // Only accept answers to the question currently shown in this game.
@@ -254,11 +271,11 @@ public class GameController : Controller
         {
             return RedirectToAction(nameof(Play));
         }
-        
+
         // only correct answers increase the score.
         if (isCorrect)
         {
-            score++;  
+            score++;
         }
         // Mark the question as completed when answered, regardless of correct/incorrect status
         completedQuestionIds.Add(question.QuestionId);
@@ -283,6 +300,7 @@ public class GameController : Controller
 
     // Loads another random question after the player clicks continue.
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Continue()
     {
         // Don't allow the player to skip a question without answering.
@@ -311,28 +329,50 @@ public class GameController : Controller
 
         if (question == null)
         {
-        // Only finish when every question in the quiz has been answered.
-        int totalQuestions = HttpContext.Session.GetInt32("TotalQuestions") ?? 0;
+            // Only finish when every question in the quiz has been answered.
+            int totalQuestions = HttpContext.Session.GetInt32("TotalQuestions") ?? 0;
 
-        if (totalQuestions < 5 || completedQuestionIds.Distinct().Count() != totalQuestions)
-        {
-            return RedirectToAction(nameof(Play));
+            if (totalQuestions < 5 || completedQuestionIds.Distinct().Count() != totalQuestions)
+            {
+                return RedirectToAction(nameof(Play));
+            }
+
+            // Save the result for logged-in players before showing the result page.
+            var saveStatus = await SaveGameResultAsync(selectedQuizId.Value);
+
+            if (saveStatus != GameResultSaveStatus.Completed)
+            {
+                bool canRetrySave =
+                    saveStatus == GameResultSaveStatus.RetryableFailure;
+
+                if (canRetrySave)
+                {
+                    _logger.LogWarning(
+                        "Game completion could not be saved for quiz {QuizId}; preserving session state for retry.",
+                        selectedQuizId.Value);
+
+                    // Only restore Continue when another save attempt can help.
+                    HttpContext.Session.SetString(AwaitingAnswerSessionKey, "false");
+                }
+
+                var resultView = View("Result", new GameViewModel
+                {
+                    QuizName = HttpContext.Session.GetString("QuizName") ?? "Quiz",
+                    Score = score,
+                    TotalQuestions = totalQuestions,
+                    HasWon = true,
+                    SaveFailed = true,
+                    CanRetrySave = canRetrySave
+                });
+
+                resultView.StatusCode = StatusCodes.Status500InternalServerError;
+                return resultView;
+            }
+
+            HttpContext.Session.SetString("HasWon", "true");
+            return RedirectToAction(nameof(Result));
         }
 
-        // Save the result for logged-in players before showing the result page.
-        bool saved = await SaveGameResultAsync(selectedQuizId.Value);
-
-        if (!saved)
-        {
-            // Restore the completed-answer state so the player can retry Continue.
-            HttpContext.Session.SetString(AwaitingAnswerSessionKey, "false");
-            return StatusCode(500, "Could not save your game result. Please try again");
-        }
-
-        HttpContext.Session.SetString("HasWon", "true");
-        return RedirectToAction(nameof(Result));
-        }
-    
 
         // Register the next question as the only one that can be answered.
         HttpContext.Session.SetInt32(CurrentQuestionIdSessionKey, question.QuestionId);
@@ -350,7 +390,7 @@ public class GameController : Controller
 
     // Displays the result after the player has completed the game.
     [HttpGet]
-    public async Task <IActionResult> Result()
+    public IActionResult Result()
     {
         // Only completed games should be able to open the victory result page.
         if (HttpContext.Session.GetString("HasWon") != "true")
@@ -365,14 +405,14 @@ public class GameController : Controller
             return RedirectToAction(nameof(Play));
         }
 
-        var quiz = await _quizRepository.GetByIdAsync(selectedQuizId.Value);
 
         // Reuse the final score from the session to display the completed game result.
         return View(new GameViewModel
         {
             Score = HttpContext.Session.GetInt32("Score") ?? 0,
             TotalQuestions = HttpContext.Session.GetInt32("TotalQuestions") ?? 0,
-            QuizName = quiz?.Title ?? "Quiz",
+            // Preserve the title shown during this attempt, even if the quiz is renamed or deleted
+            QuizName = HttpContext.Session.GetString("QuizName") ?? "Quiz",
             HasWon = true
         });
     }
