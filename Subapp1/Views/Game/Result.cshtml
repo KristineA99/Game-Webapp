@@ -25,20 +25,40 @@
         <span class="score-value">@Model.Score/@Model.TotalQuestions</span>
     </div>
 
-    <div class="game-result-actions">
-        <a asp-controller="Game"
-           asp-action="Play"
-           class="btn btn-primary">
-           Play Again
-        </a>
+    @if (Model.SaveFailed)
+    {
+        <div class="alert alert-warning" role="alert">
+            Your quiz is complete, but we couldn't save your result to My Progress.
+            Try saving again while your game session is active.
+        </div>
+    }
 
-        @if (User.Identity?.IsAuthenticated == true)
+    <div class="game-result-actions">
+        @if (Model.SaveFailed)
         {
-            <a asp-controller="Progress"
-               asp-action="Index"
-               class="btn btn-secondary">
-               View My Progress
+            <form asp-controller="Game" asp-action="Continue" method="post">
+                <button type="submit" class="btn btn-primary">
+                    Retry Saving
+                </button>
+            </form>
+        }
+        else
+        {
+            <a asp-controller="Game" asp-action="Play" class="btn btn-primary">
+                Play Again
             </a>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Progress" asp-action="Index" class="btn btn-secondary">
+                    View My Progress
+                </a>
+            }
         }
     </div>
+
+    @if (Model.SaveFailed)
+    {
+        <p>Starting another game or letting your session expire will discard this attempt's unsaved result.</p>
+    }
 </div>

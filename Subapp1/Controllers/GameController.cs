@@ -18,15 +18,18 @@ public class GameController : Controller
     private readonly IQuestionRepository _questionRepository;
     private readonly IQuizRepository _quizRepository;
     private readonly IGameResultRepository _gameResultRepository;
+    private readonly ILogger<GameController> _logger;
 
     public GameController(
         IQuestionRepository questionRepository,
         IQuizRepository quizRepository,
-        IGameResultRepository gameResultRepository)
+        IGameResultRepository gameResultRepository,
+        ILogger<GameController> logger)
     {
         _questionRepository = questionRepository;
         _quizRepository = quizRepository;
         _gameResultRepository = gameResultRepository;
+        _logger = logger;
     }
 
     // Retrieves the completed question Ids stored in the player's session and converts them from JSON into a list of integers.
@@ -76,6 +79,10 @@ public class GameController : Controller
             System.Globalization.DateTimeStyles.RoundtripKind,
             out DateTime startedAt))
         {
+            _logger.LogWarning(
+                "Cannot save game result for quiz {QuizId}: session start time is missing or invalid.",
+                selectedQuizId);
+            
             return false;
         }
 
@@ -283,6 +290,7 @@ public class GameController : Controller
 
     // Loads another random question after the player clicks continue.
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Continue()
     {
         // Don't allow the player to skip a question without answering.
@@ -324,9 +332,24 @@ public class GameController : Controller
 
         if (!saved)
         {
-            // Restore the completed-answer state so the player can retry Continue.
+            _logger.LogWarning(
+                "Game completion could not be saved for quiz {QuizId}; preserving session state for retry.",
+                selectedQuizId.Value);
+    
+            // Preserve the completed attempt so saving can be retried.
             HttpContext.Session.SetString(AwaitingAnswerSessionKey, "false");
-            return StatusCode(500, "Could not save your game result. Please try again");
+
+            var resultView = View("Result", new GameViewModel
+            {
+              QuizName = HttpContext.Session.GetString("QuizName") ?? "Quiz",
+              Score = score,
+              TotalQuestions = totalQuestions,
+              HasWon = true,
+              SaveFailed = true  
+            });
+
+            resultView.StatusCode = StatusCodes.Status500InternalServerError;
+            return resultView;   
         }
 
         HttpContext.Session.SetString("HasWon", "true");

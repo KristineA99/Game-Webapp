@@ -7,6 +7,7 @@ using Subapp1.Models;
 using Subapp1.ViewModels;
 using System.Text.Json;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace Subapp1.Tests.Controllers;
 
@@ -29,7 +30,8 @@ public class GameControllerTests
         _controller = new GameController(
             _questionRepository,
             _quizRepository,
-            _gameResultRepository);
+            _gameResultRepository,
+            Substitute.For<ILogger<GameController>>());
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -259,6 +261,85 @@ public class GameControllerTests
         await _gameResultRepository.Received(1)
             .AddAsync(Arg.Any<GameResult>());
     }
+
+    // Verify that a failed save preserves the completed game
+    // and a successful retry saves the result before showing victory.
+    [Fact]
+    public async Task Continue_WhenSaveFails_AllowsSuccessfulRetry()
+    {
+        // Arrange: identify the logged-in player.
+        _controller.HttpContext.User = new ClaimsPrincipal(
+            new ClaimsIdentity(
+                new[]
+                {
+                new Claim(ClaimTypes.NameIdentifier, "user-123"),
+                new Claim(ClaimTypes.Name, "Test Player")
+                },
+                authenticationType: "Test"));
+
+        _session.SetInt32("SelectedQuizId", 7);
+        _session.SetString("QuizName", "Security quiz");
+        _session.SetInt32("Score", 3);
+        _session.SetInt32("TotalQuestions", 5);
+        _session.SetString("CompletedQuestionIds", "[10,20,30,40,50]");
+        _session.SetString("AwaitingAnswer", "false");
+        _session.SetString(
+            "GameStartedAt",
+            DateTime.UtcNow.AddMinutes(-1).ToString("O"));
+
+        // No unanswered questions remain in this quiz.
+        _questionRepository.GetRandomAsync(
+            Arg.Any<List<int>>(),
+            7).Returns((Question?)null);
+
+        _gameResultRepository
+            .AddAsync(Arg.Any<GameResult>())
+            .Returns(false, true);
+
+        // Act: the first save fails.
+        var failedResult = await _controller.Continue();
+
+        // Assert: display the completed score with a retry option.
+        var failedView = Assert.IsType<ViewResult>(failedResult);
+        Assert.Equal("Result", failedView.ViewName);
+        Assert.Equal(500, failedView.StatusCode);
+
+        var model = Assert.IsType<GameViewModel>(failedView.Model);
+        Assert.True(model.SaveFailed);
+        Assert.True(model.HasWon);
+        Assert.Equal("Security quiz", model.QuizName);
+        Assert.Equal(3, model.Score);
+        Assert.Equal(5, model.TotalQuestions);
+
+        // The attempt must remain available without being marked saved.
+        Assert.Equal("false", _session.GetString("AwaitingAnswer"));
+        Assert.Null(_session.GetString("ResultSaved"));
+        Assert.Null(_session.GetString("HasWon"));
+        Assert.Equal(3, _session.GetInt32("Score"));
+        Assert.Equal(
+            "[10,20,30,40,50]",
+            _session.GetString("CompletedQuestionIds"));
+
+        await _gameResultRepository.Received(1)
+            .AddAsync(Arg.Any<GameResult>());
+
+        // Act: retry with the preserved session.
+        var retryResult = await _controller.Continue();
+
+        // Assert: successful persistence now allows the normal result page.
+        var redirect = Assert.IsType<RedirectToActionResult>(retryResult);
+        Assert.Equal(nameof(GameController.Result), redirect.ActionName);
+        Assert.Equal("true", _session.GetString("ResultSaved"));
+        Assert.Equal("true", _session.GetString("HasWon"));
+
+        await _gameResultRepository.Received(2).AddAsync(
+            Arg.Is<GameResult>(saved =>
+                saved.UserId == "user-123" &&
+                saved.QuizId == 7 &&
+                saved.Score == 3 &&
+                saved.TotalQuestions == 5));
+    }
+
 
     // Keep session writes available to later reads and repeated controller calls.
     private sealed class TestSession : ISession

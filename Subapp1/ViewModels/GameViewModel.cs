@@ -18,6 +18,9 @@ public class GameViewModel
 
     public bool? IsCorrect { get; set; }
 
-    // True when the player has correctly answered all questions.
+    // True when the player has completed all questions, regardless of score.
     public bool HasWon { get; set; }
+
+    // Show a retry option when the completed result could not be saved.
+    public bool SaveFailed { get; set; }
 }
