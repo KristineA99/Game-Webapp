@@ -21,6 +21,9 @@ public class GameViewModel
     // True when the player has completed all questions, regardless of score.
     public bool HasWon { get; set; }
 
-    // Show a retry option when the completed result could not be saved.
+    // Display a warning when the completed result could not be saved.
     public bool SaveFailed { get; set; }
+
+    // Only offer retry when the failure may be resolved by another save attempt.
+    public bool CanRetrySave { get; set; }
 }
