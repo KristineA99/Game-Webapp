@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Subapp1.DAL;
 using Subapp1.Models;
+using Subapp1.ViewModels;
 
 namespace Subapp1.Controllers;
 
@@ -30,26 +31,33 @@ public class CategoryController : Controller
     [HttpGet]
     public IActionResult Create()
     {
-        return View();
+        return View(new CategoryFormViewModel());
     }
 
     // POST: /Category/Create
     // Validate and save the new category.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Category category)
+    public async Task<IActionResult> Create(CategoryFormViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            return View(category);
+            return View(model);
         }
+
+        // Only copy editable fields; the database generates the new category ID.
+
+        var category = new Category
+        {
+            Name = model.Name
+        };
 
         bool success = await _categoryRepository.AddAsync(category);
 
         if (!success)
         {
             ModelState.AddModelError("", "Unable to create the category.");
-            return View(category);
+            return View(model);
         }
 
         return RedirectToAction(nameof(Index));
@@ -64,23 +72,35 @@ public class CategoryController : Controller
         {
             return NotFound();
         }
-        return View(category);
+
+        var model = new CategoryFormViewModel
+        {
+            CategoryId = category.CategoryId,
+            Name = category.Name
+        };
+        return View(model);
     }
 
     // POST: /Category/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Category category)
+    public async Task<IActionResult> Edit(int id, CategoryFormViewModel model)
     {
-        if (id != category.CategoryId)
+        if (id != model.CategoryId)
         {
             return BadRequest();
         }
 
         if (!ModelState.IsValid)
         {
-            return View(category);
+            return View(model);
         }
+
+        var category = new Category
+        {
+            CategoryId = model.CategoryId,
+            Name = model.Name
+        };
 
         bool success = await _categoryRepository.UpdateAsync(category);
 
