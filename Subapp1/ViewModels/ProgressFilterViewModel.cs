@@ -39,8 +39,7 @@ public class ProgressFilterViewModel : IValidatableObject
         if (FromDate.HasValue && ToDate.HasValue && FromDate.Value.Date > ToDate.Value.Date)
         {
             yield return new ValidationResult(
-                "The 'From' date must be before the 'To' date.",
-                new[] { nameof(FromDate), nameof(ToDate) });
+                "The 'From' date must be before or on the 'To' date.");
         }
     }
 }

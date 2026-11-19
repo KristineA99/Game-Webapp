@@ -33,7 +33,8 @@ public class ProgressController : Controller
         var effectiveFilter = filter;
         if (!ModelState.IsValid)
         {
-            effectiveFilter = new ProgressFilterViewModel { Sort = filter.Sort };
+            // Ignore date restrictions when validation fails, but retain the quiz
+            // selection and sorting so the player can still browse relevant attempts.
             effectiveFilter = new ProgressFilterViewModel { QuizId = filter.QuizId, Sort = filter.Sort };
         }
 
