@@ -63,6 +63,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("CorsPolicy");
+// Serve the images stored in wwwroot to the React frontend
+app.UseStaticFiles();
 app.MapScalarApiReference();
 app.MapControllers();
 

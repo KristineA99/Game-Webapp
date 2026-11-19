@@ -3,5 +3,5 @@ export interface Quiz {
   quizId?: number; // optional: a new quiz gets its id from the database
   title: string;
   description?: string | null;
-  questionIds: number[]; s
+  questionIds: number[];
 }
