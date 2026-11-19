@@ -10,12 +10,12 @@ namespace Subapp1.DAL;
 public class GameDbContext : IdentityDbContext
 {
     //The constructor receives the database configuration from ASP.NET
-    //through dependency injection (for example that we are useing SQLite).
+    //through dependency injection (for example that we are using SQLite).
     //base(options) passes this configuration to EF Core's DbContext.
     public GameDbContext(DbContextOptions<GameDbContext> options)
         : base(options)
     {
-        
+
     }
 
     //Represents the Questions table in the database.
@@ -38,9 +38,9 @@ public class GameDbContext : IdentityDbContext
         base.OnModelCreating(modelBuilder);
 
         // A quiz cannot contain the same question more than once, so we define a composite primary key for the join table.
-        modelBuilder.Entity<QuizQuestion>() 
+        modelBuilder.Entity<QuizQuestion>()
             .HasKey(qq => new { qq.QuizId, qq.QuestionId });
-        
+
         // Keep results but detach them when their quiz is deleted.
         modelBuilder.Entity<GameResult>()
             .HasOne(result => result.Quiz)
@@ -53,6 +53,6 @@ public class GameDbContext : IdentityDbContext
             .HasOne(q => q.Category)
             .WithMany(c => c.Questions)
             .HasForeignKey(question => question.CategoryId)
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

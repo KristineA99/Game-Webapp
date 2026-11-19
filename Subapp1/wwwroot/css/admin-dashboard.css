@@ -34,7 +34,7 @@
     font-size: 0.9rem;
 }
 
-/* Pixelated question count */
+/* Styling quiz counts in readiness indicator */
 .dashboard-status strong {
     font-family: "Press Start 2P", "Courier New", monospace;
     font-size: 1rem;

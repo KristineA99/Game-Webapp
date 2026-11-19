@@ -6,10 +6,7 @@
 
 <h1>Edit Quiz</h1>
 
-<form asp-controller="Quiz"
-      asp-action="Edit"
-      asp-route-id="@Model.QuizId"
-      method="post">
+<form asp-controller="Quiz" asp-action="Edit" asp-route-id="@Model.QuizId" method="post">
 
     <input type="hidden" asp-for="QuizId" />
 
@@ -23,9 +20,7 @@
 
     <div class="mb-3">
         <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description"
-                  class="form-control"
-                  rows="3"></textarea>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 

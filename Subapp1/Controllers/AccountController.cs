@@ -85,7 +85,7 @@ public class AccountController : Controller
 
         if (ModelState.IsValid)
         {
-            // Checks the password hash and sets the login cookie
+            // looks up the user
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user != null)
@@ -93,7 +93,7 @@ public class AccountController : Controller
                 // Checks the password hash and sets the login cookie
                 var result = await _signInManager.PasswordSignInAsync(
                     user, model.Password, model.RememberMe, lockoutOnFailure: false);
-            
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("[AccountController] User logged in: {Email}", model.Email);

@@ -38,7 +38,6 @@ public class QuestionRepository : IQuestionRepository
         }
         catch (Exception ex)
         {
-            // The tag [QuestionRepository] shows where in the code the error came from
             _logger.LogError(
                 ex,
                 "Database error occurred while retrieving questions.");
@@ -54,7 +53,7 @@ public class QuestionRepository : IQuestionRepository
         {
             return await _context.Questions.FindAsync(id); // FindAsync looks up the row by its primary key (QuestionId).
         }
-        // Returns null if the question doesn not exist.
+        // Returns null if the question does not exist.
         // Database errors are logged and rethrown.
         catch (Exception ex)
         {
@@ -126,7 +125,7 @@ public class QuestionRepository : IQuestionRepository
         {
             _logger.LogError(
                 ex,
-                "Database error occurred while adding a new question."); 
+                "Database error occurred while adding a new question.");
             throw;
         }
     }
@@ -139,10 +138,10 @@ public class QuestionRepository : IQuestionRepository
             var existingQuestion = await _context.Questions.FindAsync(question.QuestionId);
             if (existingQuestion == null)
             {
-               _logger.LogWarning(
-                  "Question update failed: Question with ID '{QuestionId}' not found.",
-                  question.QuestionId);
-               return false; // The question does not exist in the database.
+                _logger.LogWarning(
+                   "Question update failed: Question with ID '{QuestionId}' not found.",
+                   question.QuestionId);
+                return false; // The question does not exist in the database.
             }
 
             // Update only the editable properties.
@@ -154,12 +153,12 @@ public class QuestionRepository : IQuestionRepository
             existingQuestion.CorrectOption = question.CorrectOption;
             existingQuestion.CategoryId = question.CategoryId;
 
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
 
             _logger.LogInformation(
                 "Question with id '{QuestionId}' was updated successfully.",
                 existingQuestion.QuestionId);
-            return true; 
+            return true;
         }
         catch (Exception ex)
         {
@@ -167,7 +166,7 @@ public class QuestionRepository : IQuestionRepository
                 ex,
                 "Database error occurred while updating question '{QuestionId}'.",
                 question.QuestionId);
-            throw; 
+            throw;
         }
     }
 
@@ -191,8 +190,8 @@ public class QuestionRepository : IQuestionRepository
             _logger.LogInformation(
                 "Question with ID '{QuestionId}' was deleted successfully.",
                 id);
-            
-            return true; 
+
+            return true;
         }
         catch (Exception ex)
         {

@@ -7,7 +7,7 @@ namespace Subapp2.DAL;
 public class QuestionRepository : IQuestionRepository
 {
     private readonly GameDbContext _context;
-    
+
     // The logger writes messages to the console or a log file.
     private readonly ILogger<QuestionRepository> _logger;
 
@@ -68,8 +68,8 @@ public class QuestionRepository : IQuestionRepository
                 .Where(q => !excludeIds.Contains(q.QuestionId))
                 // EF.Functions.Random() gives every row a random number, the questions are
                 // sorted by that number, and FirstOrDefaultAsync picks the first one
-                .OrderBy(q => EF.Functions.Random()) 
-                .FirstOrDefaultAsync();              
+                .OrderBy(q => EF.Functions.Random())
+                .FirstOrDefaultAsync();
         }
         // Returns null if the table is empty or the database call fails.
         catch (Exception e)
@@ -100,7 +100,7 @@ public class QuestionRepository : IQuestionRepository
             _logger.LogError(
                 e,
                 "[QuestionRepository] AddAsync() failed for question {@question}",
-                question); 
+                question);
             return false;
         }
     }
@@ -125,7 +125,7 @@ public class QuestionRepository : IQuestionRepository
                 e,
                 "[QuestionRepository] UpdateAsync() failed for question {@question}.",
                 question);
-            return false; 
+            return false;
         }
     }
 
@@ -143,7 +143,7 @@ public class QuestionRepository : IQuestionRepository
                 return false;
             }
 
-             // If the question exist, we remove it and save the change.
+            // If the question exists, we remove it and save the change.
             _context.Questions.Remove(question);
             await _context.SaveChangesAsync();
 
@@ -152,7 +152,7 @@ public class QuestionRepository : IQuestionRepository
                 id);
             return true;
         }
-        // If the question exist, but an error occures.
+        // If deleting the question fails.
         catch (Exception e)
         {
             _logger.LogError(

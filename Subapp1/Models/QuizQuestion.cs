@@ -10,7 +10,7 @@ public class QuizQuestion
 
     // Foreign key referencing the question 
     public int QuestionId { get; set; }
-    
+
     // Navigation property to the Question
     public Question Question { get; set; } = null!;
 }

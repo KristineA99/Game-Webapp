@@ -23,7 +23,7 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
-              <div class="mb-3">
+            <div class="mb-3">
                 <label asp-for="Nickname" class="form-label"></label>
                 <input asp-for="Nickname" class="form-control" />
                 <span asp-validation-for="Nickname" class="text-danger"></span>
@@ -31,7 +31,8 @@
 
             <div class="mb-3">
                 <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" autocomplete="new-password" aria-describedby="password-help" />
+                <input asp-for="Password" class="form-control" autocomplete="new-password"
+                       aria-describedby="password-help" />
                 @* Tells the user the password rules before they submit, so they avoid an error *@
                 <div id="password-help" class="form-text">
                     At least 6 characters, with an uppercase letter, a lowercase letter, a number and a symbol.

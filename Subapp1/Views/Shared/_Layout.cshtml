@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,23 +26,27 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 @*site name top left corner, linking to home page*@
-                <a class="navbar-brand" style="font-family: 'Press Start 2P', 'Courier New', monospace; font-weight: 300; text-transform: uppercase;" asp-area="" asp-controller="Home" asp-action="Index">Monster Munch</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <a class="navbar-brand"
+                   style="font-family: 'Press Start 2P', 'Courier New', monospace; font-weight: 300; text-transform: uppercase;"
+                   asp-area="" asp-controller="Home" asp-action="Index">Monster Munch</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @*navigation to Home, Game and Questions pages*@
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                @*navigation to Home, Game and conditional access to My Progress and Admin Dashboard*@
+                <div id="navbarSupportedContent"
+                     class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link @(currentController == "Home" ? "active" : "")"
-                               aria-current="@(currentController == "Home" ? "page" : null)"
-                               asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                               aria-current="@(currentController == "Home" ? "page" : null)" asp-area=""
+                               asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link @(currentController == "Game" ? "active" : "")"
-                               aria-current="@(currentController == "Game" ? "page" : null)"
-                               asp-area="" asp-controller="Game" asp-action="Play">Game</a>
+                               aria-current="@(currentController == "Game" ? "page" : null)" asp-area=""
+                               asp-controller="Game" asp-action="Play">Game</a>
                         </li>
 
                         @* Logged-in players can see their own progress *@
@@ -49,8 +54,8 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link @(currentController == "Progress" ? "active" : "")"
-                                   aria-current="@(currentController == "Progress" ? "page" : null)"
-                                   asp-area="" asp-controller="Progress" asp-action="Index">My progress</a>
+                                   aria-current="@(currentController == "Progress" ? "page" : null)" asp-area=""
+                                   asp-controller="Progress" asp-action="Index">My progress</a>
                             </li>
                         }
 
@@ -60,9 +65,8 @@
                             <li class="nav-item">
                                 <a class="nav-link @(new[] { "Admin", "Category", "Question", "Quiz" }.Contains(currentController) ? "active" : "")"
                                    aria-current="@(new[] { "Admin", "Category", "Question", "Quiz" }.Contains(currentController) ? "page" : null)"
-                                   asp-controller="Admin" 
-                                   asp-action="Index">
-                                   Admin Dashboard
+                                   asp-controller="Admin" asp-action="Index">
+                                    Admin Dashboard
                                 </a>
                             </li>
                         }
@@ -84,4 +88,5 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

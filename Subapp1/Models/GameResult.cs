@@ -21,7 +21,7 @@ public class GameResult
 
     // Number of correctly answered questions.
     [Range(0, int.MaxValue)]
-    public int Score{ get; set; }
+    public int Score { get; set; }
 
     // Number of questions the quiz had when it was played.
     // Stored as a snapshot, because an admin can add or remove questions from the quiz later.

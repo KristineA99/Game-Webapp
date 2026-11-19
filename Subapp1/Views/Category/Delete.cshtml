@@ -14,10 +14,7 @@
 
 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<form asp-controller="Category"
-      asp-action="Delete"
-      asp-route-id="@Model.CategoryId"
-      method="post">
+<form asp-controller="Category" asp-action="Delete" asp-route-id="@Model.CategoryId" method="post">
 
     <button type="submit" class="btn btn-danger">
         Delete Category

@@ -75,6 +75,7 @@ public class QuestionAPIController : ControllerBase
     }
 
     // POST api/questionapi/create
+    // [ApiController] automatically returns 400 when the submitted DTO fails validation.
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] QuestionDto questionDto)
     {
@@ -103,8 +104,8 @@ public class QuestionAPIController : ControllerBase
         }
 
         _logger.LogWarning("[QuestionAPIController] Question creation failed {@question}", newQuestion);
-        // returns 400 Bad Request if the DTO breaks its validation attributes (e.g. empty text or no category chosen)
-        return StatusCode(500, "Internal server error"); 
+        // The repository could not save the question, so report a server error.
+        return StatusCode(500, "Internal server error");
     }
 
     // PUT api/questionapi/update/5

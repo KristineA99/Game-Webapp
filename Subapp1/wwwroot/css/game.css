@@ -6,9 +6,17 @@
 }
 
 /* Play headline */
-.game-container h1 {
+.game-container h1, h2 {
     font-family: "Press Start 2P", monospace;
     margin-bottom: 1.5rem;
+}
+
+.game-container h1 {
+    font-size: 2rem;
+}
+
+.game-container h2 {
+    font-size: 1.7rem;
 }
 
 /* Monster */
@@ -36,7 +44,7 @@
 }
 
 .question h2 {
-    font-size: 1.7rem;
+    font-size: 1.3rem;
     font-weight: normal;
     margin-bottom: 1.5rem;
 }
@@ -91,7 +99,7 @@
 }
 
 .answer-result.correct {
-    color:darkgreen;
+    color: darkgreen;
 }
 
 .answer-result.incorrect {
@@ -150,12 +158,12 @@
     cursor: pointer;
 }
 
-.quiz-choice input[type="radio"]:checked + label {
+.quiz-choice input[type="radio"]:checked+label {
     background-color: #e3f3e5;
     border-color: #276b36;
 }
 
-.quiz-choice input[type="radio"]:focus-visible + label {
+.quiz-choice input[type="radio"]:focus-visible+label {
     outline: 3px solid #276b36;
     outline-offset: 3px;
 }
@@ -182,6 +190,7 @@
     object-fit: contain;
     image-rendering: pixelated;
 }
+
 .score-label {
     font-size: 0.7rem;
     text-transform: uppercase;
@@ -224,7 +233,7 @@
 }
 
 /* Separate the final score from the victory message. */
-.victory + .score {
+.victory+.score {
     margin-top: 2rem;
 }
 
@@ -250,6 +259,7 @@
     .monster {
         margin-bottom: 0.5rem;
     }
+
     .answer-options {
         grid-template-columns: 1fr;
         max-width: 320px;
@@ -258,6 +268,7 @@
     .question {
         padding: 0 1rem;
     }
+
     .question h2 {
         font-size: 1.3rem;
     }

@@ -41,12 +41,12 @@
 <h1 class="progress-title">Player Progress</h1>
 
 @* White box: filters at the top, results underneath *@
- <div class="progress-box">
+<div class="progress-box">
 
     <form method="get" asp-controller="Progress" asp-action="Index" class="progress-toolbar">
         <label for="QuizId" class="visually-hidden">Quiz</label>
-        <select id="QuizId" name="QuizId" class="form-select"
-                asp-items="Model.AvailableQuizzes" onchange="this.form.submit()">
+        <select id="QuizId" name="QuizId" class="form-select" asp-items="Model.AvailableQuizzes"
+                onchange="this.form.submit()">
             <option value="">Quiz</option>
         </select>
 
@@ -54,16 +54,14 @@
         <div class="progress-date-field">
             <label for="FromDate">From</label>
             <input type="date" id="FromDate" name="FromDate" class="form-control"
-                   value="@filter.FromDate?.ToString("yyyy-MM-dd")"
-                   max="@filter.ToDate?.ToString("yyyy-MM-dd")"
+                   value="@filter.FromDate?.ToString("yyyy-MM-dd")" max="@filter.ToDate?.ToString("yyyy-MM-dd")"
                    onchange="this.form.submit()" />
         </div>
 
         <div class="progress-date-field">
             <label for="ToDate">To</label>
             <input type="date" id="ToDate" name="ToDate" class="form-control"
-                   value="@filter.ToDate?.ToString("yyyy-MM-dd")"
-                   min="@filter.FromDate?.ToString("yyyy-MM-dd")"
+                   value="@filter.ToDate?.ToString("yyyy-MM-dd")" min="@filter.FromDate?.ToString("yyyy-MM-dd")"
                    onchange="this.form.submit()" />
         </div>
 
@@ -71,7 +69,8 @@
         <select id="Sort" name="Sort" class="form-select" onchange="this.form.submit()">
             @foreach (var option in Html.GetEnumSelectList<ProgressSortOrder>())
             {
-                <option value="@option.Value" selected="@(option.Value == ((int)filter.Sort).ToString())">@option.Text</option>
+                <option value="@option.Value" selected="@(option.Value == ((int)filter.Sort).ToString())">@option.Text
+                </option>
             }
         </select>
 
@@ -106,21 +105,21 @@
                         <th scope="col">Time</th>
                         <th scope="col" class="attempt-score">Score</th>
                     </tr>
-                </thead> 
+                </thead>
 
                 <tbody>
                     @foreach (var attempt in Model.Attempts)
                     {
                         var completed = attempt.CompletedAt.ToLocalTime();
                     
-                    <tr>
-                        <td class="attempt-title">@attempt.QuizName</td>
-                        @* InvariantCulture keeps the "/" in the date. "/" would turn into "." *@
-                        <td>@completed.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)</td>
-                        @* How long the attempt took *@
-                        <td>@TimeSpan.FromSeconds(attempt.DurationSeconds).ToString(@"hh\:mm\:ss")</td>
-                        <td class="attempt-score">@attempt.Score / @attempt.TotalQuestions</td>
-                    </tr>
+                        <tr>
+                            <td class="attempt-title">@attempt.QuizName</td>
+                            @* InvariantCulture keeps the "/" in the date. "/" would turn into "." *@
+                            <td>@completed.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)</td>
+                            @* How long the attempt took *@
+                            <td>@TimeSpan.FromSeconds(attempt.DurationSeconds).ToString(@"hh\:mm\:ss")</td>
+                            <td class="attempt-score">@attempt.Score / @attempt.TotalQuestions</td>
+                        </tr>
                     }
                 </tbody>
             </table>

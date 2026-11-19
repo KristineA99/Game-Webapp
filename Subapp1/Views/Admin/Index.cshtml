@@ -18,7 +18,9 @@
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-body text-center">
-                    <div class="dashboard-stat-number"><h2>@Model.CategoryCount</h2></div>
+                    <div class="dashboard-stat-number">
+                        <h2>@Model.CategoryCount</h2>
+                    </div>
                     <p class="mb-0">Categories</p>
                 </div>
             </div>
@@ -27,7 +29,9 @@
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-body text-center">
-                    <div class="dashboard-stat-number"><h2>@Model.QuestionCount</h2></div>
+                    <div class="dashboard-stat-number">
+                        <h2>@Model.QuestionCount</h2>
+                    </div>
                     <p class="mb-0">Questions</p>
                 </div>
             </div>
@@ -35,7 +39,9 @@
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-body text-center">
-                    <div class="dashboard-stat-number"><h2>@Model.QuizCount</h2></div>
+                    <div class="dashboard-stat-number">
+                        <h2>@Model.QuizCount</h2>
+                    </div>
                     <p class="mb-0">Quizzes</p>
                 </div>
             </div>
@@ -51,8 +57,8 @@
     </p>
     <div class="d-flex flex-wrap justify-content-center gap-3">
         <div class="dashboard-status dashboard-status-playable">
-           <strong> @Model.PlayableQuizCount</strong>
-           <span>Playable</span>
+            <strong> @Model.PlayableQuizCount</strong>
+            <span>Playable</span>
         </div>
         <div class="dashboard-status dashboard-status-unplayable">
             <strong> @Model.UnplayableQuizCount</strong>
@@ -71,7 +77,8 @@
                 <div class="card-body d-flex flex-column">
                     <h3 class="dashboard-card-heading">Categories</h3>
                     <p>Manage the categories used to organize questions.</p>
-                    <a asp-controller="Category" asp-action="Index" class="btn btn-primary mt-auto align-self-start">Manage Categories</a>
+                    <a asp-controller="Category" asp-action="Index"
+                       class="btn btn-primary mt-auto align-self-start">Manage Categories</a>
                 </div>
             </div>
         </div>
@@ -81,8 +88,8 @@
                 <div class="card-body d-flex flex-column">
                     <h3 class="dashboard-card-heading">Questions</h3>
                     <p>Manage the questions used in quizzes.</p>
-                    <a asp-controller="Question" 
-                    asp-action="Index" class="btn btn-primary mt-auto align-self-start">Manage Questions</a>
+                    <a asp-controller="Question" asp-action="Index"
+                       class="btn btn-primary mt-auto align-self-start">Manage Questions</a>
                 </div>
             </div>
         </div>
@@ -92,9 +99,10 @@
                 <div class="card-body d-flex flex-column">
                     <h3 class="dashboard-card-heading">Quizzes</h3>
                     <p>Manage the quizzes available to users.</p>
-                    <a asp-controller="Quiz" asp-action="Index" class="btn btn-primary mt-auto align-self-start">Manage Quizzes</a>
+                    <a asp-controller="Quiz" asp-action="Index" class="btn btn-primary mt-auto align-self-start">Manage
+                        Quizzes</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>

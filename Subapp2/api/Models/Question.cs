@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 namespace Subapp2.Models;
 
 // A quiz question with four fixed answer options.
-// Validation attributes are checked server-side through ModelState in the controller.
+// Validation attributes are checked server-side through the controller.
 public class Question
 {
     // Primary key: a unique id for each question.
-    public int QuestionId { get; set; } 
+    public int QuestionId { get; set; }
 
     // Foreign key: identifies the category this question belongs to.
     public int CategoryId { get; set; }
@@ -21,32 +21,32 @@ public class Question
     // Question
     [Required(ErrorMessage = "The question text is required.")]
     [StringLength(300, MinimumLength = 5, ErrorMessage = "The question must be between 5 and 300 characters.")]
-    [Display(Name = "Question")] // the label shown in the form
-    public string Text { get; set; } = string.Empty; // gives the property a default value, so it is never null.
+    [Display(Name = "Question")]
+    public string Text { get; set; } = string.Empty; // supplies the property with a default value.
 
     // Answer A
     [Required(ErrorMessage = "Option A is required.")]
     [StringLength(100, ErrorMessage = "Options can be at most 100 characters.")]
-    [Display(Name = "Option A")] // the label shown in the form
-    public string OptionA { get; set; } = string.Empty; // gives the property a default value, so it is never null.
+    [Display(Name = "Option A")]
+    public string OptionA { get; set; } = string.Empty;
 
     // Answer B
     [Required(ErrorMessage = "Option B is required.")]
     [StringLength(100, ErrorMessage = "Options can be at most 100 characters.")]
-    [Display(Name = "Option B")] // the label shown in the form
-    public string OptionB { get; set; } = string.Empty; // gives the property a default value, so it is never null.
+    [Display(Name = "Option B")]
+    public string OptionB { get; set; } = string.Empty;
 
     // Answer C
     [Required(ErrorMessage = "Option C is required.")]
     [StringLength(100, ErrorMessage = "Options can be at most 100 characters.")]
-    [Display(Name = "Option C")] // the label shown in the form
-    public string OptionC { get; set; } = string.Empty; // gives the property a default value, so it is never null.
+    [Display(Name = "Option C")]
+    public string OptionC { get; set; } = string.Empty;
 
     // Answer D
     [Required(ErrorMessage = "Option D is required.")]
     [StringLength(100, ErrorMessage = "Options can be at most 100 characters.")]
-    [Display(Name = "Option D")] // the label shown in the form
-    public string OptionD { get; set; } = string.Empty; // gives the property a default value, so it is never null.
+    [Display(Name = "Option D")]
+    public string OptionD { get; set; } = string.Empty;
 
 
     // Correct answer
@@ -55,7 +55,7 @@ public class Question
     [Display(Name = "Correct answer")] // the label shown in the form
     public int CorrectOption { get; set; }
 
-    // Helper for views: the text of the correct option is returned, not just answer "1"
+    // check the following section (current question DTO does not expose CorrectOptionText). 
     public string CorrectOptionText => CorrectOption switch
     {
         1 => OptionA,

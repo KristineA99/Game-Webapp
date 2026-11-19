@@ -31,44 +31,47 @@
             @if (Model.CanRetrySave)
             {
                 <span>
-            Your quiz is complete, but we couldn't save your result to My Progress.
-            Try saving again while your game session is active.</span>
-        }
-        else
+                    Your quiz is complete, but we couldn't save your result to My Progress.
+                    Try saving again while your game session is active.
+                </span>
+            }
+            else
             {
                 <span>
-                    Your quiz is complete, but some required game information is 
+                    Your quiz is complete, but some required game information is
                     missing or invalid. This result cannot be saved.
                     Please start a new game.
                 </span>
             }
         </div>
-        }
+    }
 
     <div class="game-result-actions">
         @if (Model.SaveFailed && Model.CanRetrySave)
-        {
-            <form asp-controller="Game" asp-action="Continue" method="post">
-                <button type="submit" class="btn btn-primary">
-                    Retry Saving
-                </button>
-            </form>
-        }
-        else
-        {
-            <a asp-controller="Game" asp-action="Play" class="btn btn-primary">
-                Play Again
-            </a>
-
-            @if (!Model.SaveFailed && User.Identity?.IsAuthenticated == true)
             {
-                <a asp-controller="Progress" asp-action="Index" class="btn btn-secondary">
-                    View My Progress
-                </a>
+                <form asp-controller="Game" asp-action="Continue" method="post">
+                    <button type="submit" class="btn btn-primary">
+                        Retry Saving
+                    </button>
+                </form>
             }
-        }
+            else
+            {
+                <a asp-controller="Game" asp-action="Play" class="btn btn-primary">
+                    Play Again
+                </a>
+
+                @if (!Model.SaveFailed && User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Progress" asp-action="Index" class="btn btn-secondary">
+                        View My Progress
+                    </a>
+                }
+            }
     </div>
 
+    @* Keep the unsaved-result warning below the action buttons, outside their flex layout.
+       Only show it when the player still has an opportunity to retry saving. *@
     @if (Model.SaveFailed && Model.CanRetrySave)
     {
         <p>Starting another game or letting your session expire will discard this attempt's unsaved result.</p>

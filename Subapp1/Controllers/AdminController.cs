@@ -12,8 +12,8 @@ namespace Subapp1.Controllers
         private readonly IQuestionRepository _questionRepository;
         private readonly IQuizRepository _quizRepository;
         public AdminController(
-            ICategoryRepository categoryRepository, 
-            IQuestionRepository questionRepository, 
+            ICategoryRepository categoryRepository,
+            IQuestionRepository questionRepository,
             IQuizRepository quizRepository)
         {
             _categoryRepository = categoryRepository;

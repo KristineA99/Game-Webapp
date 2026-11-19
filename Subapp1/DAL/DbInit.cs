@@ -4,12 +4,13 @@ using Subapp1.Models;
 using System.Text.Json;
 
 namespace Subapp1.DAL;
+
 public static class DbInit
 {
     // Called from Program.cs during startup.
     // Adds initial question data if the database contains no questions.
     public static void Initialize(
-        GameDbContext context, 
+        GameDbContext context,
         IWebHostEnvironment environment)
     {
 
@@ -46,7 +47,7 @@ public static class DbInit
                 "Module 13 - Software Security 2"
             };
 
-             // Reuse any existing categories instead of creating duplicates.
+            // Reuse any existing categories instead of creating duplicates.
             var categories = context.Categories.ToList();
 
             foreach (var name in categoryNames)
@@ -88,7 +89,7 @@ public static class DbInit
 
             context.SaveChanges();
         }
-          // Seed example quizzes after the questions have been saved.
+        // Seed example quizzes after the questions have been saved.
         SeedQuizzes(context);
     }
 
@@ -102,8 +103,8 @@ public static class DbInit
 
         var categories = context.Categories.ToDictionary(
             c => c.CategoryId,
-            c => c.Name);       
-        
+            c => c.Name);
+
         // Quiz 1: Ten questions from Modules 2 and 3.
         var fundamentals = questions
             .Where(q =>
@@ -150,7 +151,7 @@ public static class DbInit
         context.SaveChanges();
     }
 
-    // Seeds example quizzes for the development database.
+    // Seeds example quizzes for the purpose of exam development and review.
     // Only creates a quiz if no quiz with the same title exists, preventing
     // duplicates when the application restarts.
     // If a seeded quiz is deleted, it will be recreated on the next startup.
@@ -165,7 +166,7 @@ public static class DbInit
         // Avoid adding the same example quiz on every startup.
         if (context.Quizzes.Any(q => q.Title == title))
         {
-        return;
+            return;
         }
 
         var quiz = new Quiz
@@ -182,14 +183,13 @@ public static class DbInit
                 QuestionId = question.QuestionId
             });
         }
-            
+
         context.Quizzes.Add(quiz);
         context.SaveChanges();
     }
 
     // Development only: adds example quiz attempts for one user, so the progress page
     // and its search and filters have data to show. Runs only if the user has no results yet.
-    // Note: quizzes with results cannot be deleted, so the seeded quizzes become undeletable in development.
     public static void SeedSampleGameResults(GameDbContext context, IdentityUser user)
     {
         if (context.GameResults.Any(r => r.UserId == user.Id))

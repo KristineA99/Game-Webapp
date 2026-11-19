@@ -17,13 +17,9 @@
     <p>@Model.Description</p>
 }
 
-<div asp-validation-summary="ModelOnly"
-     class="text-danger mb-3"></div>
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<form asp-controller="Quiz"
-      asp-action="Delete"
-      asp-route-id="@Model.QuizId"
-      method="post">
+<form asp-controller="Quiz" asp-action="Delete" asp-route-id="@Model.QuizId" method="post">
 
     <button type="submit" class="btn btn-danger">
         Delete Quiz

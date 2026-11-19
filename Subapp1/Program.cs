@@ -105,7 +105,7 @@ else
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseSession(); // must be placed before UseAuthentication
+app.UseSession();
 
 app.UseAuthentication(); // Reads the login cookie and identifies the user
 app.UseAuthorization();  // checks [Authorize] attributes

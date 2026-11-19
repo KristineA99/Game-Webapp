@@ -2,16 +2,17 @@ using Subapp2.Models;
 using System.Text.Json;
 
 namespace Subapp2.DAL;
+
 public static class DbInit
 {
     // Called from Program.cs during startup.
     // Adds initial question data if the database contains no questions.
     public static void Initialize(
-        GameDbContext context, 
+        GameDbContext context,
         IWebHostEnvironment environment)
     {
 
-        // Seed questions and categories only if the respective tables are empty.
+        // Seed questions and categories only if there are no existing questions.
         if (!context.Questions.Any())
         {
             // Read the JSON file containing the sample questions.
@@ -19,7 +20,7 @@ public static class DbInit
                 environment.ContentRootPath,
                 "Data",
                 "questions.json");
-                
+
             // Read the JSON file.
             var json = File.ReadAllText(filePath);
 
@@ -87,7 +88,7 @@ public static class DbInit
 
             context.SaveChanges();
         }
-        
+
         // Seed example quizzes after the questions have been saved.
         SeedQuizzes(context);
     }
@@ -101,8 +102,8 @@ public static class DbInit
 
         var categories = context.Categories.ToDictionary(
             c => c.CategoryId,
-            c => c.Name);       
-        
+            c => c.Name);
+
         // Quiz 1: Ten questions from Modules 2 and 3.
         var fundamentals = questions
             .Where(q =>
@@ -153,7 +154,7 @@ public static class DbInit
     // Only creates a quiz if no quiz with the same title exists, preventing
     // duplicates when the application restarts.
     // If a seeded quiz is deleted, it will be recreated on the next startup.
-    // This is intended for development and testing, not for restoring
+    // This is intended for exam development, testing and review, not for restoring
     // deleted quizzes in a production environment.
     private static void AddQuizIfMissing(
         GameDbContext context,
@@ -164,7 +165,7 @@ public static class DbInit
         // Avoid adding the same example quiz on every startup.
         if (context.Quizzes.Any(q => q.Title == title))
         {
-        return;
+            return;
         }
 
         var quiz = new Quiz
@@ -181,7 +182,7 @@ public static class DbInit
                 QuestionId = question.QuestionId
             });
         }
-            
+
         context.Quizzes.Add(quiz);
         context.SaveChanges();
     }

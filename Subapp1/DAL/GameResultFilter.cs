@@ -8,7 +8,7 @@ public static class GameResultFilter
 {
     public static IQueryable<GameResult> Apply(IQueryable<GameResult> query, ProgressFilterViewModel filter)
     {
-        // One attempts at on specific quiz.
+        // Only include attempts at the selected quiz.
         if (filter.QuizId.HasValue)
         {
             query = query.Where(r => r.QuizId == filter.QuizId.Value);
@@ -38,6 +38,6 @@ public static class GameResultFilter
         return query;
     }
 
-    private static DateTime StartOfLocalDayInUtc(DateTime date) => 
+    private static DateTime StartOfLocalDayInUtc(DateTime date) =>
     DateTime.SpecifyKind(date.Date, DateTimeKind.Local).ToUniversalTime();
 }

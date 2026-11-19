@@ -12,7 +12,7 @@ namespace Subapp1.Controllers;
 // Based on the ItemController pattern from the course demos
 // Demo-ShopDatabase-6-Repository and Demo-ShopErrorHandlingLogging.
 
-[Authorize (Roles = "Admin")] // Only users in the Admin role can access these pages
+[Authorize(Roles = "Admin")] // Only users in the Admin role can access these pages
 public class QuestionController : Controller
 {
     // The repository used for all database operations on questions
@@ -22,8 +22,8 @@ public class QuestionController : Controller
     private readonly ICategoryRepository _categoryRepository;
 
     public QuestionController(
-        IQuestionRepository questionRepository, 
-        ILogger<QuestionController> logger, 
+        IQuestionRepository questionRepository,
+        ILogger<QuestionController> logger,
         ICategoryRepository categoryRepository)
     {
         _questionRepository = questionRepository;
@@ -38,9 +38,9 @@ public class QuestionController : Controller
         // Send the list to Views/Question/Index.cshtml
         return View(questions);
     }
-    
+
     // CREATE - Show empty form with available categories for selection
-    [HttpGet] 
+    [HttpGet]
     public async Task<IActionResult> Create()
     {
         var model = new QuestionFormViewModel();
@@ -49,7 +49,7 @@ public class QuestionController : Controller
     }
 
     // CREATE - Receive and validate the submitted form
-    [HttpPost] 
+    [HttpPost]
     [ValidateAntiForgeryToken] // protects against fake form submissions from
     // other websites (the form includes a hidden security token automatically).
     public async Task<IActionResult> Create(QuestionFormViewModel model)
@@ -59,7 +59,7 @@ public class QuestionController : Controller
         // Server-side validation
         if (!ModelState.IsValid)
         {
-            await PopulateCategoriesAsync(model); 
+            await PopulateCategoriesAsync(model);
             return View(model);
         }
 
@@ -160,5 +160,5 @@ public class QuestionController : Controller
                 nameof(model.CategoryId),
                 "Selected category does not exist.");
         }
-    }   
+    }
 }

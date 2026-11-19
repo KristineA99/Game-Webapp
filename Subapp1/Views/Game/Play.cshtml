@@ -1,7 +1,7 @@
 @model Subapp1.ViewModels.GameViewModel
 
 @{
-    ViewData["Title"] = "Play"; 
+    ViewData["Title"] = "Play";
 }
 
 @* Loads the styles used by the game page *@
@@ -54,48 +54,44 @@
                 @* An answer has been submitted: show the result*@
                 if (Model.IsCorrect == true)
                 {
-                <p class="answer-result correct">Correct!</p>
+                    <p class="answer-result correct">Correct!</p>
                 }
                 else
                 {
-                <p class="answer-result incorrect">Wrong!</p>
+                    <p class="answer-result incorrect">Wrong!</p>
                 }
         
                 @* Continue should only appear after answering*@
                 <form asp-controller="Game" asp-action="Continue" method="post">
                     <button type="submit" class="continue-button">Continue</button>
-                </form>  
-            } 
+                </form>
+            }
         </div>
     }
     else
-        {
-            @* No question is active yet: allow the player to choose a quiz to start the game.*@
-            <h2>Choose a quiz</h2>
-            <div class="quiz-selection-card card">
-                <form asp-controller="Game" asp-action="Attack" method="post" class="attack-form">
-                    <fieldset>
-                        @foreach (var quiz in Model.AvailableQuizzes)
-                        {
-                            var radioId = $"quiz-{quiz.Value}";
-                            <div class="quiz-choice">
-                                <input id="@radioId"
-                                       type="radio"
-                                       name="selectedQuizId"
-                                       value="@quiz.Value"
-                                       required />
-                                <label for="@radioId" class="attack-button">@quiz.Text</label>
-                            </div>
-                        }
-                        <div class="quiz-start-actions">
-                            <button type="submit" class="attack-button quiz-start-button">Start Game</button>
+    {
+        @* No question is active yet: allow the player to choose a quiz to start the game.*@
+        <h2>Choose a quiz</h2>
+        <div class="quiz-selection-card card">
+            <form asp-controller="Game" asp-action="Attack" method="post" class="attack-form">
+                <fieldset>
+                    @foreach (var quiz in Model.AvailableQuizzes)
+                    {
+                        var radioId = $"quiz-{quiz.Value}";
+                        <div class="quiz-choice">
+                            <input id="@radioId" type="radio" name="selectedQuizId" value="@quiz.Value" required />
+                            <label for="@radioId" class="attack-button">@quiz.Text</label>
                         </div>
-                    </fieldset>
-                    <span asp-validation-for="SelectedQuizId" class="text-danger"></span>
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                </form>
-            </div>
-        }
+                    }
+                    <div class="quiz-start-actions">
+                        <button type="submit" class="attack-button quiz-start-button">Start Game</button>
+                    </div>
+                </fieldset>
+                <span asp-validation-for="SelectedQuizId" class="text-danger"></span>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </form>
+        </div>
+    }
 
     @if (Model.Question != null)
     {

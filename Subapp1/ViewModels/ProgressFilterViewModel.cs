@@ -11,7 +11,7 @@ public enum ProgressSortOrder
     [Display(Name = "Lowest score")] LowestScore
 }
 
-// Multi-parameter search. Allways sorted by date, newest first. 
+// Multi-parameter search. Allows filtering by quiz-name and date, and sorting by newest/oldest or highest/lowest score. 
 public class ProgressFilterViewModel : IValidatableObject
 {
     // Show only attempts at one specific quiz.
@@ -39,7 +39,7 @@ public class ProgressFilterViewModel : IValidatableObject
         if (FromDate.HasValue && ToDate.HasValue && FromDate.Value.Date > ToDate.Value.Date)
         {
             yield return new ValidationResult(
-                "The 'From' date must be before the 'To' date.", 
+                "The 'From' date must be before the 'To' date.",
                 new[] { nameof(FromDate), nameof(ToDate) });
         }
     }

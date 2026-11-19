@@ -18,10 +18,10 @@ public class QuizFormViewModel
     public string? Description { get; set; }
 
     // IDs of questions selected for this quiz.
-    public List<int> SelectedQuestionIds { get; set; } = new ();
+    public List<int> SelectedQuestionIds { get; set; } = new();
 
     // Questions available for selection in the form.
-    public List<SelectListItem> AvailableQuestions { get; set; } = new ();
+    public List<SelectListItem> AvailableQuestions { get; set; } = new();
 
     // Categories selected in the quiz form.
     // Used to filter which questions are displayed.

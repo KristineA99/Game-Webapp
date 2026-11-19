@@ -19,7 +19,7 @@ public class QuizRepository : IQuizRepository
     {
         return await _context.Quizzes
         .Include(q => q.QuizQuestions)
-        .AsNoTracking() 
+        .AsNoTracking()
         .ToListAsync();
     }
 
@@ -45,7 +45,7 @@ public class QuizRepository : IQuizRepository
             .Where(q => selectedQuestionIds.Contains(q.QuestionId))
             .Select(q => q.QuestionId)
             .ToListAsync();
-        
+
         if (validQuestionIds.Count != selectedQuestionIds.Distinct().Count())
         {
             _logger.LogWarning("Quiz creation rejected because one or more selected question IDs are invalid.");
@@ -62,17 +62,17 @@ public class QuizRepository : IQuizRepository
         }
         try
         {
-           _context.Quizzes.Add(quiz);
-           await _context.SaveChangesAsync();; 
+            _context.Quizzes.Add(quiz);
+            await _context.SaveChangesAsync();
 
-           _logger.LogInformation("Quiz '{QuizId}' created successfully", quiz.QuizId);
-              return true;
+            _logger.LogInformation("Quiz '{QuizId}' created successfully", quiz.QuizId);
+            return true;
         }
         catch (DbUpdateException ex)
         {
             _logger.LogError(ex, "Database error occurred while creating the quiz.");
             throw; // Rethrow the exception to be handled by the calling code.
-        }     
+        }
     }
 
     // Update a quiz and its associated questions.
@@ -106,7 +106,7 @@ public class QuizRepository : IQuizRepository
         var removedQuestions = existingQuiz.QuizQuestions
             .Where(qq => !selectedQuestionIds.Contains(qq.QuestionId))
             .ToList();
-        
+
         foreach (var quizQuestion in removedQuestions)
         {
             _context.QuizQuestions.Remove(quizQuestion);

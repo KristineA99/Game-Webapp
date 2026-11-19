@@ -7,7 +7,7 @@
 @* Page heading and create button *@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>@ViewData["Title"]
-         @* Animated monster next to the heading *@
+        @* Animated monster next to the heading *@
         <img src="~/images/monster1.gif" alt="" class="heading-gif" />
     </h1>
     <a asp-controller="Quiz" asp-action="Create" class="btn btn-primary">Add New Quiz</a>
@@ -20,44 +20,46 @@
     Scroll horizontally to view all columns and actions.
 </p>
 <div class=" table-responsive">
-<table class="table table-striped align-middle">
-    <thead>
-        <tr>
-            <th>Quiz ID</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Questions</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var quiz in Model)
-        {
-            var questionCount = quiz.QuizQuestions.Count;
-            var isPlayable = questionCount >= 5; // Setting the quiz status to playable if it has at least 5 questions
-
+    <table class="table table-striped align-middle">
+        <thead>
             <tr>
-                <td>@quiz.QuizId</td>
-                <td>@quiz.Title</td>
-                <td>@quiz.Description</td>
-                <td>@questionCount</td>
-                <td>
-                    @if (isPlayable)
-                    {
-                        <span class="table-status table-status-playable">Playable</span>
-                    }
-                    else
-                    {
-                        <span class="table-status table-status-unplayable">Not Playable</span>
-                    }
-                </td>
-                <td class="text-end text-nowrap">
-                    <a asp-controller="Quiz" asp-action="Edit" asp-route-id="@quiz.QuizId" class="btn btn-sm btn-outline-primary">Edit</a>
-                    <a asp-controller="Quiz" asp-action="Delete" asp-route-id="@quiz.QuizId" class="btn btn-sm btn-outline-danger">Delete</a>
-                </td>
+                <th>Quiz ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Questions</th>
+                <th>Status</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var quiz in Model)
+            {
+                var questionCount = quiz.QuizQuestions.Count;
+                var isPlayable = questionCount >= 5; // Setting the quiz status to playable if it has at least 5 questions
+
+                <tr>
+                    <td>@quiz.QuizId</td>
+                    <td>@quiz.Title</td>
+                    <td>@quiz.Description</td>
+                    <td>@questionCount</td>
+                    <td>
+                        @if (isPlayable)
+                        {
+                            <span class="table-status table-status-playable">Playable</span>
+                        }
+                        else
+                        {
+                            <span class="table-status table-status-unplayable">Not Playable</span>
+                        }
+                    </td>
+                    <td class="text-end text-nowrap">
+                        <a asp-controller="Quiz" asp-action="Edit" asp-route-id="@quiz.QuizId"
+                           class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-controller="Quiz" asp-action="Delete" asp-route-id="@quiz.QuizId"
+                           class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

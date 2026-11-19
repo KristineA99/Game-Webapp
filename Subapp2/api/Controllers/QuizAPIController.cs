@@ -64,14 +64,14 @@ public class QuizAPIController : ControllerBase
         return Ok(quizDto);
     }
 
-    // POST api/quizapi/create
-    // The repository checks that every selected question exists.
+    // [ApiController] validates the DTO before this action runs.
+    // The repository then checks that the selected questions exists.
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] QuizDto quizDto)
     {
         if (quizDto == null)
         {
-            // Returns Bad Request if the quiz has no title or no questions.
+            // Reject a request that does not contain required quiz data.
             return BadRequest("Quiz cannot be null");
         }
 

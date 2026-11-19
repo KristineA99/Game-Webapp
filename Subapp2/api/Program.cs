@@ -5,12 +5,12 @@ using Subapp2.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register API controllers. so ASP.NET can find them and send requests to them.
+// Register API controllers so ASP.NET can find them and send requests to them.
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     // When .NET turns our objects into JSON, two entities can point to each other
     // IgnoreCycles stops this from going in an endless loop and crashing the request.
-    options.JsonSerializerOptions.ReferenceHandler = 
+    options.JsonSerializerOptions.ReferenceHandler =
         System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
@@ -37,7 +37,7 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 
-// Write warnings and errors to a log file.
+// Write warnings, errors and information to a log file.
 var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Information()
     .WriteTo.File($"Logs/api_{DateTime.Now:yyyyMMdd_HHmmss}.log");

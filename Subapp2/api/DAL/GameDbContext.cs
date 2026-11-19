@@ -3,14 +3,14 @@ using Subapp2.Models;
 
 namespace Subapp2.DAL;
 
-//GameDbContext represents the connextion between our C# models and the database.
+//GameDbContext represents the connection between our C# models and the database.
 public class GameDbContext : DbContext
 {
 
     public GameDbContext(DbContextOptions<GameDbContext> options)
         : base(options)
     {
-        
+
     }
 
     //Represents the Questions table in the database.
@@ -21,7 +21,7 @@ public class GameDbContext : DbContext
 
     // Represents the Quizzes table in the database.
     public DbSet<Quiz> Quizzes { get; set; }
-    
+
     // Represents the join table between Quizzes and Questions.
     public DbSet<QuizQuestion> QuizQuestions { get; set; }
 

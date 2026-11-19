@@ -9,7 +9,7 @@ public class GameViewModel
 
     public int Score { get; set; }
 
-    public int TotalQuestions {get; set; }
+    public int TotalQuestions { get; set; }
 
     public List<SelectListItem> AvailableQuizzes { get; set; } = new();
 

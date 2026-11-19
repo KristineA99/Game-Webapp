@@ -76,7 +76,7 @@ public class QuizControllerTests
             Arg.Any<List<int>>());
     }
 
-    // Verify that an duplicate question IDs are rejected.
+    // Verify that duplicate question IDs are rejected.
     [Fact]
     public async Task CreatePost_WhenQuestionIdsAreDuplicated_ReturnsFormWithoutSaving()
     {

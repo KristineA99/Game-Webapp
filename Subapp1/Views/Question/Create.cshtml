@@ -3,7 +3,7 @@
 @*
     The page for adding a new question.
     It is shown by QuestionController.Create() (HttpGet), and when the form
-    is submitted it is sent to QuestionController.Create(Question question) (HttpPost).
+    is submitted it is sent to QuestionFormViewModel (HttpPost).
     If validation fails, the controller shows this page again with error messages.
 *@
 
@@ -15,7 +15,7 @@
 
 @* Loads the black and white style for the question pages *@
 @section Styles {
-        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 }
 
 <h1>Add question</h1>

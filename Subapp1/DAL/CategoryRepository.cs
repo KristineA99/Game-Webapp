@@ -31,11 +31,11 @@ public class CategoryRepository : ICategoryRepository
     {
         try
         {
-        _context.Categories.Add(category);
-        await _context.SaveChangesAsync();   
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
 
-        _logger.LogInformation("Category '{CategoryName}' created successfully with ID '{CategoryId}'.", category.Name, category.CategoryId);
-        return true;
+            _logger.LogInformation("Category '{CategoryName}' created successfully with ID '{CategoryId}'.", category.Name, category.CategoryId);
+            return true;
         }
         catch (DbUpdateException ex)
         {
@@ -58,15 +58,15 @@ public class CategoryRepository : ICategoryRepository
 
         try
         {
-        await _context.SaveChangesAsync();
-        _logger.LogInformation("Category '{CategorId}' updated successfully.", existingCategory.CategoryId);
-        return true;
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Category '{CategoryId}' updated successfully.", existingCategory.CategoryId);
+            return true;
         }
         catch (DbUpdateException ex)
         {
             _logger.LogError(ex, "Database error occurred while updating category '{CategoryId}'.", category.CategoryId);
             throw; // Rethrow the exception to be handled by the calling code.
-        } 
+        }
     }
 
     // Delete a category by its ID, but only if it has no associated questions.
@@ -82,7 +82,7 @@ public class CategoryRepository : ICategoryRepository
 
         // Check if the category has any associated questions.
         bool hasQuestions = await _context.Questions.AnyAsync(q => q.CategoryId == id);
-        
+
         if (hasQuestions)
         {
             _logger.LogWarning("Category with ID '{CategoryId}' cannot be deleted because it has associated questions.", id);
@@ -102,6 +102,6 @@ public class CategoryRepository : ICategoryRepository
         {
             _logger.LogError(ex, "Database error occurred while deleting the category '{CategoryId}'.", id);
             throw; // Rethrow the exception to be handled by the calling code.
-        } 
+        }
     }
 }

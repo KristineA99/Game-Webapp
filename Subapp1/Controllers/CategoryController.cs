@@ -5,7 +5,7 @@ using Subapp1.Models;
 
 namespace Subapp1.Controllers;
 
-[Authorize (Roles = "Admin")] // Only users in the Admin role can access these pages
+[Authorize(Roles = "Admin")] // Only users in the Admin role can access these pages
 public class CategoryController : Controller
 {
     private readonly ICategoryRepository _categoryRepository;
@@ -44,7 +44,7 @@ public class CategoryController : Controller
             return View(category);
         }
 
-    bool success = await _categoryRepository.AddAsync(category);
+        bool success = await _categoryRepository.AddAsync(category);
 
         if (!success)
         {
@@ -100,9 +100,9 @@ public class CategoryController : Controller
         var category = await _categoryRepository.GetByIdAsync(id);
 
         if (category == null)
-    {
-        return NotFound();
-    }
+        {
+            return NotFound();
+        }
 
         return View(category);
     }
@@ -131,10 +131,10 @@ public class CategoryController : Controller
 
             return View("Delete", category);
         }
-        
-         return RedirectToAction(nameof(Index));
+
+        return RedirectToAction(nameof(Index));
     }
-   
+
 
 }
 
