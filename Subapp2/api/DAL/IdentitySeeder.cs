@@ -36,5 +36,66 @@ public static class IdentitySeeder
                 "Role {Role} created successfully.",
                 AdminRole);
         }
+
+        var configuration = services.GetRequiredService<IConfiguration>();
+        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+        var email = configuration["AdminUser:Email"];
+        var nickname = configuration["AdminUser:Nickname"];
+        var password = configuration["AdminUser:Password"];
+
+        if (string.IsNullOrWhiteSpace(email) ||
+        string.IsNullOrWhiteSpace(nickname) ||
+        string.IsNullOrWhiteSpace(password))
+        {
+            logger.LogWarning(
+                "Admin account configuration is incomplete; account seeding was skipped.");
+            return;
+        }
+
+        // Preserve the existing account and password when the application restarts.
+        var admin = await userManager.FindByEmailAsync(email);
+
+        if (admin == null)
+        {
+            admin = new IdentityUser
+            {
+                UserName = nickname,
+                Email = email
+            };
+
+            // Identity hashes the password before storing it.
+            var result = await userManager.CreateAsync(admin, password);
+
+            if (!result.Succeeded)
+            {
+                logger.LogError(
+                    "Could not create the demo admin account: {Errors}",
+                    string.Join(", ", result.Errors.Select(e => e.Description)));
+                return;
+            }
+
+            logger.LogInformation("Demo admin account created successfully.");
+        }
+
+        // Ensure both new and existing demo accounts have the required role.
+        if (!await userManager.IsInRoleAsync(admin, AdminRole))
+        {
+            var result = await userManager.AddToRoleAsync(admin, AdminRole);
+
+            if (!result.Succeeded)
+            {
+                logger.LogError(
+                    "Could not assign role {Role} to the demo admin account: {Errors}",
+                    AdminRole,
+                    string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                return;
+            }
+
+            logger.LogInformation(
+                "Role {Role} assigned to the demo admin account.",
+                AdminRole);
+        }
     }
 }
