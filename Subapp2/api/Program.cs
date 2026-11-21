@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Register API controllers so ASP.NET can find them and send requests to them.
-builder.Services.AddControllers().AddJsonOptions(options =>
+// Include MVC antiforgery filters used by the cookie-authenticated API.
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 {
     // When .NET turns our objects into JSON, two entities can point to each other
     // IgnoreCycles stops this from going in an endless loop and crashing the request.
@@ -41,6 +42,15 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddAntiforgery(options =>
+{
+    // React will send the request token in this header on protected POST requests.
+    options.HeaderName = "X-CSRF-TOKEN";
+
+    // Keep Subapp2's antiforgery cookie separate from Subapp1's.
+    options.Cookie.Name = "MonsterMunch.Subapp2.Antiforgery";
+    options.Cookie.HttpOnly = true;
+});
 
 // So the React frontend (running on another localhost port) can call the API
 builder.Services.AddCors(options =>
