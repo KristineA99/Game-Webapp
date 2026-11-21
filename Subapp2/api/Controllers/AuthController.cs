@@ -82,4 +82,65 @@ public class AuthController : ControllerBase
                 title: "Unable to log in. Please try again later.");
         }
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        try
+        {
+            // Resolve the account from the authenticated cookie, not client input.
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return Ok(new
+            {
+                nickname = user.UserName,
+                roles
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "An unexpected error occurred while retrieving the current user.");
+
+            return Problem(
+                statusCode: StatusCodes.Status500InternalServerError,
+                title: "Unable to load your account. Please try again later.");
+        }
+    }
+
+    [Authorize]
+    [HttpPost("logout")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        try
+        {
+            // Remove the authentication cookie from this browser session.
+            await _signInManager.SignOutAsync();
+
+            _logger.LogInformation("User logged out successfully.");
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "An unexpected error occurred during logout.");
+
+            return Problem(
+                statusCode: StatusCodes.Status500InternalServerError,
+                title: "Unable to log out. Please try again.");
+        }
+    }
 }
