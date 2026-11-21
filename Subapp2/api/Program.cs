@@ -73,6 +73,9 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<GameDbContext>();
     context.Database.Migrate();
     DbInit.Initialize(context, app.Environment);
+
+    // Ensure the Admin role exists after the database migrations are applied.
+    await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
 
