@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Serilog;
 using Subapp2.DAL;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,25 @@ builder.Services.AddDbContext<GameDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("GameDbContextConnection"));
 });
+
+// Use Identity for password hashing, login management, and role membership.
+builder.Services
+    .AddIdentity<IdentityUser, IdentityRole>(Options =>
+    {
+        Options.User.RequireUniqueEmail = true;
+        Options.SignIn.RequireConfirmedAccount = false;
+    })
+    .AddEntityFrameworkStores<GameDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookies are shared across localhost ports, so distinguish this
+    // application's login cookie from Subapp1's.
+    options.Cookie.Name = "MonsterMunch.Subapp2.Auth";
+    options.Cookie.HttpOnly = true;
+});
+
+builder.Services.AddAuthorization();
 
 // So the React frontend (running on another localhost port) can call the API
 builder.Services.AddCors(options =>
@@ -65,6 +85,11 @@ if (app.Environment.IsDevelopment())
 app.UseCors("CorsPolicy");
 // Serve the images stored in wwwroot to the React frontend
 app.UseStaticFiles();
+
+// Identify the logged-in user before checking endpoint access rules.
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapScalarApiReference();
 app.MapControllers();
 
