@@ -42,7 +42,7 @@ export default function NavMenu() {
 
             {/* API authorization still enforces access independently of this link. */}
             {isAdmin && (
-              <Nav.Link as={Link} to="/questions">Questions</Nav.Link>
+              <Nav.Link as={Link} to="/admin">Admin Dashboard</Nav.Link>
             )}
           </Nav>
 

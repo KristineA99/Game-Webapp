@@ -7,6 +7,8 @@ import NavMenu from './shared/NavMenu';
 import './App.css';
 import AuthProvider from './auth/AuthProvider';
 import LoginPage from './auth/LoginPage';
+import AdminRoute from './auth/AdminRoute';
+import AdminDashboardPage from './admin/AdminDashboardPage';
 
 // Holds the cache for all data fetched with useQuery
 const queryClient = new QueryClient();
@@ -21,7 +23,12 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/questions" element={<QuestionListPage />} />
+              {/* All routes nested here require a confirmed Admin account. */}
+              {/* The dashboard and its management pages share the Admin guard. */}
+              <Route path="/admin" element={<AdminRoute />}>
+                <Route index element={<AdminDashboardPage />} />
+                <Route path="questions" element={<QuestionListPage />} />
+              </Route>
               {/* Any unknown URL redirects to the home page */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

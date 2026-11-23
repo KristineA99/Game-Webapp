@@ -12,6 +12,9 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
 // GET all questions
 export async function fetchQuestions(): Promise<Question[]> {
-  const response = await fetch(`${API_URL}/api/questionapi/questionlist`);
+  const response = await fetch(`${API_URL}/api/questionapi/questionlist`, {
+    // Send the login cookie so the API can verify Admin access.
+    credentials: 'include',
+  });
   return handleResponse<Question[]>(response);
 }
