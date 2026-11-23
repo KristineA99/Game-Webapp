@@ -2,11 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Serilog;
 using Subapp2.DAL;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register API controllers so ASP.NET can find them and send requests to them.
-builder.Services.AddControllers().AddJsonOptions(options =>
+// Include MVC antiforgery filters used by the cookie-authenticated API.
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 {
     // When .NET turns our objects into JSON, two entities can point to each other
     // IgnoreCycles stops this from going in an endless loop and crashing the request.
@@ -20,6 +22,34 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<GameDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("GameDbContextConnection"));
+});
+
+// Use Identity for password hashing, login management, and role membership.
+builder.Services
+    .AddIdentity<IdentityUser, IdentityRole>(Options =>
+    {
+        Options.User.RequireUniqueEmail = true;
+        Options.SignIn.RequireConfirmedAccount = false;
+    })
+    .AddEntityFrameworkStores<GameDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookies are shared across localhost ports, so distinguish this
+    // application's login cookie from Subapp1's.
+    options.Cookie.Name = "MonsterMunch.Subapp2.Auth";
+    options.Cookie.HttpOnly = true;
+});
+
+builder.Services.AddAuthorization();
+builder.Services.AddAntiforgery(options =>
+{
+    // React will send the request token in this header on protected POST requests.
+    options.HeaderName = "X-CSRF-TOKEN";
+
+    // Keep Subapp2's antiforgery cookie separate from Subapp1's.
+    options.Cookie.Name = "MonsterMunch.Subapp2.Antiforgery";
+    options.Cookie.HttpOnly = true;
 });
 
 // So the React frontend (running on another localhost port) can call the API
@@ -53,6 +83,9 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<GameDbContext>();
     context.Database.Migrate();
     DbInit.Initialize(context, app.Environment);
+
+    // Ensure the Admin role exists after the database migrations are applied.
+    await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
 
@@ -65,6 +98,11 @@ if (app.Environment.IsDevelopment())
 app.UseCors("CorsPolicy");
 // Serve the images stored in wwwroot to the React frontend
 app.UseStaticFiles();
+
+// Identify the logged-in user before checking endpoint access rules.
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapScalarApiReference();
 app.MapControllers();
 

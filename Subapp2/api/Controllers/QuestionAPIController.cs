@@ -2,12 +2,17 @@ using Microsoft.AspNetCore.Mvc;
 using Subapp2.DAL;
 using Subapp2.DTOs;
 using Subapp2.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Subapp2.Controllers;
 
 // API controller for quiz questions. 
 [ApiController]
 [Route("api/[controller]")]   // Base route: api/questionapi
+// Management responses include correct answers, so they are restricted to administrators.
+[Authorize(Roles = IdentitySeeder.AdminRole)]
+// Require antiforgery tokens for state-changing requests, but not GET requests.
+[AutoValidateAntiforgeryToken]
 public class QuestionAPIController : ControllerBase
 {
     private readonly IQuestionRepository _questionRepository;

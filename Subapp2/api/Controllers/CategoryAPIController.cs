@@ -2,12 +2,17 @@ using Microsoft.AspNetCore.Mvc;
 using Subapp2.DAL;
 using Subapp2.DTOs;
 using Subapp2.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Subapp2.Controllers;
 
 // API controller for categories.
 [ApiController]
 [Route("api/[controller]")]   // Base route: api/categoryapi
+// Category management is restricted to administrators.
+[Authorize(Roles = IdentitySeeder.AdminRole)]
+// Validate antiforgery tokens for POST, PUT, and DELETE; GET remains read-only.
+[AutoValidateAntiforgeryToken]
 public class CategoryAPIController : ControllerBase
 {
     private readonly ICategoryRepository _categoryRepository;
