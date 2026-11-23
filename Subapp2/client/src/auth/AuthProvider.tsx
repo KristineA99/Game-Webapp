@@ -12,7 +12,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const userQuery = useQuery<AuthUser | null, Error>({
     queryKey: userQueryKey,
     queryFn: AuthService.fetchCurrentUser,
-    retry: false,
+    // Allow the API time to finish starting before reporting a connection failure.
+    retry: 5,
+    retryDelay: 2000,
   });
 
   async function refreshUser(): Promise<void> {

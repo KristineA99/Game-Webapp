@@ -9,6 +9,7 @@ import AuthProvider from './auth/AuthProvider';
 import LoginPage from './auth/LoginPage';
 import AdminRoute from './auth/AdminRoute';
 import AdminDashboardPage from './admin/AdminDashboardPage';
+import RegisterPage from './auth/RegisterPage';
 
 // Holds the cache for all data fetched with useQuery
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
               {/* All routes nested here require a confirmed Admin account. */}
               {/* The dashboard and its management pages share the Admin guard. */}
               <Route path="/admin" element={<AdminRoute />}>

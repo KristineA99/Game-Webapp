@@ -50,7 +50,10 @@ export default function NavMenu() {
             {isLoading && <Navbar.Text>Checking account...</Navbar.Text>}
 
             {!isLoading && !accountError && !user && (
-              <Nav.Link as={Link} to="/login">Log in</Nav.Link>
+              <>
+                <Nav.Link as={Link} to="/login">Log in</Nav.Link>
+                <Nav.Link as={Link} to="/register">Create account</Nav.Link>
+              </>
             )}
 
             {!isLoading && user && (
