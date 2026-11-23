@@ -5,6 +5,8 @@ import HomePage from './home/HomePage';
 import QuestionListPage from './questions/QuestionListPage';
 import NavMenu from './shared/NavMenu';
 import './App.css';
+import AuthProvider from './auth/AuthProvider';
+import LoginPage from './auth/LoginPage';
 
 // Holds the cache for all data fetched with useQuery
 const queryClient = new QueryClient();
@@ -12,17 +14,20 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Container>
-        <NavMenu />
+      <AuthProvider>
         <Router>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/questions" element={<QuestionListPage />} />
-            {/* Any unknown URL redirects to the home page */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          <Container>
+            <NavMenu />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/questions" element={<QuestionListPage />} />
+              {/* Any unknown URL redirects to the home page */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Container>
         </Router>
-      </Container>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
