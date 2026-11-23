@@ -38,6 +38,57 @@ public class AuthController : ControllerBase
     }
 
     [AllowAnonymous]
+    [HttpPost("register")] 
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterDto model)
+    {
+        try
+        {
+            var user = new IdentityUser
+            {
+                UserName = model.Nickname,
+                Email = model.Email
+            };
+
+            // Identity validates and hashes the password before saving the account.
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                _logger.LogWarning(
+                    "Registration was rejected with error codes {ErrorCodes}.",
+                    string.Join(", ", result.Errors.Select(e => e.Code)));
+
+                return ValidationProblem(ModelState);
+            }
+
+            // Registration creates an ordinary player; Admin access is seeded separately.
+            _logger.LogInformation(
+                "User {UserId} registered successfully.", user.Id);
+
+            return StatusCode(StatusCodes.Status201Created, new
+            {
+                message = "Account created. You can now log in."
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "An unexpected error occurred during registration.");
+
+            return Problem(
+                statusCode: StatusCodes.Status500InternalServerError,
+                title: "Unable to create your account. Please try again later.");
+        }
+    }
+
+    [AllowAnonymous]
     [HttpPost("login")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginDto model)
