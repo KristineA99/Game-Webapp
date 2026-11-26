@@ -6,6 +6,9 @@ public interface IQuestionRepository
 {
     // READ: get all questions for the Admin page
     Task<IEnumerable<Question>?> GetAllAsync();
+     
+       // READ: get questions that match a search text and/or a category (both optional)
+    Task<IEnumerable<Question>?> GetFilteredAsync(string? searchText, int? categoryId);
 
     // READ: get one specific question by its id.
     Task<Question?> GetByIdAsync(int id);

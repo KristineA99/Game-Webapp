@@ -40,6 +40,43 @@ public class QuestionRepository : IQuestionRepository
         }
     }
 
+    // READ: questions filtered by search text and/or category.
+    // Both parameters are optional, so they can be combined freely.
+    public async Task<IEnumerable<Question>?> GetFilteredAsync(string? searchText, int? categoryId)
+    {
+        try
+        {
+            // IQueryable: the query is built step by step and first sent
+            // to the database when ToListAsync() is called.
+            IQueryable<Question> query = _context.Questions.Include(q => q.Category);
+
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                // LIKE with % on both sides = "contains". Case-insensitive in SQLite.
+                var pattern = $"%{searchText.Trim()}%";
+                query = query.Where(q => EF.Functions.Like(q.Text, pattern));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(q => q.CategoryId == categoryId.Value);
+            }
+
+            return await query
+                .OrderBy(q => q.QuestionId)
+                .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                e,
+                "[QuestionRepository] GetFilteredAsync() failed for search {SearchText} and category {CategoryId}.",
+                searchText,
+                categoryId);
+            return null;
+        }
+    }
+
     // READ: get one question by its id.
     // Used by the Details, Update and Delete pages.
     public async Task<Question?> GetByIdAsync(int id)

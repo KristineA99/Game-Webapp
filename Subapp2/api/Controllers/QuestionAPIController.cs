@@ -25,11 +25,12 @@ public class QuestionAPIController : ControllerBase
     }
 
     // GET api/questionapi/questionlist
+    // Both query parameters are optional. Without them, all questions are returned.
     [HttpGet("questionlist")]
-    public async Task<IActionResult> QuestionList()
+    public async Task<IActionResult> QuestionList([FromQuery] string? search, [FromQuery] int? categoryId)
     {
-        var questions = await _questionRepository.GetAllAsync();
-
+        var questions = await _questionRepository.GetFilteredAsync(search, categoryId);
+        
         // null means the database call failed (logged in the repository)
         if (questions == null)
         {
