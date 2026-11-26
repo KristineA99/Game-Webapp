@@ -55,8 +55,10 @@ export default function QuestionForm({
       categoryId,
     };
 
-    // The parent page decides what happens (create or update).
-    await onQuestionChanged(question);
+    try {
+      await onQuestionChanged(question);
+    } catch {
+    }
   };
 
   return (
