@@ -50,7 +50,7 @@ public class QuizRepository : IQuizRepository
     }
 
     // Add a new quiz to the database.
-    public async Task<bool> AddAsync(Quiz quiz, List<int> selectedQuestionIds)
+    public async Task<QuizSaveResult> AddAsync(Quiz quiz, List<int> selectedQuestionIds)
     {
         try
         {
@@ -63,7 +63,7 @@ public class QuizRepository : IQuizRepository
             if (validQuestionIds.Count != selectedQuestionIds.Distinct().Count())
             {
                 _logger.LogWarning("[QuizRepository] Quiz creation rejected because one or more selected question IDs are invalid.");
-                return false;
+                return QuizSaveResult.InvalidQuestions;
             }
 
             // Create the many-to-many relationships between the quiz and its questions.
@@ -79,17 +79,17 @@ public class QuizRepository : IQuizRepository
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("[QuizRepository] Quiz {id} was added successfully.", quiz.QuizId);
-            return true;
+            return QuizSaveResult.Saved;
         }
         catch (Exception e)
         {
             _logger.LogError(e, "[QuizRepository] AddAsync() failed for quiz {title}.", quiz.Title);
-            return false;
+            return QuizSaveResult.Failed;
         }
     }
 
     // Update a quiz and its associated questions.
-    public async Task<bool> UpdateAsync(Quiz quiz, List<int> selectedQuestionIds)
+    public async Task<QuizSaveResult> UpdateAsync(Quiz quiz, List<int> selectedQuestionIds)
     {
         try
         {
@@ -102,7 +102,7 @@ public class QuizRepository : IQuizRepository
             if (validQuestionIds.Count != selectedQuestionIds.Distinct().Count())
             {
                 _logger.LogWarning("[QuizRepository] Quiz {id} update rejected because one or more selected question IDs are invalid.", quiz.QuizId);
-                return false;
+                return QuizSaveResult.InvalidQuestions;
             }
 
             // Remove relationships for questions that were deselected.
@@ -133,38 +133,40 @@ public class QuizRepository : IQuizRepository
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("[QuizRepository] Quiz {id} was updated successfully.", quiz.QuizId);
-            return true;
+            return QuizSaveResult.Saved;
         }
         catch (Exception e)
         {
             _logger.LogError(e, "[QuizRepository] UpdateAsync() failed for QuizId {id}.", quiz.QuizId);
-            return false;
+            return QuizSaveResult.Failed;
         }
     }
 
     // Delete a quiz by its ID. Its rows in the join table are removed too,
     // but the questions themselves are kept.
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<QuizDeleteResult> DeleteAsync(int id)
     {
         try
         {
             var quiz = await _context.Quizzes.FindAsync(id);
             if (quiz == null)
             {
-                _logger.LogWarning("[QuizRepository] Quiz not found for QuizId {id}.", id);
-                return false;
+                _logger.LogWarning(
+                "[QuizRepository] Quiz {QuizId} was not found for deletion.", id);
+
+            return QuizDeleteResult.NotFound;
             }
 
             _context.Quizzes.Remove(quiz);
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("[QuizRepository] Quiz {id} was deleted successfully.", id);
-            return true;
+            return QuizDeleteResult.Deleted;
         }
         catch (Exception e)
         {
             _logger.LogError(e, "[QuizRepository] DeleteAsync() failed for QuizId {id}.", id);
-            return false;
+            return QuizDeleteResult.Failed;
         }
     }
 }

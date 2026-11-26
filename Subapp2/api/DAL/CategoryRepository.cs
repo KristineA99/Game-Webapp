@@ -108,9 +108,9 @@ public class CategoryRepository : ICategoryRepository
             _logger.LogInformation("Category {Categoryid} was deleted successfully.", id);
             return CategoryDeleteResult.Deleted;
         }
-        catch (Exception exception)
+        catch (Exception e)
         {
-            _logger.LogError(exception, "Failed to delete category {CategoryId} .", id);
+            _logger.LogError(e, "Failed to delete category {CategoryId} .", id);
             return CategoryDeleteResult.Failed;
         }
     }
