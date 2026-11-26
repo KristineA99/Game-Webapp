@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { fetchQuestions } from '../questions/QuestionService';
 import type { Quiz } from '../types/quiz';
+import { fetchCategories } from '../categories/CategoryService';
 
 interface QuizFormProps {
     initialValues?: Quiz;
@@ -18,6 +19,12 @@ export default function QuizForm({
 }: QuizFormProps) {
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [selectedQuestionIds, setSelectedQuestionIds] = useState<number[]>(
+            initialValues?.questionIds ?? [],
+        );
+
+        const [selectedCategoryIds, setSelectedCategoryIds] =
+            useState<number[] | null>(null);
 
     const {
         data: questions = [],
@@ -30,6 +37,55 @@ export default function QuizForm({
         queryFn: fetchQuestions,
     });
 
+    const {
+        data: categories = [],
+        isPending: categoriesPending,
+        isError: categoriesFailed,
+        error: categoryError,
+        refetch: refetchCategories,
+    } = useQuery({
+        queryKey: ['categories'],
+        queryFn: fetchCategories,
+    });
+
+    // When editing, initially show categories containing the quiz's saved questions.
+    const activeCategoryIds =
+        selectedCategoryIds ??
+        categories
+            .filter((category) =>
+                questions.some(
+                    (question) =>
+                        question.categoryId === category.categoryId &&
+                        initialValues?.questionIds.includes(question.questionId!),
+                ),
+            )
+            .map((category) => category.categoryId!);
+
+
+    const visibleQuestions = questions.filter((question) =>
+        activeCategoryIds.includes(question.categoryId),
+    );
+
+    function handleCategoryChange(categoryId: number, checked: boolean) {
+        const nextCategoryIds = checked
+            ? [...activeCategoryIds, categoryId]
+            : activeCategoryIds.filter((id) => id !== categoryId);
+
+        setSelectedCategoryIds(nextCategoryIds);
+
+        // Removing a category also removes its questions from the quiz selection.
+        setSelectedQuestionIds((currentIds) =>
+            currentIds.filter((questionId) =>
+                questions.some(
+                    (question) =>
+                        question.questionId === questionId &&
+                        nextCategoryIds.includes(question.categoryId),
+                ),
+            ),
+        );
+    }
+
+
     const handleSubmit: ComponentProps<'form'>['onSubmit'] = async (event) => {
         event.preventDefault();
 
@@ -37,8 +93,8 @@ export default function QuizForm({
         const title = String(formData.get('title') ?? '').trim();
         const description = String(formData.get('description') ?? '').trim();
 
-        // Checked boxes share a name, so getAll collects every selected question ID.
-        const questionIds = formData.getAll('questionIds').map(Number);
+        // Use React state so questions removed by category changes stay deselected.
+        const questionIds = selectedQuestionIds;
 
         setError(null);
 
@@ -71,18 +127,23 @@ export default function QuizForm({
         }
     };
 
-    if (isPending) {
-        return <p>Loading available questions...</p>;
+    if (isPending || categoriesPending) {
+        return <p>Loading categories and questions...</p>;
     }
 
-    if (isError) {
+    if (isError || categoriesFailed) {
         return (
             <div className="alert alert-danger" role="alert">
-                <p>{questionError.message}</p>
+                <p>{questionError?.message ??
+                    categoryError?.message ??
+                    'Unable to load categories and questions'}</p>
                 <button
                     type="button"
                     className="btn btn-outline-danger me-2"
-                    onClick={() => void refetch()}
+                    onClick={() => {
+                        void refetch();
+                        void refetchCategories();
+                    }}
                 >
                     Try again
                 </button>
@@ -125,22 +186,57 @@ export default function QuizForm({
                 </div>
 
                 <fieldset className="mb-3">
+                    <legend className="fs-5">Select categories</legend>
+
+                    {categories.length === 0 && (
+                        <p>Create a category and questions before creating a quiz.</p>
+                    )}
+
+                    {categories.map((category) => (
+                        <div className="form-check" key={category.categoryId}>
+                            <input
+                                id={`category-${category.categoryId}`}
+                                type="checkbox"
+                                className="form-check-input"
+                                checked={activeCategoryIds.includes(category.categoryId!)}
+                                onChange={(event) =>
+                                    handleCategoryChange(category.categoryId!, event.target.checked)
+                                }
+                            />
+                            <label
+                                htmlFor={`category-${category.categoryId}`}
+                                className="form-check-label"
+                            >
+                                {category.name}
+                            </label>
+                        </div>
+                    ))}
+                </fieldset>
+
+                <fieldset className="mb-3">
                     <legend className="fs-5">Select questions</legend>
 
-                    {questions.length === 0 ? (
-                        <p>Create a question before creating a quiz.</p>
+                    {activeCategoryIds.length === 0 ? (
+                        <p>Select a category to see its questions.</p>
+                    ) : visibleQuestions.length === 0 ? (
+                        <p>No questions exist in the selected categories.</p>
                     ) : (
-                        questions.map((question) => (
+                        visibleQuestions.map((question) => (
                             <div className="form-check" key={question.questionId}>
                                 <input
                                     id={`question-${question.questionId}`}
-                                    name="questionIds"
                                     type="checkbox"
                                     className="form-check-input"
-                                    value={question.questionId}
-                                    defaultChecked={initialValues?.questionIds.includes(
-                                        question.questionId!,
-                                    ) ?? false}
+                                    checked={selectedQuestionIds.includes(question.questionId!)}
+                                    onChange={(event) => {
+                                        const questionId = question.questionId!;
+
+                                        setSelectedQuestionIds((currentIds) =>
+                                            event.target.checked
+                                                ? [...currentIds, questionId]
+                                                : currentIds.filter((id) => id !== questionId),
+                                        );
+                                    }}
                                 />
                                 <label
                                     htmlFor={`question-${question.questionId}`}
