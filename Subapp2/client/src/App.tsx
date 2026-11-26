@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Container from 'react-bootstrap/Container';
 import HomePage from './home/HomePage';
 import QuestionListPage from './questions/QuestionListPage';
+import QuestionCreatePage from './questions/QuestionCreatePage';
+import QuestionUpdatePage from './questions/QuestionUpdatePage';
 import NavMenu from './shared/NavMenu';
 import './App.css';
 import AuthProvider from './auth/AuthProvider';
@@ -38,6 +40,8 @@ export default function App() {
                 <Route path="categories/create" element={<CategoryCreatePage />} />
                 <Route path="categories/edit/:id" element={<CategoryEditPage />} />
                 <Route path="categories/delete/:id" element={<CategoryDeletePage />} />
+                <Route path="questions/create" element={<QuestionCreatePage />} />
+                <Route path="questions/update/:questionId" element={<QuestionUpdatePage />} />
               </Route>
               {/* Any unknown URL redirects to the home page */}
               <Route path="*" element={<Navigate to="/" replace />} />
