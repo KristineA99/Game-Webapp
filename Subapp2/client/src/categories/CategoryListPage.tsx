@@ -64,6 +64,11 @@ export default function CategoryListPage() {
                                     className="btn btn-outline-primary btn-sm">
                                         Edit
                                     </Link>
+                                    <Link
+                                    to={`/admin/categories/delete/${category.categoryId}`}
+                                    className="btn btn-outline-danger btn-sm ms-2">
+                                        Delete
+                                    </Link>
                                 </td>
                             </tr>
                         ))}

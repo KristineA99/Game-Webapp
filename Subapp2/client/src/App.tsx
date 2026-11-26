@@ -13,6 +13,7 @@ import RegisterPage from './auth/RegisterPage';
 import CategoryListPage from './categories/CategoryListPage';
 import CategoryCreatePage from './categories/CategoryCreatePage';
 import CategoryEditPage from './categories/CategoryEditPage';
+import CategoryDeletePage from './categories/CategoryDeletePage';
 
 // Holds the cache for all data fetched with useQuery
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ export default function App() {
                 <Route path="categories" element={<CategoryListPage />} />
                 <Route path="categories/create" element={<CategoryCreatePage />} />
                 <Route path="categories/edit/:id" element={<CategoryEditPage />} />
+                <Route path="categories/delete/:id" element={<CategoryDeletePage />} />
               </Route>
               {/* Any unknown URL redirects to the home page */}
               <Route path="*" element={<Navigate to="/" replace />} />
