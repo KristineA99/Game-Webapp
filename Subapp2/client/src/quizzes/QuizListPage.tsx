@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchQuizzes } from './QuizService';
+import { Link } from 'react-router-dom';
 
 export default function QuizListPage() {
     const {
@@ -39,6 +40,10 @@ export default function QuizListPage() {
     return (
         <div>
             <h1>Manage Quizzes</h1>
+
+            <Link to="/admin/quizzes/create" className="btn btn-primary mb-3">
+                Create Quiz
+            </Link>
 
             {quizzes.length === 0 ? (
                 <p>No quizzes have been created yet.</p>
