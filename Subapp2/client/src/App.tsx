@@ -12,6 +12,10 @@ import LoginPage from './auth/LoginPage';
 import AdminRoute from './auth/AdminRoute';
 import AdminDashboardPage from './admin/AdminDashboardPage';
 import RegisterPage from './auth/RegisterPage';
+import CategoryListPage from './categories/CategoryListPage';
+import CategoryCreatePage from './categories/CategoryCreatePage';
+import CategoryEditPage from './categories/CategoryEditPage';
+import CategoryDeletePage from './categories/CategoryDeletePage';
 
 // Holds the cache for all data fetched with useQuery
 const queryClient = new QueryClient();
@@ -32,6 +36,10 @@ export default function App() {
               <Route path="/admin" element={<AdminRoute />}>
                 <Route index element={<AdminDashboardPage />} />
                 <Route path="questions" element={<QuestionListPage />} />
+                <Route path="categories" element={<CategoryListPage />} />
+                <Route path="categories/create" element={<CategoryCreatePage />} />
+                <Route path="categories/edit/:id" element={<CategoryEditPage />} />
+                <Route path="categories/delete/:id" element={<CategoryDeletePage />} />
                 <Route path="questions/create" element={<QuestionCreatePage />} />
                 <Route path="questions/update/:questionId" element={<QuestionUpdatePage />} />
               </Route>

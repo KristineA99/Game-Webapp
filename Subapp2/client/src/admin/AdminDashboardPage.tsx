@@ -10,6 +10,17 @@ export default function AdminDashboardPage() {
         <div className="col-md-4">
           <div className="card h-100">
             <div className="card-body">
+              <h2 className="h5">Categories</h2>
+              <p>View and manage question categories.</p>
+              <Link to="/admin/categories" className="btn btn-primary">
+                Manage Categories
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="card h-100">
+            <div className="card-body">
               <h2 className="h5">Questions</h2>
               <p>View and manage quiz questions.</p>
               <Link to="/admin/questions" className="btn btn-primary">
