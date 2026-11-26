@@ -10,7 +10,7 @@ namespace Subapp2.Controllers;
 [ApiController]
 [Route("api/[controller]")]   // Base route: api/quizapi
 // Restrict quiz management to administrators.
-[Authorize(Roles =IdentitySeeder.AdminRole)]
+[Authorize(Roles = IdentitySeeder.AdminRole)]
 // Require antiforgery tokens for state-changing requests, but not GET requests.
 [AutoValidateAntiforgeryToken]
 public class QuizAPIController : ControllerBase
@@ -31,8 +31,10 @@ public class QuizAPIController : ControllerBase
         var quizzes = await _quizRepository.GetAllAsync();
         if (quizzes == null)
         {
-            _logger.LogError("[QuizAPIController] Quiz list not found while executing _quizRepository.GetAllAsync()");
-            return NotFound("Quiz list not found");
+            _logger.LogError(
+         "[QuizAPIController] Unable to load quizzes because the repository call failed.");
+
+            return StatusCode(500, "Unable to load quizzes. Please try again.");
         }
 
         // The question links are sent as a list of question ids
@@ -70,7 +72,7 @@ public class QuizAPIController : ControllerBase
     }
 
     // [ApiController] validates the DTO before this action runs.
-    // The repository then checks that the selected questions exists.
+    // The repository then checks that all selected questions exist.
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] QuizDto quizDto)
     {
@@ -86,15 +88,22 @@ public class QuizAPIController : ControllerBase
             Description = quizDto.Description
         };
 
-        bool returnOk = await _quizRepository.AddAsync(newQuiz, quizDto.QuestionIds);
-        if (returnOk)
+        var result = await _quizRepository.AddAsync(newQuiz, quizDto.QuestionIds);
+
+        if (result == QuizSaveResult.Saved)
         {
             quizDto.QuizId = newQuiz.QuizId;
             return CreatedAtAction(nameof(GetQuiz), new { id = newQuiz.QuizId }, quizDto);
         }
 
-        _logger.LogWarning("[QuizAPIController] Quiz creation failed {@quiz}", quizDto);
-        return StatusCode(500, "Internal server error");
+        // Invalid selections are input errors; exception details stay in repository logs.
+        if (result == QuizSaveResult.InvalidQuestions)
+        {
+            return BadRequest(
+                "One or more selected questions no longer exist. Reload the form and try again.");
+        }
+
+        return StatusCode(500, "Unable to create the quiz. Please try again.");
     }
 
     // PUT api/quizapi/update/5
@@ -117,29 +126,36 @@ public class QuizAPIController : ControllerBase
         existingQuiz.Title = quizDto.Title;
         existingQuiz.Description = quizDto.Description;
 
-        // Save the changes, including which questions are in the quiz
-        bool updateSuccessful = await _quizRepository.UpdateAsync(existingQuiz, quizDto.QuestionIds);
-        if (updateSuccessful)
+        var result = await _quizRepository.UpdateAsync(
+        existingQuiz, quizDto.QuestionIds);
+
+        if (result == QuizSaveResult.Saved)
         {
             quizDto.QuizId = existingQuiz.QuizId;
             return Ok(quizDto);
         }
 
-        _logger.LogWarning("[QuizAPIController] Quiz update failed {@quiz}", quizDto);
-        return StatusCode(500, "Internal server error");
+        if (result == QuizSaveResult.InvalidQuestions)
+        {
+            return BadRequest(
+                "One or more selected questions no longer exist. Reload the form and try again.");
+        }
+
+        return StatusCode(500, "Unable to update the quiz. Please try again.");
     }
 
-    // DELETE api/quizapi/delete/5
+    // Delete a quiz and distinguish a missing record from a server failure.
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        bool returnOk = await _quizRepository.DeleteAsync(id);
-        if (!returnOk)
-        {
-            _logger.LogError("[QuizAPIController] Quiz deletion failed for the QuizId {QuizId:0000}", id);
-            return BadRequest("Quiz deletion failed");
-        }
+        var result = await _quizRepository.DeleteAsync(id);
 
-        return NoContent();
+        // The repository logs each outcome and any exception details.
+        return result switch
+        {
+            QuizDeleteResult.Deleted => NoContent(),
+            QuizDeleteResult.NotFound => NotFound("Quiz not found."),
+            _ => StatusCode(500, "Unable to delete the quiz. Please try again.")
+        };
     }
 }

@@ -29,6 +29,17 @@ export default function AdminDashboardPage() {
             </div>
           </div>
         </div>
+        <div className="col-md-4">
+          <div className="card h-100">
+            <div className="card-body">
+              <h2 className="h5">Quizzes</h2>
+              <p>View and manage quizzes and their selected questions.</p>
+              <Link to="/admin/quizzes" className="btn btn-primary">
+                Manage Quizzes
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
