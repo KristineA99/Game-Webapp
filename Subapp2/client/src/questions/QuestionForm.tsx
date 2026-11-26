@@ -58,6 +58,8 @@ export default function QuestionForm({
     try {
       await onQuestionChanged(question);
     } catch {
+      // The error is already shown through the error prop from useMutation,
+      // so we only catch it here to avoid an unhandled promise rejection.
     }
   };
 
