@@ -11,7 +11,7 @@ export default function QuestionListPage() {
   const queryClient = useQueryClient(); 
 
   // useQuery fetches the data and keeps track of loading and error states
-  const { data: questions = [], isLoading, error, refetch } = useQuery<Question[], Error>({
+  const { data: questions = [], isLoading, error} = useQuery<Question[], Error>({
     queryKey: ['questions'],
     queryFn: QuestionService.fetchQuestions,
   });
@@ -38,10 +38,6 @@ export default function QuestionListPage() {
         <Link to="/admin/questions/create" className="btn btn-success">
           Add New Question
         </Link>
-      
-      <Button onClick={() => refetch()} disabled={isLoading}>
-        {isLoading ? 'Loading...' : 'Refresh Questions'}
-      </Button>
       </div>
 
       {/* Conditional rendering (&&): only shown when an error exists */}
@@ -49,7 +45,7 @@ export default function QuestionListPage() {
       {deleteMutation.error && <Alert variant="danger">{deleteMutation.error.message}</Alert>}
 
       {/* Conditional rendering (ternary): message when the list is empty, otherwise the table */}
-      {!isLoading && questions.length === 0 ? (
+      {!isLoading && !error && questions.length === 0 ? (
         <p>No questions found.</p>
       ) : (
         <Table striped bordered hover>
