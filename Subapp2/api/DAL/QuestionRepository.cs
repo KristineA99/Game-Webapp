@@ -26,6 +26,7 @@ public class QuestionRepository : IQuestionRepository
         try
         {
             return await _context.Questions
+                .Include(q => q.Category)
                 .OrderBy(q => q.QuestionId)
                 .ToListAsync();
         }

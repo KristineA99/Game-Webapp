@@ -46,7 +46,9 @@ public class QuestionAPIController : ControllerBase
             OptionB = question.OptionB,
             OptionC = question.OptionC,
             OptionD = question.OptionD,
-            CorrectOption = question.CorrectOption
+            CorrectOption = question.CorrectOption,
+            CategoryId = question.CategoryId,
+            CategoryName = question.Category?.Name
         });
 
         return Ok(questionDtos);
