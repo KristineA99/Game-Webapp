@@ -53,8 +53,12 @@ export default function CategoryEditPage() {
     async function handleSave(name: string): Promise<void> {
         await updateCategory(categoryId, { categoryId, name });
 
-        // Refresh both the category list and any cached category details.
-        await queryClient.invalidateQueries({ queryKey: ['categories'] });
+        // Refresh category data and question data, which also contains category names.
+        await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['categories'] }),
+        queryClient.invalidateQueries({ queryKey: ['questions'] }),
+        ]);
+
         navigate('/admin/categories');
     }
 

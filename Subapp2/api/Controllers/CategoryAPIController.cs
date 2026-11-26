@@ -32,7 +32,7 @@ public class CategoryAPIController : ControllerBase
         if (categories == null)
         {
             _logger.LogError("[CategoryAPIController] Category list not found while executing _categoryRepository.GetAllAsync()");
-            return NotFound("Category list not found");
+            return StatusCode(500, "Unable to load categories. Please try again.");
         }
 
         var categoryDtos = categories.Select(category => new CategoryDto
@@ -121,17 +121,20 @@ public class CategoryAPIController : ControllerBase
     }
 
     // DELETE api/categoryapi/delete/5
-    // The repository refuses to delete a category that still contains questions.
+    // Delete only empty categories and distinguish refusal from server failure.
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        bool returnOk = await _categoryRepository.DeleteAsync(id);
-        if (!returnOk)
-        {
-            _logger.LogError("[CategoryAPIController] Category deletion failed for the CategoryId {CategoryId:0000}", id);
-            return BadRequest("Unable to delete this category. Make sure it has no associated questions.");
-        }
+        var result = await _categoryRepository.DeleteAsync(id);
 
-        return NoContent();
+        // The repository logs the outcome and any exception details.
+        return result switch
+        {
+            CategoryDeleteResult.Deleted => NoContent(),
+            CategoryDeleteResult.NotFound => NotFound("Category not found."),
+            CategoryDeleteResult.HasQuestions => BadRequest(
+                "Unable to delete this category because it contains questions."),
+            _ => StatusCode(500, "Unable to delete the category. Please try again.")
+        };
     }
 }

@@ -2,6 +2,16 @@ using Subapp2.Models;
 
 namespace Subapp2.DAL;
 
+// Explains why deletion succeeded or failed so the API can respond appropriately.
+    public enum CategoryDeleteResult
+{
+    Deleted,
+    NotFound,
+    HasQuestions,
+    Failed
+}
+
+
 public interface ICategoryRepository
 {
     // Retrieve all categories. Returns null if the database call fails.
@@ -17,5 +27,5 @@ public interface ICategoryRepository
     Task<bool> UpdateAsync(Category category);
 
     // Delete a category by its ID.
-    Task<bool> DeleteAsync(int id);
+    Task<CategoryDeleteResult> DeleteAsync(int id);
 }

@@ -83,35 +83,35 @@ public class CategoryRepository : ICategoryRepository
     }
 
     // Delete a category by its ID, but only if it has no associated questions.
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<CategoryDeleteResult> DeleteAsync(int id)
     {
         try
         {
             var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
-                _logger.LogWarning("[CategoryRepository] Category not found for CategoryId {id}.", id);
-                return false;
+                _logger.LogWarning("Category {CategoryId} was not found for deletion.", id);
+                return CategoryDeleteResult.NotFound;
             }
 
             // Domain rule: a category that still contains questions cannot be deleted.
             bool hasQuestions = await _context.Questions.AnyAsync(q => q.CategoryId == id);
             if (hasQuestions)
             {
-                _logger.LogWarning("[CategoryRepository] Category {id} cannot be deleted because it has associated questions.", id);
-                return false;
+                _logger.LogWarning("Category {Categoryid} cannot be deleted because it has associated questions.", id);
+                return CategoryDeleteResult.HasQuestions;
             }
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("[CategoryRepository] Category {id} was deleted successfully.", id);
-            return true;
+            _logger.LogInformation("Category {Categoryid} was deleted successfully.", id);
+            return CategoryDeleteResult.Deleted;
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            _logger.LogError(e, "[CategoryRepository] DeleteAsync() failed for CategoryId {id}.", id);
-            return false;
+            _logger.LogError(exception, "Failed to delete category {CategoryId} .", id);
+            return CategoryDeleteResult.Failed;
         }
     }
 }

@@ -40,7 +40,7 @@ export default function CategoryListPage() {
     return (
         <div>
             <h1>Manage Categories</h1>
-            <Link to="/admin/categories/create" className="btn-btn-primary mb-3">
+            <Link to="/admin/categories/create" className="btn btn-primary mb-3">
             Create Category
             </Link>
 
