@@ -58,6 +58,7 @@ export default function QuestionForm({
     try {
       await onQuestionChanged(question);
     } catch {
+      // The parent mutation stores the API error, which the form displays below.
     }
   };
 
