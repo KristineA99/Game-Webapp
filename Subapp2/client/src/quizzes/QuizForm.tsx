@@ -34,7 +34,8 @@ export default function QuizForm({
         refetch,
     } = useQuery({
         queryKey: ['questions'],
-        queryFn: fetchQuestions,
+        // Load all questions independently of the Question list's search filters.
+        queryFn: () => fetchQuestions(),
     });
 
     const {
