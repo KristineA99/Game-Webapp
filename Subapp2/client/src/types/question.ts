@@ -10,3 +10,9 @@ export interface Question {
   categoryId: number; 
   categoryName?: string | null; 
 }
+
+// Optional search criteria for the question list. Empty values are ignored.
+export interface QuestionFilter {
+  search?: string;
+  categoryId?: number;
+}

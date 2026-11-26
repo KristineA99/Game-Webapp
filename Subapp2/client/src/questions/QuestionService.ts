@@ -1,11 +1,16 @@
-import type { Question } from '../types/question';
+import type { Question, QuestionFilter } from '../types/question';
 import { apiGet, apiSend } from '../shared/apiClient';
 
 const BASE = '/api/questionapi';
 
-// GET all questions
-export function fetchQuestions(): Promise<Question[]> {
-  return apiGet<Question[]>(`${BASE}/questionlist`);
+// GET questions. Without a filter all questions are returned,
+export function fetchQuestions(filter: QuestionFilter = {}): Promise<Question[]> {
+  const params = new URLSearchParams();
+  if (filter.search?.trim()) params.set('search', filter.search.trim());
+  if (filter.categoryId) params.set('categoryId', String(filter.categoryId));
+
+  const query = params.toString();
+  return apiGet<Question[]>(`${BASE}/questionlist${query ? `?${query}` : ''}`);
 }
 
 // GET one question

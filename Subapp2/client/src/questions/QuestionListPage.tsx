@@ -1,8 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Alert, Table, Button } from 'react-bootstrap';
+import { useState } from 'react';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Alert, Table, Button, Form, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import type { Question } from '../types/question';
+import type { Question, QuestionFilter } from '../types/question';
+import type { Category } from '../types/category';
 import * as QuestionService from './QuestionService';
+import * as CategoryService from '../categories/CategoryService';
 
 // Converts the stored number (1-4) to the letter shown to the user
 const toOptionLetter = (option: number): string => ['A', 'B', 'C', 'D'][option - 1] ?? '?';
@@ -10,11 +13,30 @@ const toOptionLetter = (option: number): string => ['A', 'B', 'C', 'D'][option -
 export default function QuestionListPage() {
   const queryClient = useQueryClient(); 
 
-  // useQuery fetches the data and keeps track of loading and error states
-  const { data: questions = [], isLoading, error, refetch } = useQuery<Question[], Error>({
-    queryKey: ['questions'],
-    queryFn: QuestionService.fetchQuestions,
+  // Filter values chosen by the user (local UI state).
+  const [search, setSearch] = useState('');
+  const [categoryId, setCategoryId] = useState(0); // 0 = all categories
+
+  const filter: QuestionFilter = { search, categoryId: categoryId || undefined };
+  const isFiltering = search.trim() !== '' || categoryId !== 0;
+  
+  // The filter is part of the queryKey, so a new request is sent when it changes.
+  const { data: questions = [], isLoading, error} = useQuery<Question[], Error>({
+    queryKey: ['questions', filter],
+    queryFn: () => QuestionService.fetchQuestions(filter),
+    placeholderData: keepPreviousData, // keep showing the old list while the new one loads
   });
+
+  // Categories for the filter dropdown (same cache key as the question form).
+  const { data: categories = [] } = useQuery< Category[], Error>({
+    queryKey: ['categories'],
+    queryFn: CategoryService.fetchCategories,
+  });
+
+  const resetFilters = () => {
+    setSearch('');
+    setCategoryId(0);
+  };
 
    // useMutation for delete. On success the list is fetched again.
   const deleteMutation = useMutation({
@@ -38,19 +60,59 @@ export default function QuestionListPage() {
         <Link to="/admin/questions/create" className="btn btn-success">
           Add New Question
         </Link>
-      
-      <Button onClick={() => refetch()} disabled={isLoading}>
-        {isLoading ? 'Loading...' : 'Refresh Questions'}
-      </Button>
       </div>
+
+      {/* Multi-parameter search: question text + category, combined */}
+      <Form className="mb-3" onSubmit={e => e.preventDefault()}>
+        <Row className="g-2 align-items-end">
+          <Col md={6}>
+            <Form.Label htmlFor="questionSearch">Search question text</Form.Label>
+            <Form.Control
+              id="questionSearch"
+              type="search"
+              placeholder="For example: React"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </Col>
+          <Col md={4}>
+            <Form.Label htmlFor="categoryFilter">Category</Form.Label>
+            <Form.Select
+              id="categoryFilter"
+              value={categoryId}
+              onChange={e => setCategoryId(Number(e.target.value))}
+            >
+              <option value={0}>All categories</option>
+              {categories.map(category => (
+                <option key={category.categoryId} value={category.categoryId}>
+                  {category.name}
+                </option>
+              ))}
+            </Form.Select>
+          </Col>
+          <Col md={2}>
+            <Button variant="outline-secondary" className="w-100" onClick={resetFilters} disabled={!isFiltering}>
+              Reset
+            </Button>
+          </Col>
+        </Row>
+      </Form>
 
       {/* Conditional rendering (&&): only shown when an error exists */}
       {error && <Alert variant="danger">{error.message}</Alert>}
       {deleteMutation.error && <Alert variant="danger">{deleteMutation.error.message}</Alert>}
 
       {/* Conditional rendering (ternary): message when the list is empty, otherwise the table */}
-      {!isLoading && questions.length === 0 ? (
-        <p>No questions found.</p>
+      {!isLoading && !error && questions.length === 0 ? (
+        // No-results feedback: different message when a filter is active
+        isFiltering ? (
+          <Alert variant="info">
+            No questions match your search.{' '}
+            <Alert.Link as="button" onClick={resetFilters}>Reset filters</Alert.Link>
+          </Alert>
+        ) : (
+          <p>No questions found.</p>
+        )
       ) : (
         <Table striped bordered hover>
           <thead>
