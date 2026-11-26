@@ -64,10 +64,15 @@ export default function QuizListPage() {
                                 <td>{quiz.description || 'No description'}</td>
                                 <td>{quiz.questionIds.length}</td>
                                 <td>
-                                    <Link 
-                                    to={`/admin/quizzes/edit/${quiz.quizId}`}
-                                    className="btn btn-outline-primary btn-sm">
+                                    <Link
+                                        to={`/admin/quizzes/edit/${quiz.quizId}`}
+                                        className="btn btn-outline-primary btn-sm">
                                         Edit
+                                    </Link>
+                                    <Link
+                                        to={`/admin/quizzes/delete/${quiz.quizId}`}
+                                        className="btn btn-outline-danger btn-sm ms-2">
+                                        Delete
                                     </Link>
                                 </td>
                             </tr>
