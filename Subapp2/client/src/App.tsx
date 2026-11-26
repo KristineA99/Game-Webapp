@@ -18,6 +18,7 @@ import CategoryEditPage from './categories/CategoryEditPage';
 import CategoryDeletePage from './categories/CategoryDeletePage';
 import QuizListPage from './quizzes/QuizListPage';
 import QuizCreatePage from './quizzes/QuizCreatePage';
+import QuizEditPage from './quizzes/QuizEditPage';
 
 // Holds the cache for all data fetched with useQuery
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ export default function App() {
                 <Route path="questions/update/:questionId" element={<QuestionUpdatePage />} />
                 <Route path="quizzes" element={<QuizListPage />} />
                 <Route path="quizzes/create" element={<QuizCreatePage />} />
+                <Route path="quizzes/edit/:id" element={<QuizEditPage />} />
               </Route>
               {/* Any unknown URL redirects to the home page */}
               <Route path="*" element={<Navigate to="/" replace />} />

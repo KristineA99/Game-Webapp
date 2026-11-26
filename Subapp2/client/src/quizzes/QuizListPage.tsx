@@ -54,6 +54,7 @@ export default function QuizListPage() {
                             <th scope="col">Title</th>
                             <th scope="col">Description</th>
                             <th scope="col">Questions</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,6 +63,13 @@ export default function QuizListPage() {
                                 <td>{quiz.title}</td>
                                 <td>{quiz.description || 'No description'}</td>
                                 <td>{quiz.questionIds.length}</td>
+                                <td>
+                                    <Link 
+                                    to={`/admin/quizzes/edit/${quiz.quizId}`}
+                                    className="btn btn-outline-primary btn-sm">
+                                        Edit
+                                    </Link>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
