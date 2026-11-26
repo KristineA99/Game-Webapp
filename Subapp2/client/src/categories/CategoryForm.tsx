@@ -1,0 +1,91 @@
+import { useState } from 'react';
+import type { ComponentProps } from 'react';
+import { Link } from 'react-router-dom';
+
+interface CategoryFormProps {
+    initialName?: string;
+    submitLabel: string;
+    onSave: (name: string) => Promise<void>;
+}
+
+export default function CategoryForm({
+    initialName = '',
+    submitLabel,
+    onSave,
+}: CategoryFormProps) {
+    const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit: ComponentProps<'form'>['onSubmit'] = async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(event.currentTarget);
+        const name = String(formData.get('name') ?? '').trim();
+
+        setError(null);
+
+        // Validate after trimming so whitespace cannot satisfy the name requirement.
+        if (name.length < 2 || name.length > 100) {
+            setError('The name must be between 2 and 100 characters.');
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            // The page supplies either the create or update operation.
+            await onSave(name);
+        } catch (error) {
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : 'Unable to save the category.',
+            );
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <>
+            {error && (
+                <div className="alert alert-danger" role="alert">
+                    {error}
+                </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                    <label htmlFor="name" className="form-label">
+                        Category name
+                    </label>
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        className="form-control"
+                        defaultValue={initialName}
+                        required
+                        minLength={2}
+                        maxLength={100}
+                        disabled={isSubmitting}
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    className="btn btn-primary me-2"
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Saving...' : submitLabel}
+                </button>
+
+                {!isSubmitting && (
+                    <Link to="/admin/categories" className="btn btn-secondary">
+                        Cancel
+                    </Link>
+                )}
+            </form>
+        </>
+    );
+}

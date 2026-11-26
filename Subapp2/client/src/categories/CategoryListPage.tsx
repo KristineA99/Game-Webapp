@@ -51,12 +51,20 @@ export default function CategoryListPage() {
                     <thead>
                         <tr>
                             <th scope="col">Name</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {categories.map((category) => (
                             <tr key={category.categoryId}>
                                 <td>{category.name}</td>
+                                <td>
+                                    <Link
+                                    to={`/admin/categories/edit/${category.categoryId}`}
+                                    className="btn btn-outline-primary btn-sm">
+                                        Edit
+                                    </Link>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
