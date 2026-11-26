@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchCategories } from './CategoryService';
+import { Link } from 'react-router-dom';
 
 export default function CategoryListPage() {
     const {
@@ -39,6 +40,9 @@ export default function CategoryListPage() {
     return (
         <div>
             <h1>Manage Categories</h1>
+            <Link to="/admin/categories/create" className="btn-btn-primary mb-3">
+            Create Category
+            </Link>
 
             {categories.length === 0 ? (
                 <p>No categories have been created yet.</p>
