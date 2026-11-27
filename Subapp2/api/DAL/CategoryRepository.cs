@@ -32,7 +32,7 @@ public class CategoryRepository : ICategoryRepository
     }
 
     // Retrieve a category by its ID.
-    // Returns null if no category has that id, or if the database call fails.
+    // Returns null if the category does not exist; throws if the database call fails.
     public async Task<Category?> GetByIdAsync(int id)
     {
         try
@@ -42,7 +42,8 @@ public class CategoryRepository : ICategoryRepository
         catch (Exception e)
         {
             _logger.LogError(e, "[CategoryRepository] GetByIdAsync() failed for CategoryId {id}.", id);
-            return null;
+
+            throw;
         }
     }
 

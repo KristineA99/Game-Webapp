@@ -53,7 +53,17 @@ public class QuizAPIController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetQuiz(int id)
     {
-        var quiz = await _quizRepository.GetByIdWithQuestionsAsync(id);
+        Quiz? quiz;
+
+        try
+        {
+            quiz = await _quizRepository.GetByIdWithQuestionsAsync(id);
+        }
+        catch (Exception)
+        {
+            // The repository logs the exception; keep its details out of the response.
+            return StatusCode(500, "Unable to load the quiz. Please try again.");
+        }
         if (quiz == null)
         {
             _logger.LogError("[QuizAPIController] Quiz not found for the QuizId {QuizId:0000}", id);
@@ -116,7 +126,17 @@ public class QuizAPIController : ControllerBase
         }
 
         // Find the quiz (with its question links) in the database
-        var existingQuiz = await _quizRepository.GetByIdWithQuestionsAsync(id);
+        Quiz? existingQuiz;
+
+        try
+        {
+            existingQuiz = await _quizRepository.GetByIdWithQuestionsAsync(id);
+        }
+        catch (Exception)
+        {
+            // Loading failed, so do not attempt to update the quiz.
+            return StatusCode(500, "Unable to load the quiz for editing. Please try again.");
+        }
         if (existingQuiz == null)
         {
             return NotFound("Quiz not found");
