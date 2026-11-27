@@ -26,8 +26,9 @@ export default function GamePage() {
         queryFn: () => fetchGameQuiz(id),
         enabled: validId,
         retry: false,
-        // Keep the displayed question set stable while the player answers.
+        // Keep questions stable during play, but discard them when leaving the page.
         staleTime: Infinity,
+        gcTime: 0,
         refetchOnWindowFocus: false,
     });
 
