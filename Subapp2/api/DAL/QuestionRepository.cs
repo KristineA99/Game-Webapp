@@ -175,7 +175,7 @@ public class QuestionRepository : IQuestionRepository
         {
             var question = await _context.Questions.FindAsync(id); //look up the question. 
 
-            if (question == null) // If the question does not exist, we log it and return the correct status code.
+            if (question == null) // Report a missing question; the controller chooses the HTTP status code.
             {
                 _logger.LogWarning("[QuestionRepository] Question not found for QuestionId {id}", id);
 

@@ -36,7 +36,7 @@ public class QuestionAPIController : ControllerBase
         if (questions == null)
         {
 
-            _logger.LogError("[QuestionAPIController] Unable to load questions because the repository call failed.)");
+            _logger.LogError("[QuestionAPIController] Unable to load questions because the repository call failed.");
 
             return StatusCode(500, "Unable to load questions. Please try again later.");
         }
