@@ -40,12 +40,16 @@ public class QuizRepository : IQuizRepository
         {
             return await _context.Quizzes
                 .Include(q => q.QuizQuestions)
+                // Load each linked question for gameplay display and server-side scoring.
+                .ThenInclude(qq => qq.Question)
                 .FirstOrDefaultAsync(q => q.QuizId == id);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "[QuizRepository] GetByIdWithQuestionsAsync() failed for QuizId {id}.", id);
-            return null;
+            
+            // Let the controller return 500; null is reserved for a missing quiz.
+            throw;
         }
     }
 
