@@ -85,14 +85,15 @@ public class QuestionRepository : IQuestionRepository
         {
             return await _context.Questions.FindAsync(id); // FindAsync looks up the row by its primary key (QuestionId).
         }
-        // Returns null if no question has that id, or if the database call fails.
+        // Returns null if the question does not exist; throws if the database call fails.
         catch (Exception e)
         {
             _logger.LogError(
                 e,
                 "[QuestionRepository] GetByIdAsync() failed for QuestionId {id}.",
                 id);
-            return null;
+
+            throw;
         }
     }
 
@@ -168,17 +169,17 @@ public class QuestionRepository : IQuestionRepository
     }
 
     // DELETE: remove a question from the database.
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<QuestionDeleteResult> DeleteAsync(int id)
     {
         try
         {
             var question = await _context.Questions.FindAsync(id); //look up the question. 
 
-            if (question == null) // If the question does not exist, we log it and return false.
+            if (question == null) // If the question does not exist, we log it and return the correct status code.
             {
                 _logger.LogWarning("[QuestionRepository] Question not found for QuestionId {id}", id);
 
-                return false;
+                return QuestionDeleteResult.NotFound;
             }
 
             // If the question exists, we remove it and save the change.
@@ -188,7 +189,7 @@ public class QuestionRepository : IQuestionRepository
             _logger.LogInformation(
                 "[QuestionRepository] Question {id} was deleted successfully.",
                 id);
-            return true;
+            return QuestionDeleteResult.Deleted;
         }
         // If deleting the question fails.
         catch (Exception e)
@@ -197,7 +198,7 @@ public class QuestionRepository : IQuestionRepository
                 e,
                 "[QuestionRepository] DeleteAsync() failed for QuestionId {id}",
                 id);
-            return false;
+            return QuestionDeleteResult.Failed;
         }
     }
 }

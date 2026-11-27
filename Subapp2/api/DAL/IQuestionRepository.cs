@@ -2,6 +2,14 @@ using Subapp2.Models;
 
 namespace Subapp2.DAL;
 
+// Lets the API distinguish a missing question from a database failure.
+public enum QuestionDeleteResult
+{
+    Deleted,
+    NotFound,
+    Failed
+}
+
 public interface IQuestionRepository
 {
     // READ: get all questions for the Admin page
@@ -23,5 +31,5 @@ public interface IQuestionRepository
     Task<bool> UpdateAsync(Question question);
 
     // DELETE: remove a question by its id.
-    Task<bool> DeleteAsync(int id);
+    Task<QuestionDeleteResult> DeleteAsync(int id);
 }

@@ -168,7 +168,7 @@ public class GameController : ControllerBase
             return BadRequest(
                 "One or more questions do not belong to this quiz. " +
                 "The quiz may have changed while you were playing. " +
-                "Refresh browser to restart, or select Leave Quiz and choose the quiz again.");
+                "Refresh the page to restart, or select Leave Quiz and choose the quiz again.");
         }
 
         // With duplicates and unrelated IDs excluded, equal counts prove completeness.
@@ -178,7 +178,7 @@ public class GameController : ControllerBase
                 "Submission for quiz {QuizId} is incomplete.", quizId);
 
             return BadRequest(
-                "Your answers do not match the quiz's current quuestions. " +
+                "Your answers do not match the quiz's current questions. " +
                 "The quiz may have changed while you were playing. " +
                 "Select Leave Quiz, choose the quiz again, and answer all questions.");
         }

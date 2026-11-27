@@ -30,12 +30,15 @@ public class QuestionAPIController : ControllerBase
     public async Task<IActionResult> QuestionList([FromQuery] string? search, [FromQuery] int? categoryId)
     {
         var questions = await _questionRepository.GetFilteredAsync(search, categoryId);
-        
-        // null means the database call failed (logged in the repository)
+
+        // Database failures return null and produce 500; no matching questions returns an empty list. 
+        // With no questions, the frontend displays "No questions match your search."
         if (questions == null)
         {
-            _logger.LogError("[QuestionAPIController] Question list not found while executing _questionRepository.GetAllAsync()");
-            return NotFound("Question list not found");
+
+            _logger.LogError("[QuestionAPIController] Unable to load questions because the repository call failed.)");
+
+            return StatusCode(500, "Unable to load questions. Please try again later.");
         }
 
         // Map database entities to DTOs before sending them to the client
@@ -60,7 +63,17 @@ public class QuestionAPIController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetQuestion(int id)
     {
-        var question = await _questionRepository.GetByIdAsync(id);
+        Question? question;
+
+        try
+        {
+            question = await _questionRepository.GetByIdAsync(id);
+        }
+        catch (Exception)
+        {
+            // The repository logs the exception; keep its details out of the response.
+            return StatusCode(500, "Unable to load the question. Please try again.");
+        }
         if (question == null)
         {
             _logger.LogError("[QuestionAPIController] Question not found for the QuestionId {QuestionId:0000}", id);
@@ -126,7 +139,17 @@ public class QuestionAPIController : ControllerBase
         }
 
         // Find the question in the database
-        var existingQuestion = await _questionRepository.GetByIdAsync(id);
+        Question? existingQuestion;
+
+        try
+        {
+            existingQuestion = await _questionRepository.GetByIdAsync(id);
+        }
+        catch (Exception)
+        {
+            // Loading failed, so do not attempt to update the question.
+            return StatusCode(500, "Unable to load the question for editing. Please try again.");
+        }
         if (existingQuestion == null)
         {
             return NotFound("Question not found");
@@ -153,18 +176,17 @@ public class QuestionAPIController : ControllerBase
         return StatusCode(500, "Internal server error");
     }
 
-    // DELETE api/questionapi/delete/5
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        bool returnOk = await _questionRepository.DeleteAsync(id);
-        if (!returnOk)
-        {
-            _logger.LogError("[QuestionAPIController] Question deletion failed for the QuestionId {QuestionId:0000}", id);
-            return BadRequest("Question deletion failed");
-        }
+        var result = await _questionRepository.DeleteAsync(id);
 
-        // No Content: the question is deleted and there is nothing more to send back
-        return NoContent();
+        // The repository logs the outcome and any database exception.
+        return result switch
+        {
+            QuestionDeleteResult.Deleted => NoContent(),
+            QuestionDeleteResult.NotFound => NotFound("Question not found."),
+            _ => StatusCode(500, "Unable to delete the question. Please try again.")
+        };
     }
 }

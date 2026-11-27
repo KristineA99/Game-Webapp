@@ -48,7 +48,17 @@ public class CategoryAPIController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCategory(int id)
     {
-        var category = await _categoryRepository.GetByIdAsync(id);
+        Category? category;
+
+        try
+        {
+            category = await _categoryRepository.GetByIdAsync(id);
+        }
+        catch (Exception)
+        {
+            // The repository logs the exception; keep its details out of the response.
+            return StatusCode(500, "Unable to load the category. Please try again.");
+        }
         if (category == null)
         {
             _logger.LogError("[CategoryAPIController] Category not found for the CategoryId {CategoryId:0000}", id);
@@ -99,7 +109,17 @@ public class CategoryAPIController : ControllerBase
         }
 
         // Find the category in the database
-        var existingCategory = await _categoryRepository.GetByIdAsync(id);
+        Category? existingCategory;
+
+        try
+        {
+            existingCategory = await _categoryRepository.GetByIdAsync(id);
+        }
+        catch (Exception)
+        {
+            // Loading failed, so do not attempt to update the category.
+            return StatusCode(500, "Unable to load the category for editing. Please try again.");
+        }
         if (existingCategory == null)
         {
             return NotFound("Category not found");
