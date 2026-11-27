@@ -20,9 +20,19 @@ import QuizListPage from './quizzes/QuizListPage';
 import QuizCreatePage from './quizzes/QuizCreatePage';
 import QuizEditPage from './quizzes/QuizEditPage';
 import QuizDeletePage from './quizzes/QuizDeletePage';
+import QuizSelectionPage from './gameplay/QuizSelectionPage';
+import { useParams } from 'react-router-dom'; // Reads the selected quiz
+import GamePage from './gameplay/GamePage';
 
 // Holds the cache for all data fetched with useQuery
 const queryClient = new QueryClient();
+
+function GameRoute() {
+  const { quizId } = useParams();
+
+  // A different quiz gets fresh question position, answers and result state.
+  return <GamePage key={quizId} />;
+}
 
 export default function App() {
   return (
@@ -35,6 +45,8 @@ export default function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/play" element={<QuizSelectionPage />} />
+              <Route path="/play/:quizId" element={<GameRoute />} />
               {/* All routes nested here require a confirmed Admin account. */}
               {/* The dashboard and its management pages share the Admin guard. */}
               <Route path="/admin" element={<AdminRoute />}>
